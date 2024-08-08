@@ -1,22 +1,24 @@
 import StudyroomHeader from "../StudyroomHeader";
-import Studyroom from "../Studyroom";
+import StudyroomTN from "../StudyroomTN";
+import StudyroomFooter from "../StudyroomFooter";
 
 const StudyroomContainer: React.FC = () => {
   return (
-    <div>
+    <div className="my-4">
       <StudyroomHeader />
-      <div className="flex flex-wrap">
-        <Studyroom />
-        <Studyroom />
-        <Studyroom />
-        <Studyroom />
-        <Studyroom />
-        <Studyroom />
-        <Studyroom />
-        <Studyroom />
-        <Studyroom />
-        <Studyroom />
+      <div className="my-5  flex flex-wrap gap-x-5 gap-y-16">
+        <StudyroomTN />
+        <StudyroomTN />
+        <StudyroomTN />
+        <StudyroomTN />
+        <StudyroomTN />
+        <StudyroomTN />
+        <StudyroomTN />
+        <StudyroomTN />
+        <StudyroomTN />
+        <StudyroomTN />
       </div>
+      <StudyroomFooter />
     </div>
   );
 };
