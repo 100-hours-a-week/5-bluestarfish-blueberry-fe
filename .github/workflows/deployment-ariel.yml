@@ -1,0 +1,46 @@
+name: deployment-ariel
+
+
+on:
+  push:
+    branches: main
+  pull_request:
+    branches: main
+
+  workflow_dispatch:
+    inputs:
+      logLevel:
+        description: 'Log level'
+        required: true
+        default: 'warning'
+      tags:
+        description: 'Test scenario tags'
+
+
+# 실행동작 정의
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    # Docker 이미지 빌드 및 Docker Hub에 푸시
+    - name: Build and push Docker image
+      run: |
+        docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+        docker build -f Dockerfile -t ${{ secrets.DOCKER_REPO }}:init .
+        docker push ${{ secrets.DOCKER_REPO }}:init
+
+    # EC2 서버에 SSH로 접속하여 Docker 이미지 Pull 및 서버 시작
+    - name: Deploy to EC2
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        username: ubuntu
+        key: ${{ secrets.KEY }}
+        script: |
+          sudo docker pull ${{ secrets.DOCKER_REPO }}:init
+          sudo docker run -d -p 3000:3000 ${{ secrets.DOCKER_REPO }}:init
+          
