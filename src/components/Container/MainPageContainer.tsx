@@ -3,7 +3,7 @@ import StudyroomContainer from "./StudyroomContainer";
 
 const MainPageContainer: React.FC = () => {
   return (
-    <body className="flex flex-col items-center w-full bg-white">
+    <body className="flex flex-col mt-[80px] items-center w-full bg-white">
       <img
         src={`${process.env.PUBLIC_URL}/assets/images/intro-1.png`}
         alt="intro"

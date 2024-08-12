@@ -8,7 +8,7 @@ const StudyroomHeader: React.FC = () => {
   };
 
   return (
-    <div className="flex items-center justify-between m-[3px] h-[40px] mx-auto relative">
+    <div className="flex items-center justify-between m-[3px] h-[40px] mx-auto">
       <div className="flex items-center space-x-[12px]">
         <button className="w-[130px] h-[40px] rounded-[10px] bg-[#4b89dc] text-white">
           전체보기

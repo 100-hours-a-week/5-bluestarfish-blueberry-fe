@@ -1,14 +1,29 @@
 import React, { useState } from "react";
+import HeaderModal from "./Modal/HeaderModal";
+import AlarmModal from "./Modal/AlarmModal";
 
 const Header: React.FC = () => {
   const [isModalOpen, setModalOpen] = useState(false);
+  const [isAlarmModalOpen, setAlarmModalOpen] = useState(false);
 
   const toggleModal = () => {
     setModalOpen(!isModalOpen);
   };
 
+  const toggleAlarmModal = () => {
+    setAlarmModalOpen(!isAlarmModalOpen);
+  };
+
+  const closeModal = () => {
+    setModalOpen(false);
+  };
+
+  const closeAlarmModal = () => {
+    setAlarmModalOpen(false);
+  };
+
   return (
-    <header className="w-full bg-white">
+    <header className="fixed top-0 left-0 right-0 w-full bg-white">
       <div className="flex items-center justify-between w-[1024px] h-[80px] mx-auto relative">
         <div className="flex items-center space-x-4">
           <img
@@ -23,21 +38,27 @@ const Header: React.FC = () => {
             className="w-[740px] h-[44px] p-2 rounded-lg border border-gray-300 bg-[#EEEEFF]"
           />
         </div>
-        <div className="relative">
-          <img
-            src={`${process.env.PUBLIC_URL}/assets/images/profile-default-image.png`}
-            alt="Profile"
-            className="h-8 w-8 rounded-full cursor-pointer"
-            onClick={toggleModal}
-          />
-          {isModalOpen && (
-            <div className="absolute right-0 mt-2 w-48 bg-white text-black rounded-lg shadow-lg p-4">
-              <p>Personal Information</p>
-              {/* Add more content as needed */}
-            </div>
-          )}
+        <div className="flex flex-row items-center space-x-2">
+          <div className="flex rounded-full border-[1px] border-[#a5a5a5] w-[40px] h-[40px] items-center justify-center shadow-lg">
+            <img
+              src={`${process.env.PUBLIC_URL}/assets/images/bell.png`}
+              alt="Profile"
+              className="h-[21px] rounded-full cursor-pointer"
+              onClick={toggleAlarmModal}
+            />
+          </div>
+          <div className="flex rounded-full border-[1px] border-[#a5a5a5] w-[40px] h-[40px] items-center justify-center shadow-lg">
+            <img
+              src={`${process.env.PUBLIC_URL}/assets/images/profile-default-image.png`}
+              alt="Profile"
+              className="h-8 w-8 rounded-full cursor-pointer"
+              onClick={toggleModal}
+            />
+          </div>
         </div>
       </div>
+      {isModalOpen && <HeaderModal closeModal={closeModal} />}
+      {isAlarmModalOpen && <AlarmModal closeModal={closeAlarmModal} />}
     </header>
   );
 };
