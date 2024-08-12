@@ -18,7 +18,7 @@ const StudyroomContainer: React.FC = () => {
         <StudyroomTN />
         <StudyroomTN />
       </div>
-      <StudyroomFooter />
+      <StudyroomFooter />{" "}
     </div>
   );
 };

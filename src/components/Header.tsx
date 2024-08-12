@@ -23,7 +23,7 @@ const Header: React.FC = () => {
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 w-full bg-white">
+    <header className="fixed top-0 left-0 right-0 w-full bg-white z-50">
       <div className="flex items-center justify-between w-[1024px] h-[80px] mx-auto relative">
         <div className="flex items-center space-x-4">
           <img
@@ -31,12 +31,18 @@ const Header: React.FC = () => {
             alt="Logo"
             className="h-8 w-8"
           />
-          <span className="text-xl font-bold text-[#6D81D5]">blueberry</span>
+          <span className="text-xl font-bold text-[#6D81D5] text-sh">
+            blueberry
+          </span>
           <input
             type="text"
             placeholder="Search..."
-            className="w-[740px] h-[44px] p-2 rounded-lg border border-gray-300 bg-[#EEEEFF]"
+            className="w-[740px] h-[44px] p-2 border-b-2 border-gray-300 bg-white"
           />
+          <img
+            src={`${process.env.PUBLIC_URL}/assets/images/magnifier.png`}
+            className="absolute right-[130px]"
+          ></img>
         </div>
         <div className="flex flex-row items-center space-x-2">
           <div className="flex rounded-full border-[1px] border-[#a5a5a5] w-[40px] h-[40px] items-center justify-center shadow-lg">
