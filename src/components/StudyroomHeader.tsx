@@ -32,10 +32,10 @@ const StudyroomHeader: React.FC = () => {
             alt="all"
             className="h-[20px]"
           />
-          노래듣공
+          캠끄공
         </button>
       </div>
-      <div className="flex gap-4">
+      <div className="flex gap-4 font-bold">
         <button
           className="w-[143px] h-[46px] rounded-[10px] bg-[#150C39] text-white"
           onClick={toggleModal}

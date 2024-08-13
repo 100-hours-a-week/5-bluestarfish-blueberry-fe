@@ -5,6 +5,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import MainPage from "./pages/MainPage";
 import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
+import StudyroomWaitPage from "./pages/StudyroomWaitPage";
+import StudyroomPage from "./pages/StudyroomPage";
 
 function App() {
   return (
@@ -13,6 +15,8 @@ function App() {
         <Route path="/" element={<MainPage />} />
         <Route path="login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
+        <Route path="/wait" element={<StudyroomWaitPage />} />
+        <Route path="/studyroom" element={<StudyroomPage />} />
       </Routes>
     </BrowserRouter>
   );

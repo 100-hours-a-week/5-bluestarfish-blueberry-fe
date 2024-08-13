@@ -4,7 +4,7 @@ const Collapse: React.FC<CollapseProps> = () => {
   return (
     <div
       tabIndex={0}
-      className="collapse collapse-arrow m-[3px] rounded-[10px]  my-[50px] bg-white border text-[#000] text-[18px] font-medium shadow-lg z-10"
+      className="collapse collapse-arrow m-[3px] rounded-[10px]  my-[50px] bg-white border text-[#000] text-[18px] font-medium shadow-lg z-1"
     >
       <div className="flex items-center space-x-4 collapse-title">
         <img
