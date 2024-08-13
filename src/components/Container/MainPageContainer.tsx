@@ -9,7 +9,7 @@ const MainPageContainer: React.FC = () => {
         alt="intro"
         className="w-full"
       />
-      <div className="w-[1024px]">
+      <div className="w-[1030px]">
         <Ranking />
         <StudyroomContainer />
       </div>
