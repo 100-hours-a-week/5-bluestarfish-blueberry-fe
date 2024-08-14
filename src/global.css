@@ -1,12 +1,8 @@
-/* index.css 혹은 global.css */
-.scrollbar-hide::-webkit-scrollbar {
-    display: none;
-    /* 웹킷 기반 브라우저 (Chrome, Safari 등)에서 스크롤바 숨기기 */
+body {
+    -ms-overflow-style: none;
 }
 
-.scrollbar-hide {
-    -ms-overflow-style: none;
-    /* IE와 Edge에서 스크롤바 숨기기 */
-    scrollbar-width: none;
-    /* Firefox에서 스크롤바 숨기기 */
+/* 스크롤바 숨기기 */
+::-webkit-scrollbar {
+    display: none;
 }

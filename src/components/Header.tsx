@@ -42,12 +42,12 @@ const Header: React.FC = () => {
             onClick={togglePersonalModal}
           />
           {isPersonalModalOpen && (
-            <div className="absolute left-12 mt-8 w-48 bg-white text-black rounded-lg shadow-lg p-4">
+            <div className="absolute left-12 mt-8 w-48 bg-white text-black rounded-lg shadow-lg p-4 z-10">
               <p>Personal Information</p>
             </div>
           )}
           {isNotificationModalOpen && (
-            <div className="absolute right--16 mt-8 w-48 bg-white text-black rounded-lg shadow-lg p-4">
+            <div className="absolute right--16 mt-8 w-48 bg-white text-black rounded-lg shadow-lg p-4 z-10">
               <p>Notifications</p>
             </div>
           )}
