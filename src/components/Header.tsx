@@ -1,11 +1,16 @@
 import React, { useState } from "react";
 
 const Header: React.FC = () => {
-  const [isModalOpen, setModalOpen] = useState(false);
+  const [isPersonalModalOpen, setPersonalModalOpen] = useState(false);
+  const [isNotificationModalOpen, setNotificationModalOpen] = useState(false);
 
-  const toggleModal = () => {
-    setModalOpen(!isModalOpen);
+  const togglePersonalModal = () => {
+    setPersonalModalOpen(!isPersonalModalOpen);
   };
+
+  const toggleNotificationModal = () => {
+    setNotificationModalOpen(!isNotificationModalOpen)
+  }
 
   return (
     <header className="w-full bg-white">
@@ -23,17 +28,27 @@ const Header: React.FC = () => {
             className="w-[740px] h-[44px] p-2 rounded-lg border border-gray-300 bg-[#EEEEFF]"
           />
         </div>
-        <div className="relative">
+        <div className="relative flex">
+        <img
+            src={`${process.env.PUBLIC_URL}/assets/images/notification.png`}
+            alt="Profile"
+            className="h-8 w-8 rounded-full cursor-pointer mr-4"
+            onClick={toggleNotificationModal}
+          />
           <img
             src={`${process.env.PUBLIC_URL}/assets/images/profile-default-image.png`}
             alt="Profile"
             className="h-8 w-8 rounded-full cursor-pointer"
-            onClick={toggleModal}
+            onClick={togglePersonalModal}
           />
-          {isModalOpen && (
-            <div className="absolute right-0 mt-2 w-48 bg-white text-black rounded-lg shadow-lg p-4">
+          {isPersonalModalOpen && (
+            <div className="absolute left-12 mt-8 w-48 bg-white text-black rounded-lg shadow-lg p-4">
               <p>Personal Information</p>
-              {/* Add more content as needed */}
+            </div>
+          )}
+          {isNotificationModalOpen && (
+            <div className="absolute right--16 mt-8 w-48 bg-white text-black rounded-lg shadow-lg p-4">
+              <p>Notifications</p>
             </div>
           )}
         </div>
