@@ -3,9 +3,9 @@ import Header from '../components/Header';
 import RecruitStudyListContainer from '../components/Container/RecruitStudyListContainer'
 import Footer from "../components/Footer";
 
-type LoginPageProps = {};
+type RecruitStudyListPageProps = {};
 
-const LoginPage: React.FC<LoginPageProps> = () => {
+const RecruitStudyListPage: React.FC<RecruitStudyListPageProps> = () => {
   return (
     <div className="flex flex-col min-h-screen">
       <Header /> {/* 헤더 */}
@@ -15,4 +15,4 @@ const LoginPage: React.FC<LoginPageProps> = () => {
   );
 };
 
-export default LoginPage;
+export default RecruitStudyListPage;
