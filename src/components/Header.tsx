@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 
 const Header: React.FC = () => {
   const [isPersonalModalOpen, setPersonalModalOpen] = useState(false);
@@ -16,12 +17,14 @@ const Header: React.FC = () => {
     <header className="w-full bg-white">
       <div className="flex items-center justify-between w-[1024px] h-[80px] mx-auto relative">
         <div className="flex items-center space-x-4">
-          <img
-            src={`${process.env.PUBLIC_URL}/assets/images/logo.png`}
-            alt="Logo"
-            className="h-8 w-8"
-          />
-          <span className="text-xl font-bold text-[#6D81D5]">blueberry</span>
+          <Link to="/" className="flex items-center space-x-2">
+            <img
+              src={`${process.env.PUBLIC_URL}/assets/images/logo.png`}
+              alt="Logo"
+              className="h-8 w-8"
+            />
+            <span className="text-xl font-bold text-[#6D81D5]">blueberry</span>
+          </Link>
           <input
             type="text"
             placeholder="Search..."

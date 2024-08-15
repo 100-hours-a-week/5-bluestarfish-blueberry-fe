@@ -1,6 +1,7 @@
 import React from 'react';
 import Header from '../components/Header';
 import RecruitStudyListContainer from '../components/Container/RecruitStudyListContainer'
+import Footer from "../components/Footer";
 
 type LoginPageProps = {};
 
@@ -9,6 +10,7 @@ const LoginPage: React.FC<LoginPageProps> = () => {
     <div className="flex flex-col min-h-screen">
       <Header /> {/* 헤더 */}
       <RecruitStudyListContainer />
+      <Footer />
     </div>
   );
 };

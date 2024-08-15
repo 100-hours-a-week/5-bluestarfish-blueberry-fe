@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 interface PostListProps {
   posts: Array<any>;
@@ -6,13 +6,50 @@ interface PostListProps {
 }
 
 const RecruitPostList: React.FC<PostListProps> = ({ posts, handlePostClick }) => {
+  const [displayedPosts, setDisplayedPosts] = useState<Array<any>>([]);
+  const [page, setPage] = useState(1);
+  const [loading, setLoading] = useState(false);
+  const observer = useRef<IntersectionObserver | null>(null);
+  const lastPostElementRef = useRef<HTMLDivElement | null>(null);
+
+  const postsPerPage = 10;
+
+  useEffect(() => {
+    setLoading(true);
+    setTimeout(() => {
+      const newPosts = posts.slice(0, page * postsPerPage);
+      setDisplayedPosts(newPosts);
+      setLoading(false);
+    }, 500); // 0.5초 지연
+  }, [page, posts]);
+
+  useEffect(() => {
+    if (observer.current) observer.current.disconnect();
+
+    observer.current = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting && displayedPosts.length < posts.length) {
+        setLoading(true);
+        setPage((prevPage) => prevPage + 1);
+      }
+    });
+
+    if (lastPostElementRef.current) {
+      observer.current.observe(lastPostElementRef.current);
+    }
+
+    return () => {
+      if (observer.current) observer.current.disconnect();
+    };
+  }, [displayedPosts, posts]);
+
   return (
     <div className="space-y-4">
-      {posts.map((post) => (
+      {displayedPosts.map((post, index) => (
         <div
           key={post.id}
           className="flex justify-between items-center p-4 bg-gray-100 rounded-lg shadow-sm cursor-pointer"
           onClick={handlePostClick}
+          ref={index === displayedPosts.length - 1 ? lastPostElementRef : null}
         >
           <div>
             <h3 className="text-xl font-bold truncate max-w-full">
@@ -41,6 +78,12 @@ const RecruitPostList: React.FC<PostListProps> = ({ posts, handlePostClick }) =>
           </span>
         </div>
       ))}
+      
+      {loading && (
+        <div className="flex justify-center items-center mt-4">
+          <span>Loading more posts...</span>
+        </div>
+      )}
     </div>
   );
 };
