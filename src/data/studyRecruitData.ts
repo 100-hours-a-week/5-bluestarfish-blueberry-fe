@@ -13,7 +13,7 @@ const studyRecruitData = [
         type: "FINDING_MEMBERS",
         isRecruited: true,
         isCamOn: true,
-        createdAt: "2024/08/10 03:00:12"
+        createdAt: 1723276812
     },
     {
         id: 2,
@@ -29,7 +29,7 @@ const studyRecruitData = [
         type: "FINDING_ROOMS",
         isRecruited: false,
         isCamOn: false,
-        createdAt: "2024/08/10 03:00:12"
+        createdAt: 1723276812
     },
     {
         id: 3,
@@ -45,7 +45,7 @@ const studyRecruitData = [
         type: "FINDING_ROOMS",
         isRecruited: true,
         isCamOn: true,
-        createdAt: "2024/08/10 03:00:27"
+        createdAt: 1723276813
     },
     {
         id: 4,
@@ -61,7 +61,7 @@ const studyRecruitData = [
         type: "FINDING_ROOMS",
         isRecruited: false,
         isCamOn: true,
-        createdAt: "2024/08/10 03:00:30"
+        createdAt: 1723276813
     },
     {
         id: 5,
@@ -77,7 +77,7 @@ const studyRecruitData = [
         type: "FINDING_MEMBERS",
         isRecruited: false,
         isCamOn: false,
-        createdAt: "2024/08/10 04:00:30"
+        createdAt: 1723276814
     },
     {
         id: 6,
@@ -93,7 +93,7 @@ const studyRecruitData = [
         type: "FINDING_MEMBERS",
         isRecruited: true,
         isCamOn: false,
-        createdAt: "2024/08/10 04:00:30"
+        createdAt: 1723276815
     },
     {
         id: 7,
@@ -109,7 +109,7 @@ const studyRecruitData = [
         type: "FINDING_ROOMS",
         isRecruited: true,
         isCamOn: false,
-        createdAt: "2024/08/10 04:01:30"
+        createdAt: 1723276816
     },
 
 
@@ -127,7 +127,7 @@ const studyRecruitData = [
         type: "FINDING_MEMBERS",
         isRecruited: true,
         isCamOn: true,
-        createdAt: "2024/08/10 03:00:12"
+        createdAt: 1723276816
     },
     {
         id: 9,
@@ -143,7 +143,7 @@ const studyRecruitData = [
         type: "FINDING_ROOMS",
         isRecruited: false,
         isCamOn: false,
-        createdAt: "2024/08/10 03:00:12"
+        createdAt: 1723276820
     },
     {
         id: 10,
@@ -159,7 +159,7 @@ const studyRecruitData = [
         type: "FINDING_ROOMS",
         isRecruited: true,
         isCamOn: true,
-        createdAt: "2024/08/10 03:00:27"
+        createdAt: 1723276825
     },
     {
         id: 11,
@@ -175,7 +175,7 @@ const studyRecruitData = [
         type: "FINDING_ROOMS",
         isRecruited: false,
         isCamOn: true,
-        createdAt: "2024/08/10 03:00:30"
+        createdAt: 1723276827
     },
     {
         id: 12,
@@ -191,7 +191,7 @@ const studyRecruitData = [
         type: "FINDING_MEMBERS",
         isRecruited: false,
         isCamOn: false,
-        createdAt: "2024/08/10 04:00:30"
+        createdAt: 1723276830
     },
     {
         id: 13,
@@ -207,7 +207,7 @@ const studyRecruitData = [
         type: "FINDING_MEMBERS",
         isRecruited: true,
         isCamOn: true,
-        createdAt: "2024/08/10 03:00:12"
+        createdAt: 1723276833
     },
     {
         id: 14,
@@ -223,7 +223,7 @@ const studyRecruitData = [
         type: "FINDING_ROOMS",
         isRecruited: false,
         isCamOn: false,
-        createdAt: "2024/08/10 03:00:12"
+        createdAt: 1723276835
     },
     {
         id: 15,
@@ -239,7 +239,7 @@ const studyRecruitData = [
         type: "FINDING_ROOMS",
         isRecruited: true,
         isCamOn: true,
-        createdAt: "2024/08/10 03:00:27"
+        createdAt: 1723276837
     },
     {
         id: 16,
@@ -255,7 +255,7 @@ const studyRecruitData = [
         type: "FINDING_ROOMS",
         isRecruited: false,
         isCamOn: true,
-        createdAt: "2024/08/10 03:00:30"
+        createdAt: 1723276837
     },
     {
         id: 17,
@@ -271,7 +271,7 @@ const studyRecruitData = [
         type: "FINDING_MEMBERS",
         isRecruited: false,
         isCamOn: false,
-        createdAt: "2024/08/10 04:00:30"
+        createdAt: 1723276840
     },
     {
         id: 18,
@@ -287,7 +287,7 @@ const studyRecruitData = [
         type: "FINDING_MEMBERS",
         isRecruited: true,
         isCamOn: false,
-        createdAt: "2024/08/10 04:00:30"
+        createdAt: 1723276843
     },
     {
         id: 19,
@@ -303,7 +303,7 @@ const studyRecruitData = [
         type: "FINDING_ROOMS",
         isRecruited: true,
         isCamOn: false,
-        createdAt: "2024/08/10 04:01:30"
+        createdAt: 1723276845
     },
 
 
@@ -321,7 +321,7 @@ const studyRecruitData = [
         type: "FINDING_MEMBERS",
         isRecruited: true,
         isCamOn: true,
-        createdAt: "2024/08/10 03:00:12"
+        createdAt: 1723276847
     },
     {
         id: 21,
@@ -337,7 +337,7 @@ const studyRecruitData = [
         type: "FINDING_ROOMS",
         isRecruited: false,
         isCamOn: false,
-        createdAt: "2024/08/10 03:00:12"
+        createdAt: 1723276850
     },
     {
         id: 22,
@@ -353,7 +353,7 @@ const studyRecruitData = [
         type: "FINDING_ROOMS",
         isRecruited: true,
         isCamOn: true,
-        createdAt: "2024/08/10 03:00:27"
+        createdAt: 1723276850
     },
     {
         id: 23,
@@ -369,7 +369,7 @@ const studyRecruitData = [
         type: "FINDING_ROOMS",
         isRecruited: false,
         isCamOn: true,
-        createdAt: "2024/08/10 03:00:30"
+        createdAt: 1723276852
     },
     {
         id: 24,
@@ -385,7 +385,7 @@ const studyRecruitData = [
         type: "FINDING_MEMBERS",
         isRecruited: false,
         isCamOn: false,
-        createdAt: "2024/08/10 04:00:30"
+        createdAt: 1723276855
     },
 ];
 

@@ -47,7 +47,7 @@ const RecruitPostList: React.FC<PostListProps> = ({ posts, handlePostClick }) =>
       {displayedPosts.map((post, index) => (
         <div
           key={post.id}
-          className="flex justify-between items-center p-4 bg-gray-100 rounded-lg shadow-sm cursor-pointer"
+          className="flex justify-between items-center p-4 bg-[#FAFAFF] rounded-lg shadow-sm cursor-pointer hover:bg-[#EEEEFF]"
           onClick={handlePostClick}
           ref={index === displayedPosts.length - 1 ? lastPostElementRef : null}
         >

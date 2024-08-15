@@ -35,22 +35,22 @@ const Header: React.FC = () => {
         <img
             src={`${process.env.PUBLIC_URL}/assets/images/notification.png`}
             alt="Profile"
-            className="h-8 w-8 rounded-full cursor-pointer mr-4"
+            className="h-9 w-9 rounded-full cursor-pointer mr-4 mt-1"
             onClick={toggleNotificationModal}
           />
           <img
             src={`${process.env.PUBLIC_URL}/assets/images/profile-default-image.png`}
             alt="Profile"
-            className="h-8 w-8 rounded-full cursor-pointer"
+            className="h-10 w-8 rounded-full cursor-pointer object-scale-down"
             onClick={togglePersonalModal}
           />
           {isPersonalModalOpen && (
-            <div className="absolute left-12 mt-8 w-48 bg-white text-black rounded-lg shadow-lg p-4 z-10">
+            <div className="absolute left-12 mt-9 w-48 bg-white text-black rounded-lg shadow-lg p-4 z-10">
               <p>Personal Information</p>
             </div>
           )}
           {isNotificationModalOpen && (
-            <div className="absolute right--16 mt-8 w-48 bg-white text-black rounded-lg shadow-lg p-4 z-10">
+            <div className="absolute right--16 mt-9 w-48 bg-white text-black rounded-lg shadow-lg p-4 z-10">
               <p>Notifications</p>
             </div>
           )}
