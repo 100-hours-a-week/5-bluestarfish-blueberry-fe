@@ -22,7 +22,7 @@ const CategorySelector: React.FC<CategorySelectorProps> = ({
       {categories.map((category) => (
         <button
           key={category.name}
-          className={`flex items-center space-x-2 px-4 py-2 rounded-full shadow-md ${
+          className={`flex items-center space-x-2 px-4 py-2 rounded-full shadow-md hover:bg-[#6D81D5] hover:text-white transition duration-300 ${
             selectedCategory === category.name ? 'bg-[#6D81D5] text-white' : 'bg-[#E0E7FF] text-[#4659AA]'
           }`}
           onClick={() => handleCategoryClick(category.name)}
@@ -35,7 +35,7 @@ const CategorySelector: React.FC<CategorySelectorProps> = ({
       {types.map((type) => (
         <button
           key={type.name}
-          className={`flex items-center space-x-2 px-4 py-2 rounded-full shadow-md ${
+          className={`flex items-center space-x-2 px-4 py-2 rounded-full shadow-md hover:bg-[#6D81D5] hover:text-white transition duration-300 ${
             selectedType === type.name ? 'bg-[#6D81D5] text-white' : 'bg-[#E0E7FF] text-[#4659AA]'
           }`}
           onClick={() => handleTypeClick(type.name)}

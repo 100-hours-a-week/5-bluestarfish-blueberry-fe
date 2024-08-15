@@ -9,6 +9,7 @@ const StudyRecruitListContainer: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState('전체보기');
   const [selectedType, setSelectedType] = useState('');
   const navigate = useNavigate();
+  const studyRecruitSortedData = studyRecruitData.sort((a, b) => b.createdAt - a.createdAt);
 
   const categories = [
     { name: '전체보기', icon: 'list-icon.png' },
@@ -36,7 +37,7 @@ const StudyRecruitListContainer: React.FC = () => {
     navigate('/recruit/list');
   };
 
-  const filteredData = studyRecruitData.filter((item) => {
+  const filteredData = studyRecruitSortedData.filter((item) => {
     const matchesCategory = selectedCategory === '전체보기' || (selectedCategory === '모집 중' && item.isRecruited);
     const matchesType = selectedType === '' || item.type === (selectedType === '스터디 멤버 찾기' ? 'FINDING_MEMBERS' : 'FINDING_ROOMS');
     return matchesCategory && matchesType;
