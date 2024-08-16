@@ -61,7 +61,7 @@ const RecruitPostList: React.FC<PostListProps> = ({ posts, handlePostClick }) =>
               </span>
               <div className="flex items-center space-x-1">
                 <img
-                  src={`${process.env.PUBLIC_URL}/assets/images/${post.isCamOn ? 'cam-on-icon.png' : 'cam-off-icon.png'}`}
+                  src={`${process.env.PUBLIC_URL}/assets/images/${post.isCamOn ? 'cam-on-icon-blue.png' : 'cam-off-icon-blue.png'}`}
                   alt={post.isCamOn ? '캠켜공' : '캠끄공'}
                   className="h-5 w-5"
                 />

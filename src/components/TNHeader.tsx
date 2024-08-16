@@ -22,8 +22,8 @@ const TNHeader: React.FC<TNHeaderProps> = () => {
       <div className="flex">
         <button>
           <img
-            src={`${process.env.PUBLIC_URL}/assets/images/person.png`}
-            alt="music-botton"
+            src={`${process.env.PUBLIC_URL}/assets/images/person-white.png`}
+            alt="person-icon"
             className="w-[25px] h-[25px]"
           />
         </button>

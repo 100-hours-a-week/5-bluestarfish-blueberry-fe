@@ -1,8 +1,22 @@
+/* 전체 스크롤바 숨기기 */
 body {
     -ms-overflow-style: none;
 }
 
-/* 스크롤바 숨기기 */
-::-webkit-scrollbar {
-    display: none;
+/* 세로 스크롤바 숨기기 */
+body::-webkit-scrollbar {
+    width: 0;
+    height: 8px;
+}
+
+/* 가로 스크롤바 스타일링 */
+div::-webkit-scrollbar {
+    height: 8px;
+    background-color: #D9D9D9;
+    border-radius: 4px;
+}
+
+div::-webkit-scrollbar-thumb {
+    background-color: #BDBDFF;
+    border-radius: 4px; 
 }

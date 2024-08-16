@@ -13,8 +13,8 @@ const TabBar = () => {
     };
 
     return (
-        <div className="flex justify-center items-center">
-            <div className="flex justify-center items-center bg-white p-6 rounded-b-3xl relative w-[60%] gap-x-10">
+        <div className="flex justify-center items-center mb-10">
+            <div className="flex justify-center items-center bg-white p-3 rounded-b-3xl relative w-[60%] gap-x-5">
                 {/* 밑줄 요소 */}
                 <div
                     className="absolute bottom-0 h-[1.5px] bg-[#4659AA] transition-all duration-500 ease-in-out"
