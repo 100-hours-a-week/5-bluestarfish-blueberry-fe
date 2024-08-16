@@ -56,6 +56,16 @@ const studyRooms = [
             { id: 5, nickname: "Hailey" },
         ],
     },
+    {
+        id: 6,
+        title: "취준생방",
+        maxUsers: 3,
+        camEnabled: false,
+        thumbnail: "/assets/images/study-thumbnail-6.png",
+        users: [
+            { id: 4, nickname: "Kanuda" },
+        ],
+    },
 ];
 
 export default studyRooms;
