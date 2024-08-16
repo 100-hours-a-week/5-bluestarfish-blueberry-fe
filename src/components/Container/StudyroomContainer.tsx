@@ -1,24 +1,63 @@
-import StudyroomHeader from "../StudyroomHeader";
-import StudyroomTN from "../StudyroomTN";
-import StudyroomFooter from "../StudyroomFooter";
+import { useNavigate } from "react-router-dom";
+import SmallUserDisplay from "../SmallUserDisplay";
+
+type StudyroomContainerProps = {};
 
 const StudyroomContainer: React.FC = () => {
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    navigate("/studyroom");
+  };
   return (
-    <div className="my-4">
-      <StudyroomHeader />
-      <div className="my-5  flex flex-wrap gap-x-5 gap-y-16">
-        <StudyroomTN />
-        <StudyroomTN />
-        <StudyroomTN />
-        <StudyroomTN />
-        <StudyroomTN />
-        <StudyroomTN />
-        <StudyroomTN />
-        <StudyroomTN />
-        <StudyroomTN />
-        <StudyroomTN />
+    <div className="w-full flex flex-col items-center justify-center p-4">
+      <div className="my-12  flex flex-wrap gap-8 justify-center">
+        <SmallUserDisplay
+          backgroundImage={`${process.env.PUBLIC_URL}/assets/images/user-display-default.png`}
+        />
+        <SmallUserDisplay
+          backgroundImage={`${process.env.PUBLIC_URL}/assets/images/user-display-default.png`}
+        />
+        <SmallUserDisplay
+          backgroundImage={`${process.env.PUBLIC_URL}/assets/images/user-display-default.png`}
+        />
+        <SmallUserDisplay
+          backgroundImage={`${process.env.PUBLIC_URL}/assets/images/user-display-default.png`}
+        />
+        <SmallUserDisplay
+          backgroundImage={`${process.env.PUBLIC_URL}/assets/images/user-display-default.png`}
+        />
       </div>
-      <StudyroomFooter />
+      <div className="mt-10 flex flex-row gap-5">
+        <button>
+          <img
+            src={`${process.env.PUBLIC_URL}/assets/images/camera-white.png`}
+            alt="camera"
+            className="h-[32px]"
+          />
+        </button>
+        <button>
+          <img
+            src={`${process.env.PUBLIC_URL}/assets/images/mic-white.png`}
+            alt="mic"
+            className="h-[28px]"
+          />
+        </button>
+        <button>
+          <img
+            src={`${process.env.PUBLIC_URL}/assets/images/speaker-white.png`}
+            alt="speaker"
+            className="h-[26px]"
+          />
+        </button>{" "}
+        <button>
+          <img
+            src={`${process.env.PUBLIC_URL}/assets/images/exit-white.png`}
+            alt="speaker"
+            className="h-[26px]"
+          />
+        </button>
+      </div>
     </div>
   );
 };

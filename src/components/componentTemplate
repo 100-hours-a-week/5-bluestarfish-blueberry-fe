@@ -1,6 +1,6 @@
-type TemProps = {};
+type TemplateProps = {};
 
-const Template: React.FC<TemProps> = () => {
+const Template: React.FC<TemplateProps> = () => {
   return (
     <div className="">
       <div></div>
