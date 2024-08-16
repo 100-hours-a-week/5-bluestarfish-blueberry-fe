@@ -37,6 +37,10 @@ const StudyRecruitListContainer: React.FC = () => {
     navigate('/recruit/list');
   };
 
+  const handleCreatePostClick = () => {
+    navigate('/recruit/create');
+  }
+
   const filteredData = studyRecruitSortedData.filter((item) => {
     const matchesCategory = selectedCategory === '전체보기' || (selectedCategory === '모집 중' && item.isRecruited);
     const matchesType = selectedType === '' || item.type === (selectedType === '스터디 멤버 찾기' ? 'FINDING_MEMBERS' : 'FINDING_ROOMS');
@@ -55,7 +59,7 @@ const StudyRecruitListContainer: React.FC = () => {
           src={`${process.env.PUBLIC_URL}/assets/images/create-post-button.png`}
           alt="create post"
           className="absolute top-12 right-64 w-[130px] h-[30px]"
-          onClick={handlePostClick}
+          onClick={handleCreatePostClick}
         />
       </div>
 
@@ -69,6 +73,7 @@ const StudyRecruitListContainer: React.FC = () => {
           handleTypeClick={handleTypeClick}
         />
         {/* 모집 공고 글 목록 */}
+        {/* <RecruitPostList posts={filteredData} handlePostClick={handlePostClick} /> */}
         <RecruitPostList posts={filteredData} handlePostClick={handlePostClick} />
       </div>
     </div>

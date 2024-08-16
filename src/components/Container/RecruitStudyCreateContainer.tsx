@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import '../../global.css';
 import StudyroomTN from '../../components/StudyroomTN';
 import studyRooms from "../../data/studyRooms";
 import StudyForm from '../../components/RecruitStudyForm';
-import { validateStudyFormInputs } from '../../utils/validation'; // 유효성 검사 함수 import
+import { validateStudyFormInputs } from '../../utils/validation';
+import ToastNotification from '../ToastNotification';
 
 const RecruitStudyCreateContainer: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>('');
@@ -15,6 +17,8 @@ const RecruitStudyCreateContainer: React.FC = () => {
   const [contentHelperText, setContentHelperText] = useState<string>('* 헬퍼텍스트');
   const [studyHelperText, setStudyHelperText] = useState<string>('* 헬퍼텍스트');
   const [isFormValid, setIsFormValid] = useState<boolean>(false);
+  const [showToast, setShowToast] = useState(false);
+  const navigate = useNavigate();  // 페이지 이동을 위한 useNavigate 훅
 
   const categories = [
     { name: '캠켜공', icon: 'cam-on-icon.png' },
@@ -65,6 +69,15 @@ const RecruitStudyCreateContainer: React.FC = () => {
     }
   };
 
+  const handleShowToast = () => {
+    setShowToast(true);
+  };
+
+  const handleCloseToast = () => {
+    setShowToast(false);
+    navigate('/recruit/list');  // 토스트가 닫힐 때 페이지 이동
+  };
+
   return (
     <div className="container mx-auto flex flex-col items-center mt-10">
       <h1 className="text-2xl font-bold mb-8">✍🏻 게시글 작성 ✍🏻</h1>
@@ -111,12 +124,15 @@ const RecruitStudyCreateContainer: React.FC = () => {
 
         <div className="flex justify-center mt-10 mb-20">
           <button
-            onClick={handleSubmit}
+            onClick={handleShowToast}
             disabled={!isFormValid}
             className={`w-[50%] py-2 rounded-full transition duration-200 ${isFormValid ? 'bg-[#E0E7FF] text-[#4659AA] hover:bg-[#6D81D5] hover:text-white' : 'bg-gray-300 text-gray-500 cursor-not-allowed'}`}
           >
             게시글 등록
           </button>
+          {showToast && (
+            <ToastNotification message="등록 완료!" onClose={handleCloseToast} />
+          )}
         </div>
       </div>
     </div>
