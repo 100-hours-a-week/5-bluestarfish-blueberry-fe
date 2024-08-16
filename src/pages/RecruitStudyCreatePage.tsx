@@ -2,16 +2,29 @@ import React, { useState } from 'react';
 import BasicHeader from '../components/BasicHeader';
 import TabBar from '../components/TabBar';
 import Footer from '../components/Footer';
+import CategorySelector from '../components/CategorySelector';
+import StudyroomTN from '../components/StudyroomTN';
+import studyRooms from "../data/studyRooms"
 
 const RecruitStudyCreatePage: React.FC = () => {
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<string>('');
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [selectedStudy, setSelectedStudy] = useState<number | null>(null);
+  const [helperTextColor, setHelperTextColor] = useState<string>('red-500');
   const [isSubmitted, setIsSubmitted] = useState(false);
 
+  const categories = [
+    { name: '캠켜공', icon: 'cam-on-icon.png' },
+    { name: '캠끄공', icon: 'cam-off-icon.png' },
+  ];
+
   const handleCategorySelect = (category: string) => {
-    setSelectedCategory(category);
+    if (selectedCategory === category) {
+      setSelectedCategory('');
+    } else {
+      setSelectedCategory(category);
+    }
   };
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -23,14 +36,16 @@ const RecruitStudyCreatePage: React.FC = () => {
   };
 
   const handleStudySelect = (studyId: number) => {
-    setSelectedStudy(studyId);
+    if (selectedStudy === studyId) {
+      setSelectedStudy(null);
+    } else {
+      setSelectedStudy(studyId);
+    }
   };
 
   const handleSubmit = () => {
-    // 작성 완료 로직
     if (selectedCategory && title && content && selectedStudy !== null) {
       setIsSubmitted(true);
-      // 서버로 데이터 전송 로직 추가 가능
       console.log('Form submitted:', { selectedCategory, title, content, selectedStudy });
     } else {
       alert('모든 필드를 채워주세요.');
@@ -43,11 +58,20 @@ const RecruitStudyCreatePage: React.FC = () => {
       <div className="container mx-auto flex flex-col items-center mt-10">
         <h1 className="text-2xl font-bold mb-8">✍🏻 게시글 작성 ✍🏻</h1>
         <div className="w-full max-w-3xl">
-          <TabBar />
-          <div className="bg-white p-6 rounded-lg shadow-md">
-            <div className="mb-4">
+          <TabBar /> {/* Tab Bar */}
+          <CategorySelector
+            selectedCategory={selectedCategory}
+            selectedType={''}
+            categories={categories}
+            types={[]}
+            handleCategoryClick={handleCategorySelect}
+            handleTypeClick={() => { }}
+          />
+          <p className={`text-${helperTextColor} text-xs italic`}>* 헬퍼텍스트</p>
+          <div className="bg-white rounded-lg mt-5">
+            <div className="mb-4 relative">
               <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="title">
-                제목
+                제목 <span className="text-gray-400 text-xs pl-1">({title.length} / 20)</span>
               </label>
               <input
                 id="title"
@@ -56,12 +80,15 @@ const RecruitStudyCreatePage: React.FC = () => {
                 value={title}
                 onChange={handleTitleChange}
                 placeholder="제목을 입력해주세요."
-                className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="input peer input-alt w-full border-b-[1px] border-none bg-transparent focus:outline-none focus:ring-0 pb-3 mb-3"
               />
+              <span className="absolute bottom-3 left-0 w-0 h-[1.5px] bg-[#A98BFF] transition-all duration-700 ease-in-out peer-focus:w-full mb-3"></span>
+              <p className={`text-${helperTextColor} text-xs italic`}>* 헬퍼텍스트</p>
             </div>
-            <div className="mb-4">
+
+            <div className="mb-4 relative form-control">
               <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="content">
-                내용
+                내용 <span className="text-gray-400 text-xs pl-1">({content.length} / 200)</span>
               </label>
               <textarea
                 id="content"
@@ -69,38 +96,45 @@ const RecruitStudyCreatePage: React.FC = () => {
                 value={content}
                 onChange={handleContentChange}
                 placeholder="내용을 입력해주세요."
-                className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                rows={5}
+                className="input peer input-alt w-full border-b-[1px] border-none bg-transparent focus:outline-none focus:ring-0 resize-none"
               />
+              <span className="absolute bottom-0 left-0 w-0 h-[1.5px] bg-[#A98BFF] transition-all duration-700 ease-in-out peer-focus:w-full mb-6"></span>
+              <p className={`text-${helperTextColor} text-xs italic`}>* 헬퍼텍스트</p>
             </div>
+
             <div className="mb-4">
               <label className="block text-gray-700 text-sm font-bold mb-2">
                 나의 스터디
               </label>
-              <div className="flex space-x-4 overflow-x-scroll">
-                {[1, 2, 3].map((studyId) => (
+              <div className="flex space-x-4 pb-4 overflow-x-auto">
+                {studyRooms.map((room) => (
                   <div
-                    key={studyId}
-                    className={`cursor-pointer border rounded-lg p-4 flex items-center justify-center ${
-                      selectedStudy === studyId ? 'border-blue-500 bg-blue-100' : 'border-gray-300'
-                    }`}
-                    onClick={() => handleStudySelect(studyId)}
+                    key={room.id}
+                    className="cursor-pointer"
+                    onClick={() => handleStudySelect(room.id)}
                   >
-                    <img
-                      src={`${process.env.PUBLIC_URL}/assets/images/study-placeholder.png`}
-                      alt={`Study ${studyId}`}
-                      className="w-16 h-16"
+                    <StudyroomTN
+                      title={room.title}
+                      camEnabled={room.camEnabled}
+                      currentUsers={room.users.length}
+                      maxUsers={room.maxUsers}
+                      thumbnail={room.thumbnail}
+                      isSelected={selectedStudy === room.id}
                     />
-                    <p className="ml-4">스터디 {studyId}</p>
                   </div>
                 ))}
               </div>
+              <p className={`text-${helperTextColor} text-xs italic mt-3`}>* 헬퍼텍스트</p>
             </div>
-            <button
-              onClick={handleSubmit}
-              className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition duration-200"
-            >
-              게시글 등록
-            </button>
+            <div className="flex justify-center mt-10 mb-20">
+              <button
+                onClick={handleSubmit}
+                className="w-[50%] bg-[#E0E7FF] text-[#4659AA] py-2 rounded-full hover:bg-[#6D81D5] hover:text-white transition duration-200"
+              >
+                게시글 등록
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -110,23 +144,3 @@ const RecruitStudyCreatePage: React.FC = () => {
 };
 
 export default RecruitStudyCreatePage;
-
-
-// import React from 'react';
-// import BasicHeader from '../components/BasicHeader';
-// import RecruitStudyListContainer from '../components/Container/RecruitStudyListContainer';
-// import Footer from "../components/Footer";
-// import TabBar from '../components/TabBar'; // Import the TabBar component
-
-// const RecruitStudyCreatePage: React.FC = () => {
-//   return (
-//     <div className="flex flex-col min-h-screen">
-//       <BasicHeader /> {/* 헤더 */}
-//       <TabBar /> {/* Tab Bar 추가 */}
-//       {/* 여기에 컨테이너 추가 예정 */}
-//       <Footer />
-//     </div>
-//   );
-// };
-
-// export default RecruitStudyCreatePage;
