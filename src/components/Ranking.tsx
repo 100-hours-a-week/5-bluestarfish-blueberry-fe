@@ -8,7 +8,7 @@ const Ranking: React.FC = () => {
   };
 
   return (
-    <div className="flex items-center h-[100px] rounded-[10px] bg-[#EEEEFF] space-x-4 my-[50px]">
+    <div className="flex items-center m-[3px] h-[100px] rounded-[10px] bg-[#EEEEFF] space-x-4 my-[50px]">
       <img
         src={`${process.env.PUBLIC_URL}/assets/images/trophy-star 1.png`}
         alt="intro"
