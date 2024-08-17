@@ -3,8 +3,14 @@ import StudyroomHeader from "../StudyroomHeader";
 import StudyroomTN from "../StudyroomTN";
 import StudyroomFooter from "../StudyroomFooter";
 import studyRooms from "../../data/studyRooms"
+import { useNavigate } from 'react-router-dom';
 
 const StudyroomContainer: React.FC = () => {
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    navigate("/studyroom");
+  };
   return (
     <div className="my-4">
       <StudyroomHeader />
@@ -21,7 +27,6 @@ const StudyroomContainer: React.FC = () => {
           />
         ))}
       </div>
-      <StudyroomFooter />
     </div>
   );
 };
