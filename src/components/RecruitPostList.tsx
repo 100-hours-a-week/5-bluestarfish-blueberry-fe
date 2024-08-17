@@ -54,7 +54,7 @@ const RecruitPostList: React.FC<PostListProps> = ({ posts, handlePostClick }) =>
           ref={index === displayedPosts.length - 1 ? lastPostElementRef : null}  // 마지막 게시글 요소에 ref 할당
         >
           <div>
-            <h3 className="text-xl font-bold truncate max-w-full">
+            <h3 className="text-xl font-bold truncate max-w-full text-black">
               {post.title}
             </h3>
             <div className="flex items-center space-x-2 text-sm text-gray-600 mt-2">
