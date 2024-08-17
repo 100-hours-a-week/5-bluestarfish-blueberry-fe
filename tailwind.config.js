@@ -1,5 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
+  darkMode: false, // 기본적으로 비활성화
+  darkMode: "selector",
   content: ["./src/**/*.{html,js,jsx,ts,tsx}"],
   theme: {
     extend: {
