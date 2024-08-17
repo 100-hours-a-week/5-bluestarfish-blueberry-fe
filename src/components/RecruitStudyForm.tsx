@@ -1,5 +1,4 @@
 import React from 'react';
-import TabBar from '../components/TabBar';  // 탭 바 컴포넌트 가져오기
 import CategorySelector from '../components/CategorySelector';  // 카테고리 선택 컴포넌트 가져오기
 
 type StudyFormProps = {
@@ -30,9 +29,6 @@ const RecruitStudyForm: React.FC<StudyFormProps> = ({
 }) => {
   return (
     <>
-      {/* 상단 탭 바 컴포넌트 */}
-      <TabBar />
-
       {/* 카테고리 선택 컴포넌트 */}
       <CategorySelector
         selectedCategory={selectedCategory}  // 현재 선택된 카테고리 전달
