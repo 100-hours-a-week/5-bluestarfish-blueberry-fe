@@ -8,6 +8,9 @@ module.exports = {
       backgroundImage: {
         studyroom: "url('./images/studyroom.png')",
       },
+      backgroundColor: {
+        DEFAULT: '#ffffff',
+      }
     },
   },
   plugins: [
