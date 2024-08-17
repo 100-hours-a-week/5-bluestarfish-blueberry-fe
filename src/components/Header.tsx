@@ -1,20 +1,30 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import HeaderModal from "./Modal/HeaderModal";
+import AlarmModal from "./Modal/AlarmModal";
 
 const Header: React.FC = () => {
-  const [isPersonalModalOpen, setPersonalModalOpen] = useState(false);
-  const [isNotificationModalOpen, setNotificationModalOpen] = useState(false);
+  const [isModalOpen, setModalOpen] = useState(false);
+  const [isAlarmModalOpen, setAlarmModalOpen] = useState(false);
 
-  const togglePersonalModal = () => {
-    setPersonalModalOpen(!isPersonalModalOpen);
+  const toggleModal = () => {
+    setModalOpen(!isModalOpen);
   };
 
-  const toggleNotificationModal = () => {
-    setNotificationModalOpen(!isNotificationModalOpen)
-  }
+  const toggleAlarmModal = () => {
+    setAlarmModalOpen(!isAlarmModalOpen);
+  };
+
+  const closeModal = () => {
+    setModalOpen(false);
+  };
+
+  const closeAlarmModal = () => {
+    setAlarmModalOpen(false);
+  };
 
   return (
-    <header className="w-full bg-white">
+    <header className="fixed w-full bg-white z-50">
       <div className="flex items-center justify-between w-[1024px] h-[80px] mx-auto relative">
         <div className="flex items-center space-x-4">
           <Link to="/" className="flex items-center space-x-2">
@@ -32,28 +42,20 @@ const Header: React.FC = () => {
           />
         </div>
         <div className="relative flex">
-        <img
+          <img
             src={`${process.env.PUBLIC_URL}/assets/images/notification.png`}
             alt="Profile"
             className="h-9 w-9 rounded-full cursor-pointer mr-4 mt-1"
-            onClick={toggleNotificationModal}
+            onClick={toggleAlarmModal}
           />
           <img
             src={`${process.env.PUBLIC_URL}/assets/images/profile-default-image.png`}
             alt="Profile"
             className="h-10 w-8 rounded-full cursor-pointer object-scale-down"
-            onClick={togglePersonalModal}
+            onClick={toggleModal}
           />
-          {isPersonalModalOpen && (
-            <div className="absolute left-12 mt-9 w-48 bg-white text-black rounded-lg shadow-lg p-4 z-10">
-              <p>Personal Information</p>
-            </div>
-          )}
-          {isNotificationModalOpen && (
-            <div className="absolute right--16 mt-9 w-48 bg-white text-black rounded-lg shadow-lg p-4 z-10">
-              <p>Notifications</p>
-            </div>
-          )}
+          {isModalOpen && <HeaderModal closeModal={closeModal} />}
+          {isAlarmModalOpen && <AlarmModal closeModal={closeAlarmModal} />}
         </div>
       </div>
     </header>
