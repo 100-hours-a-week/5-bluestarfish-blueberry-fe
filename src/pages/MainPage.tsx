@@ -6,7 +6,7 @@ type MainPageProps = {};
 
 const MainPage: React.FC<MainPageProps> = () => {
   return (
-    <div className="flex flex-col items-center justify-center">
+    <div className="flex flex-col min-h-screen bg-white">
       <Header />
       <MainPageContainer />
       <Footer />
