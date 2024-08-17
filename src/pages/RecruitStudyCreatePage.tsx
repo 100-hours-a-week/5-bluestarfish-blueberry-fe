@@ -6,7 +6,7 @@ import RecruitStudyCreateContainer from '../components/Container/RecruitStudyCre
 const RecruitStudyCreatePage: React.FC = () => {
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen bg-white">
       <BasicHeader />
       <RecruitStudyCreateContainer />
       <Footer />

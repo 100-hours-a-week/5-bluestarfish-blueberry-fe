@@ -9,7 +9,7 @@ type LoginPageProps = {};
 const LoginPage: React.FC<LoginPageProps> = () => {
   return (
     // 페이지 전체를 flexbox로 구성하여 세로 방향으로 요소를 배치
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen bg-white">
       <BasicHeader /> {/* 헤더 컴포넌트 삽입 */}
       
       {/* 페이지의 나머지 부분을 중앙에 배치하고, flex-grow를 사용하여 남은 공간을 차지 */}
