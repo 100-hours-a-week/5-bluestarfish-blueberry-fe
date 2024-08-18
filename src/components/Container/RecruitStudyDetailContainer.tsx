@@ -17,6 +17,7 @@ const StudyroomContainer: React.FC = () => {
 
   const studyId = parseInt(id, 10);
   const study = studyRecruitData.find((item) => item.id === studyId);
+  const studyRoom = studyRooms.find((item) => item.id === 1);
 
   if (!study) {
     return <div>해당 게시글을 찾을 수 없습니다.</div>;
@@ -110,9 +111,8 @@ const StudyroomContainer: React.FC = () => {
 
       <div className="mb-8">
         <div className="text-black font-bold mb-3">스터디 룸 바로가기</div>
-        {studyRooms.map((studyRoom) => (
+        {studyRoom ? (
           <StudyroomTN
-            key={studyRoom.id}
             title={studyRoom.title}
             camEnabled={studyRoom.camEnabled}
             currentUsers={studyRoom.users.length}
@@ -120,20 +120,24 @@ const StudyroomContainer: React.FC = () => {
             thumbnail={studyRoom.thumbnail}
             isSelected={false}
           />
-        ))}
+        ) : (
+          <div>스터디 룸 정보를 찾을 수 없습니다.</div>
+        )}
       </div>
 
+      {/* 댓글 입력 및 버튼 영역 */}
       <div className="mb-6">
-        <section className="relative w-full">
+        <section className="relative w-full mb-20">
           <textarea
-            className="w-full p-2 border rounded-lg bg-white resize-none"
+            className="w-full p-2 border-2 border-[#E0E7FF] rounded-lg bg-white resize-none focus:outline-none text-black"
             rows={3}
             value={comment}
             onChange={handleCommentChange}
             placeholder="댓글을 입력하세요."
           />
+
           <button
-            className="absolute bottom-2 right-2 bg-blue-500 text-white py-1 px-3 rounded-full shadow-md hover:bg-blue-700"
+            className="absolute -bottom-10 right-2 bg-[#E0E7FF] text-[#4659AA] py-1 px-3 rounded-full shadow-md hover:bg-[#6D81D5] hover:text-white"
             onClick={handleCommentSubmit}
           >
             댓글 등록
@@ -141,6 +145,7 @@ const StudyroomContainer: React.FC = () => {
         </section>
       </div>
 
+      {/* 댓글 목록 */}
       <div>
         {comments.map((comment) => (
           <div key={comment.id} className="bg-white border border-gray-300 p-4 rounded-lg mb-2">
@@ -154,7 +159,7 @@ const StudyroomContainer: React.FC = () => {
               </div>
               <button
                 className="text-red-500 hover:text-red-700"
-                // onClick={() => handleDeleteComment(comment.id)}
+              // onClick={() => handleDeleteComment(comment.id)}
               >
                 삭제
               </button>
@@ -162,6 +167,7 @@ const StudyroomContainer: React.FC = () => {
             <div className="text-sm text-gray-800">{comment.text}</div>
           </div>
         ))}
+
       </div>
     </div>
   );

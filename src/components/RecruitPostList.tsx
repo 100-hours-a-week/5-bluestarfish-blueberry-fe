@@ -1,16 +1,17 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 interface PostListProps {
   posts: Array<any>;  // 게시글 목록 배열
-  handlePostClick: () => void;  // 게시글 클릭 시 호출될 함수
 }
 
-const RecruitPostList: React.FC<PostListProps> = ({ posts, handlePostClick }) => {
+const RecruitPostList: React.FC<PostListProps> = ({ posts }) => {
   const [displayedPosts, setDisplayedPosts] = useState<Array<any>>([]);  // 현재 화면에 표시된 게시글
   const [page, setPage] = useState(1);  // 현재 페이지 번호
   const [loading, setLoading] = useState(false);  // 로딩 상태 관리
   const observer = useRef<IntersectionObserver | null>(null);  // IntersectionObserver를 저장할 ref
   const lastPostElementRef = useRef<HTMLDivElement | null>(null);  // 마지막 게시글 요소를 참조할 ref
+  const navigate = useNavigate();  // URL 이동을 위해 useNavigate 훅 사용
 
   const postsPerPage = 10;  // 한 페이지당 보여줄 게시글 수
 
@@ -44,13 +45,18 @@ const RecruitPostList: React.FC<PostListProps> = ({ posts, handlePostClick }) =>
     };
   }, [displayedPosts, posts]);  // displayedPosts나 posts가 변경될 때마다 실행
 
+  // 게시글 클릭 시 해당 게시글의 ID로 URL 이동
+  const handlePostClick = (postId: number) => {
+    navigate(`/recruit/${postId}`);
+  };
+
   return (
     <div className="space-y-4">
       {displayedPosts.map((post, index) => (
         <div
           key={post.id}  // 각 게시글에 고유한 key 할당
           className="flex justify-between items-center p-4 bg-[#FAFAFF] rounded-lg shadow-sm cursor-pointer hover:bg-[#EEEEFF]"
-          onClick={handlePostClick}  // 게시글 클릭 시 handlePostClick 함수 호출
+          onClick={() => handlePostClick(post.id)}  // 게시글 클릭 시 해당 게시글의 ID로 URL 이동
           ref={index === displayedPosts.length - 1 ? lastPostElementRef : null}  // 마지막 게시글 요소에 ref 할당
         >
           <div>
