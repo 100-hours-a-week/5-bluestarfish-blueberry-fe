@@ -10,3 +10,9 @@ npm install zustand
 
 // react-router-dom 설치
 npm install react-router-dom
+
+// npm으로 Tailwind CSS 설치
+npm install tailwindcss@latest postcss@latest autoprefixer@latest
+
+// zustand 설치
+npm install zustand
