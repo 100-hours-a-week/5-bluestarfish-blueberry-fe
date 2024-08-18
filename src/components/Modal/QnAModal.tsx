@@ -38,6 +38,7 @@ const QnAModal: React.FC<QnAModalProps> = ({ closeModal }) => {
         className="m-[25px] text-left text-[14px] font-bold"
         onSubmit={submitContent}
       >
+
         <span className="block">
           불편한 사항, 추가 기능, 에러 등등 서비스에 대한 피드백을 남겨주세요!
         </span>
