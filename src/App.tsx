@@ -10,6 +10,7 @@ import StudyroomWaitPage from "./pages/StudyroomWaitPage";
 import StudyroomPage from "./pages/StudyroomPage";
 import RecruitStudyListPage from "./pages/RecruitStudyListPage"
 import RecruitStudyCreatePage from "./pages/RecruitStudyCreatePage"
+import RecruitStudyDetailPage from "./pages/RecruitStudyDetailPage";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
         <Route path="/studyroom/:roomId" element={<StudyroomPage />} />
         <Route path="/recruit/list" element={<RecruitStudyListPage />} />
         <Route path="/recruit/create" element={<RecruitStudyCreatePage />} />
+        <Route path="/recruit/:id" element={<RecruitStudyDetailPage />} />
       </Routes>
     </BrowserRouter>
   );
