@@ -1,10 +1,10 @@
 import React from 'react';
-import StudyroomTN from '../StudyroomTN';
+import StudyroomTN from '../rooms/StudyroomTN';
 
 interface StudyRoomLinkProps {
   studyRoom: {
     title: string;
-    camEnabled: boolean;
+    cam_enabled: boolean;
     currentUsers: number;
     maxUsers: number;
     thumbnail: string;
@@ -25,7 +25,7 @@ const StudyRoomLink: React.FC<StudyRoomLinkProps> = ({ studyRoom, isRecruited, h
         <div className={`hover:cursor-pointer ${!isRecruited && 'cursor-not-allowed opacity-50'}`}>
           <StudyroomTN
             title={studyRoom.title}
-            camEnabled={studyRoom.camEnabled}
+            cam_enabled={studyRoom.cam_enabled}
             currentUsers={studyRoom.currentUsers}
             maxUsers={studyRoom.maxUsers}
             thumbnail={studyRoom.thumbnail}

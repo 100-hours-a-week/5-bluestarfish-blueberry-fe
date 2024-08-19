@@ -1,6 +1,6 @@
-import Header from "../components/Header";
+import Header from "../components/common/Header";
 import MainPageContainer from "../components/Container/MainPageContainer";
-import Footer from "../components/Footer";
+import Footer from "../components/common/Footer";
 
 type MainPageProps = {};
 

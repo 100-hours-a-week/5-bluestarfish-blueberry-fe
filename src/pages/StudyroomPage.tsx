@@ -2,12 +2,12 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import StudyroomContainer from "../components/Container/StudyroomContainer";
-import Sidebar from "../components/Sidebar";
+import Sidebar from "../components/rooms/Sidebar";
 
 interface StudyRoom {
   id: number;
   title: string;
-  camEnabled: boolean;
+  cam_enabled: boolean;
   maxUsers: number;
   thumbnail: string;
   users: { id: number; name: string }[];

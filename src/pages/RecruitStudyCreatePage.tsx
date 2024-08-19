@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import BasicHeader from '../components/BasicHeader';
-import Footer from '../components/Footer';
+import BasicHeader from '../components/common/BasicHeader';
+import Footer from '../components/common/Footer';
 import RecruitStudyCreateContainer from '../components/Container/RecruitStudyCreateContainer';
 
 const RecruitStudyCreatePage: React.FC = () => {

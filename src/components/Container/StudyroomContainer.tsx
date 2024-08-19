@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import SmallUserDisplay from "../SmallUserDisplay";
+import SmallUserDisplay from "../rooms/SmallUserDisplay";
 
 type StudyroomContainerProps = {};
 

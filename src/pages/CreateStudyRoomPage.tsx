@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import Header from '../components/Header';
+import Header from '../components/common/Header';
 import CreateStudyRoomContainer from '../components/Container/CreateStudyRoomContainer'
-import Footer from '../components/Footer';
+import Footer from '../components/common/Footer';
 
 const CreateStudyRoomPage: React.FC = () => {
   return (

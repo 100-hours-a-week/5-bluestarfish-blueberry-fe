@@ -1,6 +1,6 @@
 import React, { useState, useEffect, ChangeEvent, FormEvent } from "react";
 import axios from "axios";
-import { validateInputs } from "../utils/validation"; // 입력값을 검증하는 함수 가져오기
+import { validateInputs } from "../../utils/validation"; // 입력값을 검증하는 함수 가져오기
 
 // 로그인에 사용할 테스트 이메일과 비밀번호
 const testEmail = "test@naver.com";
