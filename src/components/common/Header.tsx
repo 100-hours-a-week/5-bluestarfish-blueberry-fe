@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import HeaderModal from "./Modal/HeaderModal";
-import AlarmModal from "./Modal/AlarmModal";
+import HeaderModal from "../Modal/HeaderModal";
+import AlarmModal from "../Modal/AlarmModal";
 
 const Header: React.FC = () => {
   const [isModalOpen, setModalOpen] = useState(false);

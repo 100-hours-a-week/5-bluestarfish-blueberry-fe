@@ -1,5 +1,5 @@
 import { useState } from "react";
-import RankingSlider from "../RankingSlider";
+import RankingSlider from "../users/RankingSlider";
 import StudyroomTNContainer from "./StudyroomTNContainer";
 import QnAModal from "../Modal/QnAModal";
 

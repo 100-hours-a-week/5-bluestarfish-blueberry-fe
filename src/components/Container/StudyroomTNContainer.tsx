@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import StudyroomHeader from "../StudyroomHeader";
-import StudyroomTN from "../StudyroomTN";
-import StudyroomFooter from "../StudyroomFooter";
+import StudyroomHeader from "../rooms/StudyroomHeader";
+import StudyroomTN from "../rooms/StudyroomTN";
+import StudyroomFooter from "../rooms/StudyroomFooter";
 import dummyStudyRooms from "../../data/studyRooms";
 
 interface StudyRoom {

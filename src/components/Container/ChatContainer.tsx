@@ -3,8 +3,8 @@ import axios from "axios";
 import { Client, IMessage } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
 import { useParams } from "react-router-dom"; // useParams를 사용하여 URL 파라미터를 가져옴
-import ChatStartMessage from "../ChatStartMessage";
-import ChatEndMessage from "../ChatEndMessage";
+import ChatStartMessage from "../rooms/ChatStartMessage";
+import ChatEndMessage from "../rooms/ChatEndMessage";
 
 type ChatContainerProps = {};
 

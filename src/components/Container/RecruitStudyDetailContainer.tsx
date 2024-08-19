@@ -100,7 +100,7 @@ const RecruitStudyDetailContainer: React.FC = () => {
       <StudyRoomLink
         studyRoom={studyRoom ? {
           title: studyRoom.title,
-          camEnabled: studyRoom.camEnabled,
+          cam_enabled: studyRoom.cam_enabled,
           currentUsers: studyRoom.users.length,
           maxUsers: studyRoom.maxUsers,
           thumbnail: studyRoom.thumbnail

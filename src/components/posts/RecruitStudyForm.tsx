@@ -1,5 +1,5 @@
 import React from 'react';
-import CategorySelector from '../components/CategorySelector';  // 카테고리 선택 컴포넌트 가져오기
+import CategorySelector from '../rooms/CategorySelector';  // 카테고리 선택 컴포넌트 가져오기
 
 type StudyFormProps = {
   selectedCategory: string;  // 선택된 카테고리

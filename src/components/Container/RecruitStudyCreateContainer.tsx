@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../global.css";
-import StudyroomTN from "../../components/StudyroomTN";
+import StudyroomTN from "../rooms/StudyroomTN";
 import studyRooms from "../../data/studyRooms";
-import RecruitStudyForm from "../../components/RecruitStudyForm";
+import RecruitStudyForm from "../posts/RecruitStudyForm";
 import { validateStudyFormInputs } from "../../utils/validation";
-import TabBar from "../../components/TabBar";
-import ToastNotification from "../ToastNotification";
-import SubmitButton from "../../components/SubmitButton"; // SubmitButton 컴포넌트 가져오기
+import TabBar from "../posts/TabBar";
+import ToastNotification from "../common/ToastNotification";
+import SubmitButton from "../common/SubmitButton"; // SubmitButton 컴포넌트 가져오기
 
 const RecruitStudyCreateContainer: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>("");
