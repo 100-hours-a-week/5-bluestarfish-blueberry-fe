@@ -20,7 +20,7 @@ function App() {
         <Route path="/" element={<MainPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
-        <Route path="/wait" element={<StudyroomWaitPage />} />
+        <Route path="/wait/:roomId" element={<StudyroomWaitPage />} />
         <Route path="/studyroom/:roomId" element={<StudyroomPage />} />
         <Route path="/recruit/list" element={<RecruitStudyListPage />} />
         <Route path="/recruit/create" element={<RecruitStudyCreatePage />} />
