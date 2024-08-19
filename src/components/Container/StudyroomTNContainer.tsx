@@ -36,9 +36,9 @@ const StudyroomTNContainer: React.FC = () => {
   };
 
   return (
-    <div className="my-4">
+    <div className="my-4 max-w-[1024px]">
       <StudyroomHeader />
-      <div className="my-5 mx-0 flex flex-wrap gap-x-[23px] gap-y-[23px]">
+      <div className="my-5 mx-0 flex flex-wrap gap-x-[22px] gap-y-[22px]">
         {dummyStudyRooms.map((room) => (
           <div key={room.id} className="cursor-pointer">
             <StudyroomTN

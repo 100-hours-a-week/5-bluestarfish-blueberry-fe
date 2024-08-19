@@ -26,13 +26,13 @@ const StudyroomTN: React.FC<StudyroomTNProps> = ({
         style={{ backgroundImage: `url(${thumbnail})` }}
       >
         {/* 카메라 아이콘 */}
-        <div className="absolute top-2 left-2">
+        <div className="absolute top-1 left-2">
           <img
             src={`${process.env.PUBLIC_URL}/assets/images/${
               cam_enabled ? "cam-on-icon.png" : "cam-off-icon.png"
             }`}
             alt="cam-icon"
-            className="w-[18px] h-[18px]"
+            className="w-[20px]"
           />
         </div>
 
@@ -46,10 +46,10 @@ const StudyroomTN: React.FC<StudyroomTNProps> = ({
           <img
             src={`${process.env.PUBLIC_URL}/assets/images/person-white.png`}
             alt="person-icon"
-            className="w-[18px] h-[18px]"
+            className="w-[23px]"
           />
-          <div className="text-gray-300 text-xs -mt-2">
-            {currentUsers}/{maxUsers}
+          <div className="text-gray-300 text-[14px] font-bold -mt-2">
+            {currentUsers} / {maxUsers}
           </div>
         </div>
       </div>
