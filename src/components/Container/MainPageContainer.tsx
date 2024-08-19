@@ -1,7 +1,6 @@
 import { useState } from "react";
-import Ranking from "../Ranking";
+import RankingSlider from "../RankingSlider";
 import StudyroomTNContainer from "./StudyroomTNContainer";
-import Collapse from "../Collapse";
 import QnAModal from "../Modal/QnAModal";
 
 const MainPageContainer: React.FC = () => {
@@ -22,8 +21,8 @@ const MainPageContainer: React.FC = () => {
         alt="intro"
         className="w-full"
       />
-      <div className="w-[1030px]">
-        <Collapse />
+      <div className="w-full]">
+        <RankingSlider />
         <StudyroomTNContainer />
       </div>
       <div className="w-full flex justify-end  p-4">

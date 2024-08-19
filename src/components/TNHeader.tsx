@@ -16,7 +16,7 @@ const TNHeader: React.FC<TNHeaderProps> = () => {
         <button>
           <img
             src={`${process.env.PUBLIC_URL}/assets/images/person-white.png`}
-            alt="person"
+            alt="person-icon"
             className="w-[25px] h-[25px]"
           />
         </button>

@@ -1,17 +1,57 @@
-import { useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import axios from "axios";
+import { useNavigate, useParams } from "react-router-dom";
 import LargeUserDisplay from "../LargeUserDisplay";
 
 type StudyroomWaitContainerProps = {};
 
 const StudyroomWaitContainer: React.FC = () => {
   const navigate = useNavigate();
+  const { roomId } = useParams<{ roomId: string }>(); // URL에서 roomId를 가져옴
+  const userId = 1;
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const handleClick = () => {
-    navigate("/studyroom");
+    enterStudyRoom();
   };
+
+  const enterStudyRoom = async () => {
+    if (isLoading) return;
+    try {
+      setIsLoading(true);
+      const response = await axios.patch(
+        `/api/v1/rooms/${roomId}/users/${userId}`,
+        {
+          isActive: "True",
+        }
+      );
+      if (response.status === 200) {
+        console.log("200 OK");
+        navigate(`/studyroom/${roomId}`);
+      }
+    } catch (error: any) {
+      if (error.response) {
+        if (error.response.status === 204) {
+          console.error("204: ", "No Content");
+        } else if (error.response.status === 404) {
+          console.error("404: ", "Not Found");
+        } else {
+          console.error(
+            `오류 발생 (${error.response.status}):`,
+            error.response.data.message || "서버 오류가 발생했습니다."
+          );
+        }
+      } else {
+        console.error("스터디룸 정보를 가져오는 중 오류 발생:", error.message);
+      }
+    } finally {
+      setIsLoading(false); // 로딩 종료
+    }
+  };
+
   return (
     <div className="w-full flex flex-col items-center justify-center">
-      <p className="text-[25px] font-bold text-shadow-sm mb-3">
+      <p className="text-[25px] font-bold text-shadow-sm text-black mb-3">
         스터디 룸 대기실
       </p>
       <LargeUserDisplay
