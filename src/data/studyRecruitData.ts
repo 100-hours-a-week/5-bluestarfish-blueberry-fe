@@ -13,7 +13,230 @@ const studyRecruitData = [
         type: "FINDING_MEMBERS",
         isRecruited: true,
         isCamOn: true,
-        createdAt: 1723276812
+        createdAt: 1723276812,
+        comments: [
+            {
+                id: 1,
+                user: {
+                    id: 2,
+                    nickname: "열받아",
+                    profileImage: `${process.env.PUBLIC_URL}/assets/images/user2.png`,
+                },
+                content: "이 스터디 정말 좋네요!",
+                createdAt: 1723278612
+            },
+            {
+                id: 2,
+                user: {
+                    id: 3,
+                    nickname: "최저임금",
+                    profileImage: `${process.env.PUBLIC_URL}/assets/images/user3.png`,
+                },
+                content: "참여하고 싶습니다.",
+                createdAt: 1723278612
+            },
+            {
+                id: 3,
+                user: {
+                    id: 4,
+                    nickname: "다이소",
+                    profileImage: `${process.env.PUBLIC_URL}/assets/images/user4.png`,
+                },
+                content: "정말 유익한 스터디입니다!",
+                createdAt: 1723278612
+            },
+            {
+                id: 4,
+                user: {
+                    id: 5,
+                    nickname: "철푸덕",
+                    profileImage: `${process.env.PUBLIC_URL}/assets/images/user5.png`,
+                },
+                content: "지금 바로 신청했어요.",
+                createdAt: 1723278612
+            },
+            {
+                id: 5,
+                user: {
+                    id: 6,
+                    nickname: "카놀라유",
+                    profileImage: `${process.env.PUBLIC_URL}/assets/images/user6.png`,
+                },
+                content: "많은 것을 배울 수 있겠어요.",
+                createdAt: 1723278612
+            },
+            {
+                id: 6,
+                user: {
+                    id: 7,
+                    nickname: "로딩중",
+                    profileImage: `${process.env.PUBLIC_URL}/assets/images/user7.png`,
+                },
+                content: "오랜만에 괜찮은 스터디를 찾았네요.",
+                createdAt: 1723278612
+            },
+            {
+                id: 7,
+                user: {
+                    id: 8,
+                    nickname: "속도위반",
+                    profileImage: `${process.env.PUBLIC_URL}/assets/images/user1.png`,
+                },
+                content: "모두 열심히 합시다!",
+                createdAt: 1723278612
+            },
+            {
+                id: 8,
+                user: {
+                    id: 9,
+                    nickname: "배고파",
+                    profileImage: `${process.env.PUBLIC_URL}/assets/images/user2.png`,
+                },
+                content: "스터디 참여 신청 완료!",
+                createdAt: 1723278612
+            },
+            {
+                id: 9,
+                user: {
+                    id: 10,
+                    nickname: "행복해",
+                    profileImage: `${process.env.PUBLIC_URL}/assets/images/user3.png`,
+                },
+                content: "유익한 시간이 될 것 같습니다.",
+                createdAt: 1723278612
+            },
+            {
+                id: 10,
+                user: {
+                    id: 11,
+                    nickname: "굿모닝",
+                    profileImage: `${process.env.PUBLIC_URL}/assets/images/user4.png`,
+                },
+                content: "기대가 되네요!",
+                createdAt: 1723278612
+            },
+            {
+                id: 11,
+                user: {
+                    id: 12,
+                    nickname: "노트북",
+                    profileImage: `${process.env.PUBLIC_URL}/assets/images/user5.png`,
+                },
+                content: "스터디 일정은 어떻게 되나요?",
+                createdAt: 1723278612
+            },
+            {
+                id: 12,
+                user: {
+                    id: 13,
+                    nickname: "고래밥",
+                    profileImage: `${process.env.PUBLIC_URL}/assets/images/user6.png`,
+                },
+                content: "좋은 스터디네요!",
+                createdAt: 1723278612
+            },
+            {
+                id: 13,
+                user: {
+                    id: 14,
+                    nickname: "깜찍이",
+                    profileImage: `${process.env.PUBLIC_URL}/assets/images/user7.png`,
+                },
+                content: "정말 좋은 기회네요!",
+                createdAt: 1723278612
+            },
+            {
+                id: 14,
+                user: {
+                    id: 15,
+                    nickname: "불사조",
+                    profileImage: `${process.env.PUBLIC_URL}/assets/images/user1.png`,
+                },
+                content: "이 스터디에 참여하고 싶습니다.",
+                createdAt: 1723278612
+            },
+            {
+                id: 15,
+                user: {
+                    id: 16,
+                    nickname: "호두과자",
+                    profileImage: `${process.env.PUBLIC_URL}/assets/images/user2.png`,
+                },
+                content: "너무 기대됩니다!",
+                createdAt: 1723278612
+            },
+            {
+                id: 16,
+                user: {
+                    id: 17,
+                    nickname: "바나나",
+                    profileImage: `${process.env.PUBLIC_URL}/assets/images/user3.png`,
+                },
+                content: "스터디 일정 공유 부탁드려요.",
+                createdAt: 1723278612
+            },
+            {
+                id: 17,
+                user: {
+                    id: 18,
+                    nickname: "우유빵",
+                    profileImage: `${process.env.PUBLIC_URL}/assets/images/user4.png`,
+                },
+                content: "참여 의사 있습니다.",
+                createdAt: 1723278612
+            },
+            {
+                id: 18,
+                user: {
+                    id: 19,
+                    nickname: "감자칩",
+                    profileImage: `${process.env.PUBLIC_URL}/assets/images/user5.png`,
+                },
+                content: "스터디 기대됩니다.",
+                createdAt: 1723278612
+            },
+            {
+                id: 19,
+                user: {
+                    id: 20,
+                    nickname: "토끼",
+                    profileImage: `${process.env.PUBLIC_URL}/assets/images/user6.png`,
+                },
+                content: "지금 바로 신청하겠습니다!",
+                createdAt: 1723278612
+            },
+            {
+                id: 20,
+                user: {
+                    id: 21,
+                    nickname: "고양이",
+                    profileImage: `${process.env.PUBLIC_URL}/assets/images/user7.png`,
+                },
+                content: "잘 부탁드립니다.",
+                createdAt: 1723278612
+            },
+            {
+                id: 21,
+                user: {
+                    id: 22,
+                    nickname: "호랑이",
+                    profileImage: `${process.env.PUBLIC_URL}/assets/images/user1.png`,
+                },
+                content: "멋진 스터디가 될 것 같습니다.",
+                createdAt: 1723278612
+            },
+            {
+                id: 22,
+                user: {
+                    id: 23,
+                    nickname: "사자",
+                    profileImage: `${process.env.PUBLIC_URL}/assets/images/user2.png`,
+                },
+                content: "기대하겠습니다!",
+                createdAt: 1723278612
+            }
+        ]
+        
     },
     {
         id: 2,
