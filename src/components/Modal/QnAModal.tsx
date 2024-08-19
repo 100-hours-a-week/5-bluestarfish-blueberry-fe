@@ -1,4 +1,4 @@
-import React, { useState, useEffect, ChangeEvent, FormEvent } from "react";
+import React, { useState, ChangeEvent, FormEvent } from "react";
 import axios from "axios";
 
 type QnAModalProps = {
@@ -8,8 +8,6 @@ type QnAModalProps = {
 const QnAModal: React.FC<QnAModalProps> = ({ closeModal }) => {
   const [content, setContent] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
-
-  useEffect(() => {}, [content]);
 
   const submitContent = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault(); // 폼 제출 기본 동작 방지
@@ -23,15 +21,17 @@ const QnAModal: React.FC<QnAModalProps> = ({ closeModal }) => {
         content: trimmedContent,
       });
       if (response.status === 200) {
+        // 성공 처리
       }
     } catch (error) {
+      // 에러 처리
     } finally {
       setIsLoading(false); // 로딩 종료
     }
   };
 
   return (
-    <div className="fixed mx-[35%] my-[5%] w-[30%] h-[70%] bg-[#A4AED7] text-black rounded-[15px] shadow-lg p-[10px]">
+    <div className="fixed inset-x-0 mt-[2%] mx-auto w-[90%] max-w-[500px] h-[80%] bg-[#A4AED7] text-black rounded-[15px] shadow-lg p-[10px]">
       <button onClick={closeModal}>
         <img
           src={`${process.env.PUBLIC_URL}/assets/images/close.png`}
@@ -40,10 +40,9 @@ const QnAModal: React.FC<QnAModalProps> = ({ closeModal }) => {
         />
       </button>
       <form
-        className="m-[25px] text-left text-[14px] font-bold"
+        className="m-[15px] text-left text-[14px] font-bold h-[90%] flex flex-col"
         onSubmit={submitContent}
       >
-
         <span className="block">
           불편한 사항, 추가 기능, 에러 등등 서비스에 대한 피드백을 남겨주세요!
         </span>
@@ -53,24 +52,28 @@ const QnAModal: React.FC<QnAModalProps> = ({ closeModal }) => {
         <textarea
           value={content}
           placeholder="내용을 입력해주세요."
+          maxLength={500}
           required
           onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
             setContent(e.target.value)
-          } // 이메일 상태 업데이트
-          className="bg-white w-full h-[320px] mt-6 resize-none rounded-[15px] p-3"
+          }
+          className="bg-white w-full flex-grow resize-none rounded-[15px] p-3 mt-6"
         />
-        <p className="text-right text-[#676767] text-[12px] font-bold">
+        <p className="text-right text-[#676767] text-[12px] font-bold mt-2">
           {content.length} / 500 자
         </p>
-        <div className="flex justify-center">
-          <div className="flex flex-rowflex items-center justify-center bg-[#150C39] gap-2 w-[150px] h-[45px] rounded-[10px] text-white font-bold text-[16px]">
+        <div className="flex justify-center mt-2">
+          <button
+            type="submit"
+            className="flex items-center justify-center bg-[#150C39] gap-2 w-full sm:w-[150px] h-[45px] rounded-[10px] text-white font-bold text-[16px]"
+          >
             <img
               src={`${process.env.PUBLIC_URL}/assets/images/paper-plane.png`}
               alt="Paper-plane"
               className="mt-1 h-[28px]"
             />
             <p>보내기</p>
-          </div>
+          </button>
         </div>
       </form>
     </div>

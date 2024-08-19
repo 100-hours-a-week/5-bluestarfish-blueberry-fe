@@ -11,13 +11,17 @@ const mockRankingData: RankingData[] = [
   { rank: 1, nickname: "조약돌 중독", time: "23:59:39" },
   { rank: 2, nickname: "돌맹이 광팬", time: "22:45:30" },
   { rank: 3, nickname: "돌멩이 사랑", time: "21:30:20" },
-  { rank: 4, nickname: "돌광", time: "20:15:10" },
+  {
+    rank: 4,
+    nickname: "이름이긴닉네임사용ㅁㄴㅇㅁㄴㅇㅁㄴㅇㅁ자",
+    time: "20:15:10",
+  },
 ];
 
 const RankingSlider: React.FC = () => {
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [isSliding, setIsSliding] = useState<boolean>(false);
-  const [isExpanded, setIsExpanded] = useState<boolean>(false); // 컴포넌트 확장 상태
+  const [isExpanded, setIsExpanded] = useState<boolean>(false);
 
   useEffect(() => {
     const intervalId = setInterval(() => {
@@ -47,7 +51,6 @@ const RankingSlider: React.FC = () => {
         isExpanded ? "h-auto" : "h-[100px]"
       }`}
     >
-      {/* 확장 상태가 아닐 때 슬라이딩 애니메이션 */}
       {!isExpanded && (
         <>
           <div
@@ -56,17 +59,26 @@ const RankingSlider: React.FC = () => {
             }`}
             key={previousIndex}
           >
-            <div className="flex items-center justify-center space-x-4">
-              {previousRanking.rank === 1 && (
+            <div className="flex items-center w-full">
+              {/* 1위일 경우 트로피 이미지, 그렇지 않으면 빈 공간 */}
+              {previousRanking.rank === 1 ? (
                 <img
                   src={`${process.env.PUBLIC_URL}/assets/images/trophy-star 1.png`}
                   alt="trophy"
-                  className="w-[40px] h-[40px]"
+                  className="w-[40px] h-[40px] flex-shrink-0"
                 />
+              ) : (
+                <div className="w-[40px] h-[40px]" />
               )}
-              <div>{previousRanking.rank}위</div>
-              <div>{previousRanking.nickname}</div>
-              <div>{previousRanking.time}</div>
+              <div className="w-[50px] text-center flex-shrink-0">
+                {previousRanking.rank}위
+              </div>
+              <div className="w-[150px] truncate text-center">
+                {previousRanking.nickname}
+              </div>
+              <div className="w-[80px] text-center flex-shrink-0">
+                {previousRanking.time}
+              </div>
             </div>
           </div>
           <div
@@ -75,17 +87,26 @@ const RankingSlider: React.FC = () => {
             }`}
             key={currentIndex}
           >
-            <div className="flex items-center space-x-4">
-              {currentRanking.rank === 1 && (
+            <div className="flex items-center w-full">
+              {/* 1위일 경우 트로피 이미지, 그렇지 않으면 빈 공간 */}
+              {currentRanking.rank === 1 ? (
                 <img
                   src={`${process.env.PUBLIC_URL}/assets/images/trophy-star 1.png`}
                   alt="trophy"
-                  className="w-[40px] h-[40px]"
+                  className="w-[40px] h-[40px] flex-shrink-0"
                 />
+              ) : (
+                <div className="w-[40px] h-[40px]" />
               )}
-              <div>{currentRanking.rank}위</div>
-              <div>{currentRanking.nickname}</div>
-              <div>{currentRanking.time}</div>
+              <div className="w-[50px] text-center flex-shrink-0">
+                {currentRanking.rank}위
+              </div>
+              <div className="w-[150px] truncate text-center">
+                {currentRanking.nickname}
+              </div>
+              <div className="w-[80px] text-center flex-shrink-0">
+                {currentRanking.time}
+              </div>
             </div>
           </div>
         </>
@@ -95,17 +116,26 @@ const RankingSlider: React.FC = () => {
       {isExpanded && (
         <div className="p-4">
           {mockRankingData.map((ranking, index) => (
-            <div key={index} className="flex items-center space-x-4 mb-4">
-              {ranking.rank === 1 && (
+            <div key={index} className="flex items-center w-full my-6">
+              {/* 1위일 경우 트로피 이미지, 그렇지 않으면 빈 공간 */}
+              {ranking.rank === 1 ? (
                 <img
                   src={`${process.env.PUBLIC_URL}/assets/images/trophy-star 1.png`}
                   alt="trophy"
-                  className="w-[40px] h-[40px]"
+                  className="w-[40px] h-[40px] flex-shrink-0"
                 />
+              ) : (
+                <div className="w-[40px] h-[40px]" />
               )}
-              <div>{ranking.rank}위</div>
-              <div>{ranking.nickname}</div>
-              <div>{ranking.time}</div>
+              <div className="w-[50px] text-center flex-shrink-0">
+                {ranking.rank}위
+              </div>
+              <div className="w-[150px] truncate text-center">
+                {ranking.nickname}
+              </div>
+              <div className="w-[80px] text-center flex-shrink-0">
+                {ranking.time}
+              </div>
             </div>
           ))}
         </div>
