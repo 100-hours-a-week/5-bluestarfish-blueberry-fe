@@ -13,6 +13,7 @@ const LoginForm: React.FC = () => {
   const [helperTextColor, setHelperTextColor] =
     useState<string>("text-red-500"); // 핼퍼 텍스트 색상 상태
   const [isValid, setIsValid] = useState<boolean>(false); // 입력값의 유효성 상태
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   // useEffect 훅을 사용해 이메일과 비밀번호가 변경될 때마다 유효성 검사 수행
   useEffect(() => {
@@ -45,6 +46,7 @@ const LoginForm: React.FC = () => {
   // Axios로 로그인 요청 보내는 함수
   const loginUser = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault(); // 폼 제출 기본 동작 방지
+    if (isLoading) return;
 
     const trimmedEmail = email.trim();
     const trimmedPassword = password.trim();
@@ -58,6 +60,7 @@ const LoginForm: React.FC = () => {
     }
 
     try {
+      setIsLoading(true);
       const response = await axios.post("/api/v1/auth/login", {
         email: trimmedEmail,
         password: trimmedPassword,
@@ -77,6 +80,8 @@ const LoginForm: React.FC = () => {
       console.error(error);
       setHelperText("* 서버 오류가 발생했습니다. 다시 시도해주세요.");
       setHelperTextColor("text-red-500");
+    } finally {
+      setIsLoading(false); // 로딩 종료
     }
   };
 

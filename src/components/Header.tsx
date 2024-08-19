@@ -26,7 +26,7 @@ const Header: React.FC = () => {
   return (
     <header className="fixed w-full bg-white z-50">
       <div className="flex items-center justify-between w-[1024px] h-[80px] mx-auto relative">
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center space-x-20">
           <Link to="/" className="flex items-center space-x-2">
             <img
               src={`${process.env.PUBLIC_URL}/assets/images/logo.png`}
@@ -35,11 +35,21 @@ const Header: React.FC = () => {
             />
             <span className="text-xl font-bold text-[#6D81D5]">blueberry</span>
           </Link>
-          <input
-            type="text"
-            placeholder="Search..."
-            className="w-[740px] h-[44px] p-2 rounded-lg border border-gray-300 bg-[#EEEEFF]"
-          />
+          <div className="relative w-[740px]">
+            <input
+              type="text"
+              placeholder="Search..."
+              className="w-[600px] h-[44px] p-2 border-b border-black"
+            />
+            <button className="absolute right-[140px] top-1/2 transform -translate-y-1/2">
+              <img
+                src={`${process.env.PUBLIC_URL}/assets/images/magnifier.png`}
+                alt="Profile"
+                className="w-[15px] cursor-pointer object-scale-down"
+                // onClick={}
+              />
+            </button>
+          </div>
         </div>
         <div className="relative flex">
           <img

@@ -7,22 +7,27 @@ type QnAModalProps = {
 
 const QnAModal: React.FC<QnAModalProps> = ({ closeModal }) => {
   const [content, setContent] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {}, [content]);
 
   const submitContent = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault(); // 폼 제출 기본 동작 방지
+    if (isLoading) return;
 
     const trimmedContent = content.trim();
 
     try {
+      setIsLoading(true);
       const response = await axios.post("/api/v1/feedback", {
         content: trimmedContent,
       });
-
       if (response.status === 200) {
       }
-    } catch (error) {}
+    } catch (error) {
+    } finally {
+      setIsLoading(false); // 로딩 종료
+    }
   };
 
   return (
