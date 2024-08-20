@@ -3,56 +3,59 @@ import React, { useState } from 'react';
 const CreateStudyRoomPage: React.FC = () => {
   const [studyRoomName, setStudyRoomName] = useState('');
   const [maxUsers, setMaxUsers] = useState<number | null>(null);
-  const [category, setCategory] = useState<string[]>([]);
+  const [category, setCategory] = useState<string | null>(null);
   const [thumbnail, setThumbnail] = useState<File | null>(null);
   const [password, setPassword] = useState('');
   const [description, setDescription] = useState('');
-  const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
-  // 유효성 검사 함수들
+  const [studyRoomNameError, setStudyRoomNameError] = useState('* 헬퍼텍스트');
+  const [maxUsersError, setMaxUsersError] = useState('* 헬퍼텍스트');
+  const [thumbnailError, setThumbnailError] = useState('* 헬퍼텍스트');
+  const [passwordError, setPasswordError] = useState('');
+
   const validateStudyRoomName = () => {
     if (!studyRoomName) {
-      setErrors(prev => ({ ...prev, studyRoomName: '스터디룸 이름을 입력해주세요.' }));
+      setStudyRoomNameError('스터디룸 이름을 입력해주세요.');
       return false;
     } else if (studyRoomName.length < 2 || studyRoomName.length > 15) {
-      setErrors(prev => ({ ...prev, studyRoomName: '스터디룸 이름은 2자 이상, 15자 이하여야 합니다.' }));
+      setStudyRoomNameError('스터디룸 이름은 2자 이상, 15자 이하여야 합니다.');
       return false;
     }
-    setErrors(prev => ({ ...prev, studyRoomName: '' }));
+    setStudyRoomNameError('통과');
     return true;
   };
 
   const validateMaxUsers = () => {
     if (!maxUsers) {
-      setErrors(prev => ({ ...prev, maxUsers: '최대 인원을 선택해주세요.' }));
+      setMaxUsersError('최대 인원을 선택해주세요.');
       return false;
     }
-    setErrors(prev => ({ ...prev, maxUsers: '' }));
+    setMaxUsersError('통과');
     return true;
   };
 
   const validateThumbnail = () => {
     if (thumbnail && !['image/jpeg', 'image/png'].includes(thumbnail.type)) {
-      setErrors(prev => ({ ...prev, thumbnail: '이미지 파일은 JPG, JPEG, PNG 형식이어야 합니다.' }));
+      setThumbnailError('이미지 파일은 JPG, JPEG, PNG 형식이어야 합니다.');
       return false;
     } else if (thumbnail && thumbnail.size > 3 * 1024 * 1024) {
-      setErrors(prev => ({ ...prev, thumbnail: '이미지 파일 크기는 최대 5MB입니다.' }));
+      setThumbnailError('이미지 파일 크기는 최대 3MB입니다.');
       return false;
     }
-    setErrors(prev => ({ ...prev, thumbnail: '' }));
+    setThumbnailError('통과');
     return true;
   };
 
   const validatePassword = () => {
-    const passwordRegex = /^[a-zA-Z0-9]*$/; // 영문과 숫자만 허용하는 정규식
+    const passwordRegex = /^[a-zA-Z0-9]*$/;
     if (password && (password.length < 4 || password.length > 20)) {
-      setErrors(prev => ({ ...prev, password: '암호는 4자 이상, 20자 이하여야 합니다.' }));
+      setPasswordError('암호는 4자 이상, 20자 이하여야 합니다.');
       return false;
     } else if (password && !passwordRegex.test(password)) {
-      setErrors(prev => ({ ...prev, password: '영문 혹은 숫자만 입력해주세요.' }));
+      setPasswordError('영문 혹은 숫자만 입력해주세요.');
       return false;
     }
-    setErrors(prev => ({ ...prev, password: '' }));
+    setPasswordError('통과');
     return true;
   };
 
@@ -67,8 +70,25 @@ const CreateStudyRoomPage: React.FC = () => {
 
   const handleSubmit = () => {
     if (validateForm()) {
-      // 스터디룸 생성 로직
       console.log('스터디룸 생성 성공');
+    }
+  };
+
+  const handleMaxUsersClick = (selectedMaxUsers: number) => {
+    if (maxUsers === selectedMaxUsers) {
+      setMaxUsers(null);
+      setMaxUsersError('최대 인원을 선택해주세요.');
+    } else {
+      setMaxUsers(selectedMaxUsers);
+      setMaxUsersError('통과');
+    }
+  };
+
+  const handleCategoryClick = (selectedCategory: string) => {
+    if (category === selectedCategory) {
+      setCategory(null);
+    } else {
+      setCategory(selectedCategory);
     }
   };
 
@@ -78,50 +98,87 @@ const CreateStudyRoomPage: React.FC = () => {
       <div className="w-full max-w-3xl">
 
         {/* 스터디룸 이름 입력 필드 */}
-        <div className="mb-4 relative">
-          <label className="block text-gray-700 text-m font-bold mb-2" htmlFor="studyRoomName">
-            스터디룸 이름 <img src={`${process.env.PUBLIC_URL}/assets/images/blueberry-icon.png`} className='w-[25px] h-[25px]'/><span className="text-gray-400 text-xs pl-1">({studyRoomName.length} / 15)</span>
-          </label>
-          <input
-            id="studyRoomName"
-            type="text"
-            maxLength={15}
-            value={studyRoomName}
-            onChange={(e) => setStudyRoomName(e.target.value)}
-            onBlur={validateStudyRoomName}
-            placeholder="스터디룸 이름을 입력해주세요."
-            className="input peer input-alt w-full border-b-[1px] border-none bg-transparent focus:outline-none focus:ring-0 pb-3 mb-3"
-          />
-          <span className="absolute bottom-3 left-0 w-0 h-[1.5px] bg-[#A98BFF] transition-all duration-700 ease-in-out peer-focus:w-full mb-3"></span>
-          {errors.studyRoomName && <p className="text-red-500 text-xs italic">{errors.studyRoomName}</p>}
-        </div>
+        <div className="mb-4">
+          <div className="flex items-center space-x-2">
+            <label className="block text-gray-700 text-m font-bold" htmlFor="studyRoomName">
+              스터디룸 이름
+            </label>
+            <img
+              src={`${process.env.PUBLIC_URL}/assets/images/blueberry-icon.png`}
+              className="w-[25px] h-[25px] mt-[-7px]"
+              alt="Icon"
+            />
+            <span className="text-gray-400 text-xs pl-1">({studyRoomName.length} / 15)</span>
+          </div>
+
+          <div className="relative">
+            <input
+              id="studyRoomName"
+              type="text"
+              maxLength={15}
+              value={studyRoomName}
+              onChange={(e) => {
+                setStudyRoomName(e.target.value);
+                validateStudyRoomName();
+              }}
+              onBlur={validateStudyRoomName}
+              placeholder="스터디룸 이름을 입력해주세요."
+              className="input peer input-alt w-full border-none bg-transparent focus:outline-none focus:ring-0"
+            />
+            <span className="absolute bottom-0 left-0 w-0 h-[1.5px] bg-[#A98BFF] transition-all duration-700 ease-in-out peer-focus:w-full"></span>
+          </div>
+          {studyRoomNameError && (
+            <p
+              className={`text-xs italic mt-1 ${studyRoomNameError === '통과' ? 'text-blue-500' : 'text-red-500'
+                }`}
+            >
+              {studyRoomNameError}
+            </p>
+          )}
+          </div>
 
         {/* 최대 인원 설정 */}
         <div className="mb-4">
-          <label className="block text-gray-700 text-m font-bold mb-2">최대 인원 설정 *</label>
+          <div className="flex items-center space-x-2">
+            <label className="block text-gray-700 text-m font-bold mb-2">최대 인원 설정</label>
+            <img
+              src={`${process.env.PUBLIC_URL}/assets/images/blueberry-icon.png`}
+              className="w-[25px] h-[25px] mt-[-7px]"
+              alt="Icon"
+            />
+          </div>
           <div className="flex space-x-2">
-            {[2, 3, 4, 5].map(num => (
+            {[2, 3, 4, 5].map((num) => (
               <button
                 key={num}
-                onClick={() => setMaxUsers(num)}
-                className={`py-2 px-4 rounded border ${maxUsers === num ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-700'}`}
+                onClick={() => handleMaxUsersClick(num)}
+                className={`flex items-center space-x-2 px-4 py-2 rounded-full shadow-md hover:bg-[#6D81D5] hover:text-white transition duration-300 ${maxUsers === num ? 'bg-[#6D81D5] text-white' : 'bg-[#E0E7FF] text-[#4659AA]'
+                  }`}
               >
                 {num}명
               </button>
             ))}
           </div>
-          {errors.maxUsers && <p className="text-red-500 text-xs italic">{errors.maxUsers}</p>}
+          {maxUsersError && (
+            <p
+              className={`text-xs italic mt-1 ${maxUsersError === '통과' ? 'text-blue-500' : 'text-red-500'
+                }`}
+            >
+              {maxUsersError}
+            </p>
+          )}
         </div>
 
         {/* 카테고리 선택 */}
         <div className="mb-4">
           <label className="block text-gray-700 text-m font-bold mb-2">카테고리</label>
           <div className="flex space-x-2">
-            {['캠켜공', '캠끄공'].map(cat => (
+            {['캠켜공', '캠끄공'].map((cat) => (
               <button
                 key={cat}
-                onClick={() => setCategory([...category, cat])}
-                className={`py-2 px-4 rounded border ${category.includes(cat) ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-700'}`}
+                onClick={() => handleCategoryClick(cat)}
+                className={`flex items-center space-x-2 px-4 py-2 rounded-full shadow-md hover:bg-[#6D81D5] hover:text-white transition duration-300 ${category === cat ? 'bg-[#6D81D5] text-white' : 'bg-[#E0E7FF] text-[#4659AA]'
+                  }`}
               >
                 {cat}
               </button>
@@ -143,7 +200,14 @@ const CreateStudyRoomPage: React.FC = () => {
             className="input peer input-alt w-full border-b-[1px] border-none bg-transparent focus:outline-none focus:ring-0 pb-3 mb-3"
           />
           <span className="absolute bottom-3 left-0 w-0 h-[1.5px] bg-[#A98BFF] transition-all duration-700 ease-in-out peer-focus:w-full mb-3"></span>
-          {errors.thumbnail && <p className="text-red-500 text-xs italic">{errors.thumbnail}</p>}
+          {thumbnailError && (
+            <p
+              className={`text-xs italic mt-1 ${thumbnailError === '통과' ? 'text-blue-500' : 'text-red-500'
+                }`}
+            >
+              {thumbnailError}
+            </p>
+          )}
         </div>
 
         {/* 암호 설정 */}
@@ -156,13 +220,22 @@ const CreateStudyRoomPage: React.FC = () => {
             type="text"
             maxLength={20}
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            onBlur={validatePassword}
+            onChange={(e) => {
+              setPassword(e.target.value);
+              validatePassword();
+            }}
             placeholder="스터디룸 암호를 입력해주세요."
             className="input peer input-alt w-full border-b-[1px] border-none bg-transparent focus:outline-none focus:ring-0 pb-3 mb-3"
           />
           <span className="absolute bottom-3 left-0 w-0 h-[1.5px] bg-[#A98BFF] transition-all duration-700 ease-in-out peer-focus:w-full mb-3"></span>
-          {errors.password && <p className="text-red-500 text-xs italic">{errors.password}</p>}
+          {passwordError && (
+            <p
+              className={`text-xs italic mt-1 ${passwordError === '통과' ? 'text-blue-500' : 'text-red-500'
+                }`}
+            >
+              {passwordError}
+            </p>
+          )}
         </div>
 
         {/* 스터디 소개 */}
@@ -185,7 +258,7 @@ const CreateStudyRoomPage: React.FC = () => {
         {/* 스터디룸 생성 버튼 */}
         <button
           onClick={handleSubmit}
-          className="w-full bg-blue-500 text-white py-2 rounded shadow"
+          className="w-full flex items-center space-x-2 px-4 py-2 rounded-full shadow-md bg-[#6D81D5] text-white hover:bg-[#4659AA] transition duration-300"
         >
           스터디룸 생성
         </button>
