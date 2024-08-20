@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import '../../global.css';
 import { useNavigate } from 'react-router-dom';
 import studyRecruitData from '../../data/studyRecruitData';
-import CategorySelector from '../../components/CategorySelector';
-import RecruitPostList from '../../components/RecruitPostList';
+import CategorySelector from '../rooms/CategorySelector';
+import RecruitPostList from '../posts/RecruitPostList';
 
 const StudyRecruitListContainer: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState('전체보기');
@@ -49,7 +49,7 @@ const StudyRecruitListContainer: React.FC = () => {
 
   return (
     <div className="flex flex-col items-center w-full bg-white mb-10">
-      <div className="relative w-full">
+      <div className="relative w-full mt-[80px]">
         <img
           src={`${process.env.PUBLIC_URL}/assets/images/recruitment-banner.png`}
           alt="intro"
@@ -73,8 +73,7 @@ const StudyRecruitListContainer: React.FC = () => {
           handleTypeClick={handleTypeClick}
         />
         {/* 모집 공고 글 목록 */}
-        {/* <RecruitPostList posts={filteredData} handlePostClick={handlePostClick} /> */}
-        <RecruitPostList posts={filteredData} handlePostClick={handlePostClick} />
+        <RecruitPostList posts={filteredData}/>
       </div>
     </div>
   );

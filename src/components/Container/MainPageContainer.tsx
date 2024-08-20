@@ -1,7 +1,7 @@
 import { useState } from "react";
-import Ranking from "../Ranking";
+import Carousel from "../common/Carousel";
+import RankingSlider from "../users/RankingSlider";
 import StudyroomTNContainer from "./StudyroomTNContainer";
-import Collapse from "../Collapse";
 import QnAModal from "../Modal/QnAModal";
 
 const MainPageContainer: React.FC = () => {
@@ -17,13 +17,9 @@ const MainPageContainer: React.FC = () => {
 
   return (
     <body className="flex flex-col mt-[80px] items-center w-full bg-white">
-      <img
-        src={`${process.env.PUBLIC_URL}/assets/images/intro-1.png`}
-        alt="intro"
-        className="w-full"
-      />
-      <div className="w-[1030px]">
-        <Collapse />
+      <Carousel />
+      <div className="w-full]">
+        <RankingSlider />
         <StudyroomTNContainer />
       </div>
       <div className="w-full flex justify-end  p-4">

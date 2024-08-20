@@ -1,6 +1,6 @@
 import React from 'react';
-import BasicHeader from '../components/BasicHeader';
-import LoginForm from '../components/LoginForm';
+import BasicHeader from '../components/common/BasicHeader';
+import LoginForm from '../components/users/LoginForm';
 
 // LoginPage 컴포넌트의 props 타입 정의
 // 현재 LoginPage가 어떤 props도 받지 않음을 명시적으로 표현. 나중에 이 props를 확장할 가능성을 염두에 둔 타입 정의

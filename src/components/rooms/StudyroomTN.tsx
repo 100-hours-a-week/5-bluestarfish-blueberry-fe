@@ -1,3 +1,5 @@
+import TNHeader from "./TNHeader";
+
 type StudyroomTNProps = {
   title: string;
   cam_enabled: boolean;

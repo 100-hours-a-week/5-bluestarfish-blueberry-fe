@@ -1,4 +1,4 @@
-import Timer from "../Timer";
+import Timer from "../rooms/Timer";
 
 type HomeContainerProps = {};
 
