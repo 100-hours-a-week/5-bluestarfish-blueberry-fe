@@ -1,4 +1,4 @@
-import TNHeader from "./TNHeader";
+import { useNavigate } from "react-router-dom";
 
 type StudyroomTNProps = {
   title: string;
@@ -17,8 +17,13 @@ const StudyroomTN: React.FC<StudyroomTNProps> = ({
   thumbnail,
   isSelected,
 }) => {
+  const navigate = useNavigate(); // 페이지 이동을 위한 useNavigate 훅
+  const enterStudyRoom = () => {
+    navigate("/wait/1");
+  };
+
   return (
-    <div className="relative w-[187px] h-[171px]">
+    <div className="relative w-[187px] h-[171px]" onClick={enterStudyRoom}>
       <div
         className={`w-full h-full rounded-lg bg-cover bg-center bg-blend-darken bg-black bg-opacity-50 ${
           isSelected ? "blur-[1.5px] opacity-70" : ""
