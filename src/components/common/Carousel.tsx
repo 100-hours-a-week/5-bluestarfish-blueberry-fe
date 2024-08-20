@@ -1,27 +1,39 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 const Carousel = () => {
   const images = [
     `${process.env.PUBLIC_URL}/assets/images/intro-1.png`,
-    `${process.env.PUBLIC_URL}/assets/images/intro-2.png`,
-    `${process.env.PUBLIC_URL}/assets/images/intro-3.png`,
+    `${process.env.PUBLIC_URL}/assets/images/intro-1.png`,
+    `${process.env.PUBLIC_URL}/assets/images/intro-1.png`,
   ];
 
   const [currentIndex, setCurrentIndex] = useState(0);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null); // 인터벌을 추적할 ref
 
-  // 자동 슬라이딩을 위한 useEffect
   useEffect(() => {
-    const interval = setInterval(() => {
+    startTimer(); // 컴포넌트가 마운트되면 타이머 시작
+
+    return () => clearInterval(intervalRef.current as NodeJS.Timeout); // 컴포넌트 언마운트 시 인터벌 클리어
+  }, [images.length]);
+
+  // 타이머 시작 함수
+  const startTimer = () => {
+    // 기존 인터벌 클리어 (중복 방지)
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+    }
+
+    // 새로운 타이머 시작
+    intervalRef.current = setInterval(() => {
       setCurrentIndex((prevIndex) =>
         prevIndex === images.length - 1 ? 0 : prevIndex + 1
       );
     }, 3000); // 3초마다 자동 슬라이드
-
-    return () => clearInterval(interval); // 컴포넌트 언마운트 시 인터벌 클리어
-  }, [images.length]);
+  };
 
   // 수동으로 이전 이미지로 이동
   const goToPrevious = () => {
+    startTimer(); // 타이머 초기화 (다시 시작)
     setCurrentIndex((prevIndex) =>
       prevIndex === 0 ? images.length - 1 : prevIndex - 1
     );
@@ -29,6 +41,7 @@ const Carousel = () => {
 
   // 수동으로 다음 이미지로 이동
   const goToNext = () => {
+    startTimer(); // 타이머 초기화 (다시 시작)
     setCurrentIndex((prevIndex) =>
       prevIndex === images.length - 1 ? 0 : prevIndex + 1
     );
