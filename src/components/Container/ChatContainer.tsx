@@ -1,9 +1,10 @@
 import React, { useState, useRef, useEffect } from "react";
+import axios from "axios";
 import { Client, IMessage } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
 import { useParams } from "react-router-dom"; // useParams를 사용하여 URL 파라미터를 가져옴
-import ChatStartMessage from "../ChatStartMessage";
-import ChatEndMessage from "../ChatEndMessage";
+import ChatStartMessage from "../rooms/ChatStartMessage";
+import ChatEndMessage from "../rooms/ChatEndMessage";
 
 type ChatContainerProps = {};
 
@@ -23,7 +24,21 @@ const ChatContainer: React.FC<ChatContainerProps> = () => {
 
   const senderId = 1;
 
+  const getPreviousMessages = async () => {
+    try {
+      const response = await axios.get(`/api/vi/rooms/${roomId}/chat`);
+
+      if (response.status === 200) {
+        console.log("200 OK");
+        setMessages(response.data);
+      }
+    } catch (error) {
+      console.error("채팅 데이터를 가져오는 중 오류 발생:", error);
+    }
+  };
+
   useEffect(() => {
+    getPreviousMessages();
     const socket = new SockJS("http://localhost:8080/ws-chat");
     const client = new Client({
       webSocketFactory: () => socket as WebSocket,

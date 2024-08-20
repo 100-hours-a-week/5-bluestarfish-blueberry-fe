@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import '../../global.css';
 import { useNavigate } from 'react-router-dom';
 import studyRecruitData from '../../data/studyRecruitData';
-import CategorySelector from '../../components/CategorySelector';
-import RecruitPostList from '../../components/RecruitPostList';
+import CategorySelector from '../rooms/CategorySelector';
+import RecruitPostList from '../posts/RecruitPostList';
 
 const StudyRecruitListContainer: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState('전체보기');

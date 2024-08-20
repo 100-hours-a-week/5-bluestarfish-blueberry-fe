@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import studyRecruitData from '../data/studyRecruitData';
-import Header from '../components/Header';
+import Header from '../components/common/Header';
 import RecruitStudyDetailContainer from '../components/Container/RecruitStudyDetailContainer'
-import Footer from '../components/Footer';
+import Footer from '../components/common/Footer';
 import '../global.css'
 
 const RecruitStudyDetailPage: React.FC = () => {

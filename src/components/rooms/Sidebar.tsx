@@ -1,6 +1,6 @@
 import { useState } from "react";
-import HomeContainer from "./Container/HomeContainer";
-import ChatContainer from "./Container/ChatContainer";
+import HomeContainer from "../Container/HomeContainer";
+import ChatContainer from "../Container/ChatContainer";
 
 type SidebarProps = {
   toggleSidebar: () => void;

@@ -2,7 +2,7 @@ import TNHeader from "./TNHeader";
 
 type StudyroomTNProps = {
   title: string;
-  camEnabled: boolean;
+  cam_enabled: boolean;
   currentUsers: number;
   maxUsers: number;
   thumbnail: string;
@@ -11,7 +11,7 @@ type StudyroomTNProps = {
 
 const StudyroomTN: React.FC<StudyroomTNProps> = ({
   title,
-  camEnabled,
+  cam_enabled,
   currentUsers,
   maxUsers,
   thumbnail,
@@ -20,17 +20,19 @@ const StudyroomTN: React.FC<StudyroomTNProps> = ({
   return (
     <div className="relative w-[187px] h-[171px]">
       <div
-        className={`w-full h-full rounded-lg bg-cover bg-center bg-blend-darken bg-black bg-opacity-50 ${isSelected ? 'blur-[1.5px] opacity-70' : ''}`}
+        className={`w-full h-full rounded-lg bg-cover bg-center bg-blend-darken bg-black bg-opacity-50 ${
+          isSelected ? "blur-[1.5px] opacity-70" : ""
+        }`}
         style={{ backgroundImage: `url(${thumbnail})` }}
       >
         {/* 카메라 아이콘 */}
-        <div className="absolute top-2 left-2">
+        <div className="absolute top-1 left-2">
           <img
             src={`${process.env.PUBLIC_URL}/assets/images/${
-              camEnabled ? "cam-on-icon.png" : "cam-off-icon.png"
+              cam_enabled ? "cam-on-icon.png" : "cam-off-icon.png"
             }`}
             alt="cam-icon"
-            className="w-[18px] h-[18px]"
+            className="w-[20px]"
           />
         </div>
 
@@ -44,10 +46,10 @@ const StudyroomTN: React.FC<StudyroomTNProps> = ({
           <img
             src={`${process.env.PUBLIC_URL}/assets/images/person-white.png`}
             alt="person-icon"
-            className="w-[18px] h-[18px]"
+            className="w-[23px]"
           />
-          <div className="text-gray-300 text-xs -mt-2">
-            {currentUsers}/{maxUsers}
+          <div className="text-gray-300 text-[14px] font-bold -mt-2">
+            {currentUsers} / {maxUsers}
           </div>
         </div>
       </div>
