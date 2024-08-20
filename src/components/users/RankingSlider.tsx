@@ -47,7 +47,7 @@ const RankingSlider: React.FC = () => {
 
   return (
     <div
-      className={`relative m-[3px] rounded-[10px] overflow-hidden bg-white border-[2px] border-black font-bold space-x-4 my-[50px] transition-all duration-500 ease-in-out ${
+      className={`relative m-[3px] rounded-[10px] overflow-hidden text-black bg-white border-[2px] border-black font-bold space-x-4 my-[50px] transition-all duration-500 ease-in-out ${
         isExpanded ? "h-auto" : "h-[100px]"
       }`}
     >

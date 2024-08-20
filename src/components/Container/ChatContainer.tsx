@@ -44,7 +44,7 @@ const ChatContainer: React.FC<ChatContainerProps> = () => {
       webSocketFactory: () => socket as WebSocket,
       onConnect: () => {
         if (!client || !roomId) return;
-        client.subscribe(`/rooms/${roomId}`, (message: IMessage) => {
+        client.subscribe(`/rooms/${roomId}/chats`, (message: IMessage) => {
           const body: Message = JSON.parse(message.body);
           setMessages((prevMessages) => [...prevMessages, body]);
         });
