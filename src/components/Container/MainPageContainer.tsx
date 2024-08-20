@@ -1,4 +1,5 @@
 import { useState } from "react";
+import Carousel from "../common/Carousel";
 import RankingSlider from "../users/RankingSlider";
 import StudyroomTNContainer from "./StudyroomTNContainer";
 import QnAModal from "../Modal/QnAModal";
@@ -16,11 +17,7 @@ const MainPageContainer: React.FC = () => {
 
   return (
     <body className="flex flex-col mt-[80px] items-center w-full bg-white">
-      <img
-        src={`${process.env.PUBLIC_URL}/assets/images/intro-1.png`}
-        alt="intro"
-        className="w-full"
-      />
+      <Carousel />
       <div className="w-full]">
         <RankingSlider />
         <StudyroomTNContainer />
