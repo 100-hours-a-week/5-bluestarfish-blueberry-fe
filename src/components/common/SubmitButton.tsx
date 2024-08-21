@@ -3,9 +3,10 @@ import React from 'react';
 interface SubmitButtonProps {
   isFormValid: boolean;
   handleClick: () => void;
+  text: string;
 }
 
-const SubmitButton: React.FC<SubmitButtonProps> = ({ isFormValid, handleClick }) => {
+const SubmitButton: React.FC<SubmitButtonProps> = ({ isFormValid, handleClick, text }) => {
   return (
     <div className="flex justify-center mt-10 mb-20">
       <button
@@ -17,7 +18,7 @@ const SubmitButton: React.FC<SubmitButtonProps> = ({ isFormValid, handleClick })
             : 'bg-gray-300 text-gray-500 cursor-not-allowed'
         }`}
       >
-        게시글 등록
+        {text}
       </button>
     </div>
   );

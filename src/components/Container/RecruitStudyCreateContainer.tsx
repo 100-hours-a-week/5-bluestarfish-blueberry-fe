@@ -188,7 +188,7 @@ const RecruitStudyCreateContainer: React.FC = () => {
         )}
 
         {/* SubmitButton 컴포넌트 사용 */}
-        <SubmitButton isFormValid={isFormValid} handleClick={handleShowToast} />
+        <SubmitButton isFormValid={isFormValid} handleClick={handleShowToast} text="게시글 등록" />
         {showToast && (
           <ToastNotification message="등록 완료!" onClose={handleCloseToast} />
         )}

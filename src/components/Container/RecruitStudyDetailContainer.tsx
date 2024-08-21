@@ -77,6 +77,7 @@ const RecruitStudyDetailContainer: React.FC = () => {
 
   const handleEditPost = () => {
     // 게시글 수정 로직
+    navigate(`/recruit/update/${studyId}`)
   };
 
   const handleDeletePost = () => {
