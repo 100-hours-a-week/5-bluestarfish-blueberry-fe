@@ -121,7 +121,7 @@ const RecruitStudyCreateContainer: React.FC = () => {
 
   return (
     <div className="container mx-auto flex flex-col items-center mt-10">
-      <h1 className="text-2xl font-bold mb-8">✍🏻 게시글 작성 ✍🏻</h1>
+      <h1 className="text-2xl font-bold mb-8 text-black">✍🏻 게시글 작성 ✍🏻</h1>
       <div className="w-full max-w-3xl">
         {/* 상단 탭 바 컴포넌트 */}
         <TabBar activeIndex={activeTab} setActiveIndex={setActiveTab} />

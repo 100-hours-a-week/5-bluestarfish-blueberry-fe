@@ -77,7 +77,7 @@ const StudyRoomForm: React.FC<StudyRoomFormProps> = ({
                         className="w-[25px] h-[25px] mt-[-7px]"
                         alt="Icon"
                     />
-                    <span className="text-gray-400 text-xs pl-1 font-bold">({studyRoomName.length} / 15)</span>
+                    <span className="text-gray-400 text-xs pl-1 font-bold">({Math.min(studyRoomName.length, 15)} / 15)</span>
                 </div>
 
                 <div className="relative">
@@ -157,7 +157,7 @@ const StudyRoomForm: React.FC<StudyRoomFormProps> = ({
                     대표 이미지
                 </label>
                 <label htmlFor="thumbnail">
-                    {thumbnail ? (
+                    {thumbnail && thumbnailError === '통과' ? (
                         <img
                             src={URL.createObjectURL(thumbnail)}
                             alt="thumbnail preview"
@@ -191,7 +191,7 @@ const StudyRoomForm: React.FC<StudyRoomFormProps> = ({
             {/* 암호 설정 */}
             <div className="mb-4 relative">
                 <label className="block text-gray-700 text-m font-bold mb-2" htmlFor="password">
-                    암호 설정 <span className="text-gray-400 text-xs pl-1">({password.length} / 20)</span>
+                    암호 설정 <span className="text-gray-400 text-xs pl-1">({Math.min(password.length, 20)} / 20)</span>
                 </label>
                 <input
                     id="password"
@@ -214,7 +214,7 @@ const StudyRoomForm: React.FC<StudyRoomFormProps> = ({
             {/* 스터디 소개 */}
             <div className="mb-4 relative">
                 <label className="block text-gray-700 text-m font-bold mb-2" htmlFor="description">
-                    스터디 소개 <span className="text-gray-400 text-xs pl-1">({description.length} / 100)</span>
+                    스터디 소개 <span className="text-gray-400 text-xs pl-1">({Math.min(description.length, 100)} / 100)</span>
                 </label>
                 <textarea
                     id="description"
