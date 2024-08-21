@@ -1,8 +1,13 @@
 import React, { useState } from 'react';
 import StudyRoomForm from '../posts/StudyRoomForm';
-import { validateStudyRoomName, validateMaxUsers, validateThumbnail, validatePassword } from '../../utils/validation';
+import {
+  validateStudyRoomName,
+  validateMaxUsers,
+  validateThumbnail,
+  validatePassword
+} from '../../utils/validation';
 
-const CreateStudyRoomPage: React.FC = () => {
+const CreateStudyRoomContainer: React.FC = () => {
   const [studyRoomName, setStudyRoomName] = useState('');
   const [maxUsers, setMaxUsers] = useState<number | null>(null);
   const [category, setCategory] = useState<string | null>(null);
@@ -18,19 +23,19 @@ const CreateStudyRoomPage: React.FC = () => {
   const handleStudyRoomNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const name = e.target.value;
     setStudyRoomName(name);
-    setStudyRoomNameError(validateStudyRoomName(name)); // 유효성 검사 결과를 상태에 저장
+    setStudyRoomNameError(validateStudyRoomName(name));
   };
 
   const handleThumbnailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files ? e.target.files[0] : null;
     setThumbnail(file);
-    setThumbnailError(validateThumbnail(file)); // 유효성 검사 결과를 상태에 저장
+    setThumbnailError(validateThumbnail(file));
   };
 
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const pw = e.target.value;
     setPassword(pw);
-    setPasswordError(validatePassword(pw)); // 유효성 검사 결과를 상태에 저장
+    setPasswordError(validatePassword(pw));
   };
 
   const validateForm = () => {
@@ -47,8 +52,8 @@ const CreateStudyRoomPage: React.FC = () => {
     return (
       isStudyRoomNameValid === '통과' &&
       isMaxUsersValid === '통과' &&
-      isThumbnailValid === '통과' &&
-      isPasswordValid === '통과'
+      (thumbnailError === '* 선택 사항' || thumbnailError === '통과') &&
+      (passwordError === '* 선택 사항' || passwordError === '통과')
     );
   };
 
@@ -78,7 +83,7 @@ const CreateStudyRoomPage: React.FC = () => {
 
   return (
     <div className="container mx-auto flex flex-col items-center bg-[#EEEEFF] mt-[100px] mb-[30px] w-[60%] pt-[30px] pb-[30px] rounded-lg">
-      <h1 className="text-2xl font-bold mb-8 text-black">📚 스터디룸 만들기 📚</h1>
+      <h1 className="text-2xl font-bold mt-4 mb-20 text-black">📚 스터디룸 만들기 📚</h1>
       <StudyRoomForm
         studyRoomName={studyRoomName}
         maxUsers={maxUsers}
@@ -102,4 +107,4 @@ const CreateStudyRoomPage: React.FC = () => {
   );
 };
 
-export default CreateStudyRoomPage;
+export default CreateStudyRoomContainer;
