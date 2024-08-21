@@ -27,7 +27,7 @@ const RecruitStudyUpdateContainer: React.FC = () => {
 
   const [categoryHelperText, setCategoryHelperText] = useState<string>("* 헬퍼텍스트");
   const [titleHelperText, setTitleHelperText] = useState<string>("* 헬퍼텍스트");
-  const [contentHelperText, setContentHelperText] = useState<string>("* 헬퍼텍스트");
+  const [contentHelperText, setContentHelperText] = useState<string>("* 헬퍼텍스트");                                            
   const [studyHelperText, setStudyHelperText] = useState<string>("* 헬퍼텍스트");
   const [isFormValid, setIsFormValid] = useState<boolean>(false);
   const [showToast, setShowToast] = useState(false);
@@ -89,16 +89,21 @@ const RecruitStudyUpdateContainer: React.FC = () => {
 
   const handleSubmit = () => {
     if (isFormValid) {
-      console.log("Form submitted:", {
-        tab0SelectedCategory,
-        tab0Title,
-        tab0Content,
-        tab0SelectedStudy,
-        tab1SelectedCategory,
-        tab1Title,
-        tab1Content,
-      });
-      // 제출 로직 추가
+      const postData = studyRecruitData.find((post) => post.id === Number(id));
+      if (postData) {
+        if (activeTab === 0) {
+          postData.title = tab0Title;
+          postData.content = tab0Content;
+          postData.roomId = tab0SelectedStudy || 0;
+          postData.isCamOn = tab0SelectedCategory === "캠켜공";
+        } else if (activeTab === 1) {
+          postData.title = tab1Title;
+          postData.content = tab1Content;
+          postData.isCamOn = tab1SelectedCategory === "캠켜공";
+        }
+        console.log("수정된 게시글 데이터:", postData);
+      }
+      handleShowToast();
     } else {
       alert("모든 필드를 채워주세요.");
     }
@@ -110,7 +115,7 @@ const RecruitStudyUpdateContainer: React.FC = () => {
 
   const handleCloseToast = () => {
     setShowToast(false);
-    navigate(`/recruit/${id}`)
+    navigate(`/recruit/${id}`);
   };
 
   return (
@@ -176,7 +181,7 @@ const RecruitStudyUpdateContainer: React.FC = () => {
           />
         )}
 
-        <SubmitButton isFormValid={isFormValid} handleClick={handleShowToast} text="수정 완료" />
+        <SubmitButton isFormValid={isFormValid} handleClick={handleSubmit} text="수정 완료" />
         {showToast && (
           <ToastNotification message="수정 완료!" onClose={handleCloseToast} />
         )}

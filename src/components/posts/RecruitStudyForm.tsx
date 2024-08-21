@@ -49,12 +49,12 @@ const RecruitStudyForm: React.FC<StudyFormProps> = ({
         {/* 제목 입력 필드 */}
         <div className="mb-4 relative">
           <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="title">
-            제목 <span className="text-gray-400 text-xs pl-1">({title.length} / 20)</span>  {/* 제목 길이 표시 */}
+            제목 <span className="text-gray-400 text-xs pl-1">({title.length} / 30)</span>  {/* 제목 길이 표시 */}
           </label>
           <input
             id="title"
             type="text"
-            maxLength={20}  // 제목 최대 길이 제한
+            maxLength={30}  // 제목 최대 길이 제한
             value={title}  // 입력된 제목 값
             onChange={handleTitleChange}  // 제목 변경 시 호출될 핸들러
             placeholder="제목을 입력해주세요."  // 입력 필드에 표시될 플레이스홀더
