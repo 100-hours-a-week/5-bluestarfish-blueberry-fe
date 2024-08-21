@@ -79,7 +79,7 @@ const RecruitStudyForm: React.FC<StudyFormProps> = ({
             onChange={handleContentChange}  // 내용 변경 시 호출될 핸들러
             placeholder="내용을 입력해주세요."  // 입력 필드에 표시될 플레이스홀더
             rows={5}  // textarea의 행 수
-            className="input peer input-alt h-full w-full border-b-[1px] border-none bg-transparent focus:outline-none focus:ring-0 resize-none"  // 스타일 클래스
+            className="input peer input-alt h-full w-full border-b-[1px] border-none bg-transparent focus:outline-none focus:ring-0 resize-none text-black"  // 스타일 클래스
           />
           <span className="absolute bottom-0 left-0 w-0 h-[1.5px] bg-[#A98BFF] transition-all duration-700 ease-in-out peer-focus:w-full mb-6"></span>
           {/* 내용 헬퍼 텍스트 */}
