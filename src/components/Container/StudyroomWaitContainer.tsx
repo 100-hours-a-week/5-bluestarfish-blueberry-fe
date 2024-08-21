@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import LargeUserDisplay from "../rooms/LargeUserDisplay";
+import axiosInstance from "../../utils/axiosInstance";
+import { useStore } from "../../store/store";
 
 type StudyroomWaitContainerProps = {};
 
@@ -10,6 +11,14 @@ const StudyroomWaitContainer: React.FC = () => {
   const { roomId } = useParams<{ roomId: string }>(); // URL에서 roomId를 가져옴
   const userId = 1;
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const {
+    camEnabled,
+    micEnabled,
+    speakerEnabled,
+    toggleCam,
+    toggleMic,
+    toggleSpeaker,
+  } = useStore();
 
   const handleClick = () => {
     enterStudyRoom();
@@ -19,7 +28,7 @@ const StudyroomWaitContainer: React.FC = () => {
     if (isLoading) return;
     try {
       setIsLoading(true);
-      const response = await axios.patch(
+      const response = await axiosInstance.patch(
         `/api/v1/rooms/${roomId}/users/${userId}`,
         {
           isActive: "True",
@@ -61,24 +70,36 @@ const StudyroomWaitContainer: React.FC = () => {
         <p className="text-[14px]">현재 영상은 다른 사람이 볼 수 없습니다.</p>
       </div>
       <div className="mt-10 flex flex-row gap-5">
-        <button>
+        <button onClick={toggleCam}>
           <img
-            src={`${process.env.PUBLIC_URL}/assets/images/camera.png`}
-            alt="all"
+            src={
+              camEnabled
+                ? `${process.env.PUBLIC_URL}/assets/images/wait-camera-on.png`
+                : `${process.env.PUBLIC_URL}/assets/images/wait-camera-off.png`
+            }
+            alt="camera"
             className="h-[23px]"
           />
         </button>
-        <button>
+        <button onClick={toggleMic}>
           <img
-            src={`${process.env.PUBLIC_URL}/assets/images/mic.png`}
-            alt="all"
+            src={
+              micEnabled
+                ? `${process.env.PUBLIC_URL}/assets/images/wait-mic-on.png`
+                : `${process.env.PUBLIC_URL}/assets/images/wait-mic-off.png`
+            }
+            alt="mic"
             className="h-[28px]"
           />
         </button>
-        <button>
+        <button onClick={toggleSpeaker}>
           <img
-            src={`${process.env.PUBLIC_URL}/assets/images/speaker.png`}
-            alt="all"
+            src={
+              speakerEnabled
+                ? `${process.env.PUBLIC_URL}/assets/images/wait-speaker-on.png`
+                : `${process.env.PUBLIC_URL}/assets/images/wait-speaker-off.png`
+            }
+            alt="speaker"
             className="h-[26px]"
           />
         </button>

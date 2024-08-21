@@ -28,8 +28,8 @@ const StudyroomHeader: React.FC<StudyroomHeaderProps> = ({
   const filteredData = studyRooms.filter((item) => {
     const matchesCategory =
       selectedCategory === "전체보기" ||
-      (item.cam_enabled === true && selectedCategory === "캠켜공") ||
-      (item.cam_enabled === false && selectedCategory === "캠끄공");
+      (item.camEnabled === true && selectedCategory === "캠켜공") ||
+      (item.camEnabled === false && selectedCategory === "캠끄공");
     return matchesCategory;
   });
 

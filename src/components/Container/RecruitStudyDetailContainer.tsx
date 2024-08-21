@@ -1,17 +1,25 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import studyRecruitData from '../../data/studyRecruitData';
-import studyRooms from '../../data/studyRooms';
-import StudyHeader from '../StudyDetail/StudyHeader';
-import StudyContent from '../StudyDetail/StudyContent';
-import StudyRoomLink from '../StudyDetail/StudyRoomLink';
-import CommentSection from '../StudyDetail/CommentSection';
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import studyRecruitData from "../../data/studyRecruitData";
+import studyRooms from "../../data/studyRooms";
+import StudyHeader from "../StudyDetail/StudyHeader";
+import StudyContent from "../StudyDetail/StudyContent";
+import StudyRoomLink from "../StudyDetail/StudyRoomLink";
+import CommentSection from "../StudyDetail/CommentSection";
 
 const RecruitStudyDetailContainer: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
-  const [comments, setComments] = useState<{ id: number, text: string, author: string, createdAt: number, profileImage: string }[]>([]);
+  const [comments, setComments] = useState<
+    {
+      id: number;
+      text: string;
+      author: string;
+      createdAt: number;
+      profileImage: string;
+    }[]
+  >([]);
   const [isRecruited, setIsRecruited] = useState(false);
 
   const studyId = id ? parseInt(id, 10) : null;
@@ -20,15 +28,16 @@ const RecruitStudyDetailContainer: React.FC = () => {
 
   useEffect(() => {
     if (study) {
-      const sortedComments = study.comments
-        ?.map(comment => ({
-          id: comment.id,
-          text: comment.content,
-          author: comment.user.nickname,
-          createdAt: comment.createdAt,
-          profileImage: comment.user.profileImage,
-        }))
-        .sort((a, b) => b.createdAt - a.createdAt) || [];
+      const sortedComments =
+        study.comments
+          ?.map((comment) => ({
+            id: comment.id,
+            text: comment.content,
+            author: comment.user.nickname,
+            createdAt: comment.createdAt,
+            profileImage: comment.user.profileImage,
+          }))
+          .sort((a, b) => b.createdAt - a.createdAt) || [];
 
       setComments(sortedComments);
       setIsRecruited(study.isRecruited || false);
@@ -39,9 +48,9 @@ const RecruitStudyDetailContainer: React.FC = () => {
     const newComment = {
       id: comments.length + 1,
       text: comment,
-      author: '현재 사용자',
+      author: "현재 사용자",
       createdAt: Math.floor(Date.now() / 1000),
-      profileImage: '/assets/images/logo.png',
+      profileImage: "/assets/images/logo.png",
     };
     const updatedComments = [newComment, ...comments];
     setComments(updatedComments);
@@ -49,7 +58,11 @@ const RecruitStudyDetailContainer: React.FC = () => {
     if (study && study.comments) {
       study.comments.push({
         id: newComment.id,
-        user: { id: 1, nickname: '현재 사용자', profileImage: newComment.profileImage },
+        user: {
+          id: 1,
+          nickname: "현재 사용자",
+          profileImage: newComment.profileImage,
+        },
         content: newComment.text,
         createdAt: newComment.createdAt,
       });
@@ -58,12 +71,13 @@ const RecruitStudyDetailContainer: React.FC = () => {
 
   const handleNavigateToRoom = () => {
     if (isRecruited) {
-      navigate('/wait');
+      navigate("/wait");
     }
   };
 
   const handleEditPost = () => {
     // 게시글 수정 로직
+    navigate(`/recruit/update/${studyId}`)
   };
 
   const handleDeletePost = () => {
@@ -98,13 +112,17 @@ const RecruitStudyDetailContainer: React.FC = () => {
       <StudyContent content={study.content} />
 
       <StudyRoomLink
-        studyRoom={studyRoom ? {
-          title: studyRoom.title,
-          cam_enabled: studyRoom.cam_enabled,
-          currentUsers: studyRoom.users.length,
-          maxUsers: studyRoom.maxUsers,
-          thumbnail: studyRoom.thumbnail
-        } : null}
+        studyRoom={
+          studyRoom
+            ? {
+                title: studyRoom.title,
+                camEnabled: studyRoom.camEnabled,
+                currentUsers: studyRoom.users.length,
+                maxUsers: studyRoom.maxUsers,
+                thumbnail: studyRoom.thumbnail,
+              }
+            : null
+        }
         isRecruited={isRecruited}
         handleNavigateToRoom={handleNavigateToRoom}
       />
