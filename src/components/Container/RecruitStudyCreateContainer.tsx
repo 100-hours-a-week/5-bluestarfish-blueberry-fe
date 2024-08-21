@@ -154,7 +154,7 @@ const RecruitStudyCreateContainer: React.FC = () => {
                   >
                     <StudyroomTN
                       title={room.title}
-                      cam_enabled={room.cam_enabled}
+                      camEnabled={room.camEnabled}
                       currentUsers={room.users.length}
                       maxUsers={room.maxUsers}
                       thumbnail={room.thumbnail}

@@ -1,10 +1,10 @@
 import React, { useState, useRef, useEffect } from "react";
-import axios from "axios";
 import { Client, IMessage } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
 import { useParams } from "react-router-dom"; // useParams를 사용하여 URL 파라미터를 가져옴
 import ChatStartMessage from "../rooms/ChatStartMessage";
 import ChatEndMessage from "../rooms/ChatEndMessage";
+import axiosInstance from "../../utils/axiosInstance";
 
 type ChatContainerProps = {};
 
@@ -26,7 +26,7 @@ const ChatContainer: React.FC<ChatContainerProps> = () => {
 
   const getPreviousMessages = async () => {
     try {
-      const response = await axios.get(`/api/vi/rooms/${roomId}/chat`);
+      const response = await axiosInstance.get(`/api/vi/rooms/${roomId}/chat`);
 
       if (response.status === 200) {
         console.log("200 OK");
@@ -132,7 +132,7 @@ const ChatContainer: React.FC<ChatContainerProps> = () => {
             <img
               src={`${process.env.PUBLIC_URL}/assets/images/paper-plane.png`}
               alt="Paper-plane"
-              className="mt-1 h-[28px]"
+              className="h-[20px]"
             />
           </button>
         </div>

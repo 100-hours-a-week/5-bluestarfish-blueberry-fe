@@ -1,16 +1,15 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import StudyroomHeader from "../rooms/StudyroomHeader";
 import StudyroomTN from "../rooms/StudyroomTN";
 import StudyroomFooter from "../rooms/StudyroomFooter";
 import dummyStudyRooms from "../../data/studyRooms";
-import studyRooms from "../../data/studyRooms";
 import { useNavigate, useParams } from "react-router-dom";
+import axiosInstance from "../../utils/axiosInstance";
 
 interface StudyRoom {
   id: number;
   title: string;
-  cam_enabled: boolean;
+  camEnabled: boolean;
   users: { id: number; name: string }[];
   maxUsers: number;
   thumbnail: string;
@@ -38,8 +37,8 @@ const StudyroomTNContainer: React.FC = () => {
   const filteredData = dummyStudyRooms.filter((item) => {
     const matchesCategory =
       selectedCategory === "전체보기" ||
-      (item.cam_enabled === true && selectedCategory === "캠켜공") ||
-      (item.cam_enabled === false && selectedCategory === "캠끄공");
+      (item.camEnabled === true && selectedCategory === "캠켜공") ||
+      (item.camEnabled === false && selectedCategory === "캠끄공");
     return matchesCategory;
   });
 
@@ -47,7 +46,7 @@ const StudyroomTNContainer: React.FC = () => {
     if (isLoading) return;
     try {
       setIsLoading(true);
-      const response = await axios.get("/api/v1/rooms");
+      const response = await axiosInstance.get("/api/v1/rooms");
       setStudyRooms(response.data);
     } catch (error) {
       console.error("스터디룸 목록을 가져오는 중 오류 발생:", error);
@@ -68,7 +67,7 @@ const StudyroomTNContainer: React.FC = () => {
           <div key={room.id} className="cursor-pointer flex-grow">
             <StudyroomTN
               title={room.title}
-              cam_enabled={room.cam_enabled}
+              camEnabled={room.camEnabled}
               currentUsers={room.users.length}
               maxUsers={room.maxUsers}
               thumbnail={room.thumbnail}
