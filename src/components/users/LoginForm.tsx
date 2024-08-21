@@ -1,6 +1,6 @@
 import React, { useState, useEffect, ChangeEvent, FormEvent } from "react";
-import axios from "axios";
 import { validateInputs } from "../../utils/validation"; // 입력값을 검증하는 함수 가져오기
+import axiosInstance from "../../utils/axiosInstance";
 
 // 로그인에 사용할 테스트 이메일과 비밀번호
 const testEmail = "test@naver.com";
@@ -61,10 +61,16 @@ const LoginForm: React.FC = () => {
 
     try {
       setIsLoading(true);
-      const response = await axios.post("/api/v1/auth/login", {
-        email: trimmedEmail,
-        password: trimmedPassword,
-      });
+      const response = await axiosInstance.post(
+        "/api/v1/auth/login",
+        {
+          email: trimmedEmail,
+          password: trimmedPassword,
+        },
+        {
+          withCredentials: true,
+        }
+      );
 
       if (response.status === 200) {
         setHelperText("* 로그인에 성공했습니다.");

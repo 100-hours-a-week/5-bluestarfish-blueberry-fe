@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useRef } from "react";
-import axios from "axios";
 import { useParams } from "react-router-dom";
 import StudyroomContainer from "../components/Container/StudyroomContainer";
 import Sidebar from "../components/rooms/Sidebar";
+import axiosInstance from "../utils/axiosInstance";
 
 interface StudyRoom {
   id: number;
   title: string;
-  cam_enabled: boolean;
+  camEnabled: boolean;
   maxUsers: number;
   thumbnail: string;
   users: { id: number; name: string }[];
@@ -28,7 +28,7 @@ const StudyroomPage: React.FC = () => {
     if (isLoading) return;
     try {
       setIsLoading(true);
-      const response = await axios.get(`/api/v1/rooms/${roomId}`);
+      const response = await axiosInstance.get(`/api/v1/rooms/${roomId}`);
       if (response.status === 200) {
         setStudyRoom(response.data);
       }

@@ -1,5 +1,5 @@
 import React, { useState, ChangeEvent, FormEvent } from "react";
-import axios from "axios";
+import axiosInstance from "../../utils/axiosInstance";
 
 type QnAModalProps = {
   closeModal: () => void;
@@ -17,7 +17,7 @@ const QnAModal: React.FC<QnAModalProps> = ({ closeModal }) => {
 
     try {
       setIsLoading(true);
-      const response = await axios.post("/api/v1/feedback", {
+      const response = await axiosInstance.post("/api/v1/feedback", {
         content: trimmedContent,
       });
       if (response.status === 200) {
