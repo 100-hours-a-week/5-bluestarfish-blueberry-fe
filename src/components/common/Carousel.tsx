@@ -60,7 +60,7 @@ const Carousel = () => {
               key={index}
               src={image}
               alt={`slide-${index}`}
-              className="w-full h-[400px] object-cover"
+              className="w-full h-full object-cover"
             />
           ))}
         </div>

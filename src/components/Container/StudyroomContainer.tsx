@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Client, IMessage } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
 import SmallUserDisplay from "../rooms/SmallUserDisplay";
+import { useStore } from "../../store/store";
 
 type StudyroomContainerProps = {};
 
@@ -18,11 +19,16 @@ interface UserStatus {
 const StudyroomContainer: React.FC = () => {
   const [userStatuses, setUserStatuses] = useState<UserStatus[]>([]);
   const { roomId } = useParams<{ roomId: string }>();
-  const [camEnabled, setCamEnabled] = useState(true);
-  const [micEnabled, setMicEnabled] = useState(true);
-  const [speakerEnabled, setSpeakerEnabled] = useState(true);
   const clientRef = useRef<Client | null>(null);
   const navigate = useNavigate();
+  const {
+    camEnabled,
+    micEnabled,
+    speakerEnabled,
+    toggleCam,
+    toggleMic,
+    toggleSpeaker,
+  } = useStore();
   const myUserId = 1;
 
   useEffect(() => {
@@ -71,42 +77,39 @@ const StudyroomContainer: React.FC = () => {
     }
   };
 
-  const toggleCam = () => {
-    const newCamEnabled = !camEnabled;
-    setCamEnabled(newCamEnabled);
+  const clickCamIcon = () => {
+    toggleCam();
     sendRoomControlUpdate({
       id: myUserId,
       nickname: "Andy",
       profileImage: "string",
-      camEnabled: newCamEnabled,
+      camEnabled: camEnabled,
       micEnabled,
       speakerEnabled,
     });
   };
 
-  const toggleMic = () => {
-    const newMicEnabled = !micEnabled;
-    setMicEnabled(newMicEnabled);
+  const clickMicIcon = () => {
+    toggleMic();
     sendRoomControlUpdate({
       id: myUserId,
       nickname: "Andy",
       profileImage: "string",
       camEnabled,
-      micEnabled: newMicEnabled,
+      micEnabled: micEnabled,
       speakerEnabled,
     });
   };
 
-  const toggleSpeaker = () => {
-    const newSpeakerEnabled = !speakerEnabled;
-    setSpeakerEnabled(newSpeakerEnabled);
+  const clickSpeakerIcon = () => {
+    toggleSpeaker();
     sendRoomControlUpdate({
       id: myUserId,
       nickname: "Andy",
       profileImage: "string",
       camEnabled,
       micEnabled,
-      speakerEnabled: newSpeakerEnabled,
+      speakerEnabled: speakerEnabled,
     });
   };
 
@@ -125,33 +128,45 @@ const StudyroomContainer: React.FC = () => {
             />
           ))}
       </div>
-      <div className="mt-10 flex flex-row gap-5">
-        <button onClick={toggleCam}>
+      <div className="mt-10 flex flex-row gap-5 justify-center items-center">
+        <button onClick={clickCamIcon}>
           <img
-            src={`${process.env.PUBLIC_URL}/assets/images/camera-white.png`}
+            src={
+              camEnabled
+                ? `${process.env.PUBLIC_URL}/assets/images/camera-on.png`
+                : `${process.env.PUBLIC_URL}/assets/images/room-cam-off.png`
+            }
             alt="camera"
-            className="h-[32px]"
+            className="h-[20px] mb-2"
           />
         </button>
-        <button onClick={toggleMic}>
+        <button onClick={clickMicIcon}>
           <img
-            src={`${process.env.PUBLIC_URL}/assets/images/mic-white.png`}
+            src={
+              micEnabled
+                ? `${process.env.PUBLIC_URL}/assets/images/room-mic-on.png`
+                : `${process.env.PUBLIC_URL}/assets/images/room-mic-off.png`
+            }
             alt="mic"
             className="h-[28px]"
           />
         </button>
-        <button onClick={toggleSpeaker}>
+        <button onClick={clickSpeakerIcon}>
           <img
-            src={`${process.env.PUBLIC_URL}/assets/images/speaker-white.png`}
+            src={
+              speakerEnabled
+                ? `${process.env.PUBLIC_URL}/assets/images/room-speaker-on.png`
+                : `${process.env.PUBLIC_URL}/assets/images/room-speaker-off.png`
+            }
             alt="speaker"
-            className="h-[26px]"
+            className="w-[27px] h-[26px] mb-[2px]"
           />
         </button>
         <button onClick={handleExitButton}>
           <img
             src={`${process.env.PUBLIC_URL}/assets/images/exit-white.png`}
             alt="exit"
-            className="h-[26px]"
+            className="h-[26px] mb-[1px]"
           />
         </button>
       </div>

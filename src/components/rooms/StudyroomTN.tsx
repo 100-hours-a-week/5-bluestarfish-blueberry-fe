@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 
 type StudyroomTNProps = {
   title: string;
-  cam_enabled: boolean;
+  camEnabled: boolean;
   currentUsers: number;
   maxUsers: number;
   thumbnail: string;
@@ -11,7 +11,7 @@ type StudyroomTNProps = {
 
 const StudyroomTN: React.FC<StudyroomTNProps> = ({
   title,
-  cam_enabled,
+  camEnabled,
   currentUsers,
   maxUsers,
   thumbnail,
@@ -34,7 +34,7 @@ const StudyroomTN: React.FC<StudyroomTNProps> = ({
         <div className="absolute top-1 left-2">
           <img
             src={`${process.env.PUBLIC_URL}/assets/images/${
-              cam_enabled ? "cam-on-icon.png" : "cam-off-icon.png"
+              camEnabled ? "cam-on-icon.png" : "cam-off-icon.png"
             }`}
             alt="cam-icon"
             className="w-[20px]"
