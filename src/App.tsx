@@ -12,6 +12,7 @@ import RecruitStudyListPage from "./pages/RecruitStudyListPage";
 import RecruitStudyCreatePage from "./pages/RecruitStudyCreatePage";
 import RecruitStudyDetailPage from "./pages/RecruitStudyDetailPage";
 import CreateStudyRoomPage from "./pages/CreateStudyRoomPage";
+import Home from "./components/common/test/Test";
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
         <Route path="/recruit/create" element={<RecruitStudyCreatePage />} />
         <Route path="/recruit/:id" element={<RecruitStudyDetailPage />} />
         <Route path="/studyroom/create" element={<CreateStudyRoomPage />} />
+        <Route path="/test/:roomId" element={<Home />} />
       </Routes>
     </BrowserRouter>
   );

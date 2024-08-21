@@ -1,24 +1,26 @@
-import React, { useState } from 'react';
-import '../../global.css';
-import { useNavigate } from 'react-router-dom';
-import studyRecruitData from '../../data/studyRecruitData';
-import CategorySelector from '../rooms/CategorySelector';
-import RecruitPostList from '../posts/RecruitPostList';
+import React, { useState } from "react";
+import "../../global.css";
+import { useNavigate } from "react-router-dom";
+import studyRecruitData from "../../data/studyRecruitData";
+import CategorySelector from "../rooms/CategorySelector";
+import RecruitPostList from "../posts/RecruitPostList";
 
 const StudyRecruitListContainer: React.FC = () => {
-  const [selectedCategory, setSelectedCategory] = useState('전체보기');
-  const [selectedType, setSelectedType] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState("전체보기");
+  const [selectedType, setSelectedType] = useState("");
   const navigate = useNavigate();
-  const studyRecruitSortedData = studyRecruitData.sort((a, b) => b.createdAt - a.createdAt);
+  const studyRecruitSortedData = studyRecruitData.sort(
+    (a, b) => b.createdAt - a.createdAt
+  );
 
   const categories = [
-    { name: '전체보기', icon: 'list-icon.png' },
-    { name: '모집 중', icon: 'recruit-icon.png' },
+    { name: "전체보기", icon: "list-icon.png" },
+    { name: "모집 중", icon: "recruit-icon.png" },
   ];
 
   const types = [
-    { name: '스터디 멤버 찾기', icon: 'member-icon.png' },
-    { name: '스터디 룸 찾기', icon: 'room-icon.png' },
+    { name: "스터디 멤버 찾기", icon: "member-icon.png" },
+    { name: "스터디 룸 찾기", icon: "room-icon.png" },
   ];
 
   const handleCategoryClick = (category: string) => {
@@ -27,23 +29,30 @@ const StudyRecruitListContainer: React.FC = () => {
 
   const handleTypeClick = (type: string) => {
     if (selectedType === type) {
-      setSelectedType('');
+      setSelectedType("");
     } else {
       setSelectedType(type);
     }
   };
 
   const handlePostClick = () => {
-    navigate('/recruit/list');
+    navigate("/recruit/list");
   };
 
   const handleCreatePostClick = () => {
-    navigate('/recruit/create');
-  }
+    navigate("/recruit/create");
+  };
 
   const filteredData = studyRecruitSortedData.filter((item) => {
-    const matchesCategory = selectedCategory === '전체보기' || (selectedCategory === '모집 중' && item.isRecruited);
-    const matchesType = selectedType === '' || item.type === (selectedType === '스터디 멤버 찾기' ? 'FINDING_MEMBERS' : 'FINDING_ROOMS');
+    const matchesCategory =
+      selectedCategory === "전체보기" ||
+      (selectedCategory === "모집 중" && item.isRecruited);
+    const matchesType =
+      selectedType === "" ||
+      item.type ===
+        (selectedType === "스터디 멤버 찾기"
+          ? "FINDING_MEMBERS"
+          : "FINDING_ROOMS");
     return matchesCategory && matchesType;
   });
 
@@ -73,7 +82,7 @@ const StudyRecruitListContainer: React.FC = () => {
           handleTypeClick={handleTypeClick}
         />
         {/* 모집 공고 글 목록 */}
-        <RecruitPostList posts={filteredData}/>
+        <RecruitPostList posts={filteredData} />
       </div>
     </div>
   );

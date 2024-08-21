@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import StudyroomContainer from "../components/Container/StudyroomContainer";
 import Sidebar from "../components/rooms/Sidebar";
 
@@ -18,6 +18,7 @@ const StudyroomPage: React.FC = () => {
   const [studyRoom, setStudyRoom] = useState<StudyRoom>();
   const { roomId } = useParams<{ roomId: string }>(); // URL에서 roomId를 가져옴
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const myUserId = 1;
 
   useEffect(() => {
     fetchStudyRoom();
