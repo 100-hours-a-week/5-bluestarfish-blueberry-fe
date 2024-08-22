@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, FormEvent, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import Lottie from 'react-lottie-player';
-import ToastNotification from '../common/ToastNotification';
-import addPhotoAnimation from '../../animations/add-photo.json'
-import SubmitButton from '../common/SubmitButton';
+import Lottie from "react-lottie-player";
+import ToastNotification from "../common/ToastNotification";
+import addPhotoAnimation from "../../animations/add-photo.json";
+import SubmitButton from "../common/SubmitButton";
+import axiosInstance from "../../utils/axiosInstance";
+
+import beDomain from "../../utils/constants";
 
 type StudyRoomFormProps = {
     studyRoomName: string;
@@ -45,13 +48,20 @@ const StudyRoomForm: React.FC<StudyRoomFormProps> = ({
     handleSubmit,
 }) => {
     const isFormValid =
-        studyRoomNameError === '통과' &&
-        maxUsersError === '통과' &&
-        (thumbnailError === '* 선택 사항' || thumbnailError === '통과') &&
-        (passwordError === '* 선택 사항' || passwordError === '통과');
+        studyRoomNameError === "통과" &&
+        maxUsersError === "통과" &&
+        (thumbnailError === "* 선택 사항" || thumbnailError === "통과") &&
+        (passwordError === "* 선택 사항" || passwordError === "통과");
 
     const [showToast, setShowToast] = useState(false);
     const navigate = useNavigate();
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [isCam, setIsCam] = useState<boolean>(true);
+
+    useEffect(() => {
+        if (category !== "캠끄공") setIsCam(true);
+        else setIsCam(false);
+    }, [category]);
 
     const handleShowToast = () => {
         if (isFormValid) {
@@ -60,17 +70,50 @@ const StudyRoomForm: React.FC<StudyRoomFormProps> = ({
         }
     };
 
-    const handleCloseToast = () => {
-        setShowToast(false);
-        navigate("/");
+    const createStudyRooms = async (event: FormEvent<HTMLFormElement>) => {
+        event.preventDefault(); // 폼 제출 기본 동작 방지
+        if (isLoading) return;
+
+        alert("asd");
+        const trimmeedTitle = studyRoomName.trim();
+
+        try {
+            setIsLoading(true);
+            const response = await axiosInstance.post(`${beDomain}/api/v1/rooms`, {
+                title: trimmeedTitle,
+                maxUsers: maxUsers,
+                camEnabled: isCam,
+                thumbnail: thumbnail,
+                password: password,
+                description: description,
+            });
+
+            if (response.status === 200) {
+            } else {
+            }
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setIsLoading(false); // 로딩 종료
+        }
     };
 
+    const handleCloseToast = () => {
+        setTimeout(() => {
+          setShowToast(false);
+          navigate("/recruit/list");
+        }, 0);
+      };
+      
     return (
-        <div className="w-full max-w-3xl">
+        <form className="w-full max-w-3xl" onSubmit={createStudyRooms}>
             {/* 스터디룸 이름 입력 필드 */}
             <div className="mb-4 relative">
                 <div className="flex items-center space-x-2 mb-3">
-                    <label className="block text-gray-700 text-m font-bold" htmlFor="studyRoomName">
+                    <label
+                        className="block text-gray-700 text-m font-bold"
+                        htmlFor="studyRoomName"
+                    >
                         스터디룸 이름
                     </label>
                     <img
@@ -78,7 +121,9 @@ const StudyRoomForm: React.FC<StudyRoomFormProps> = ({
                         className="w-[25px] h-[25px] mt-[-7px]"
                         alt="Icon"
                     />
-                    <span className="text-gray-400 text-xs pl-1 font-bold">({Math.min(studyRoomName.length, 15)} / 15)</span>
+                    <span className="text-gray-400 text-xs pl-1 font-bold">
+                        ({Math.min(studyRoomName.length, 15)} / 15)
+                    </span>
                 </div>
 
                 <div className="relative">
@@ -94,7 +139,8 @@ const StudyRoomForm: React.FC<StudyRoomFormProps> = ({
                 </div>
                 {studyRoomNameError && (
                     <p
-                        className={`text-xs italic mt-1 ${studyRoomNameError === '통과' ? 'text-blue-500' : 'text-red-500'}`}
+                        className={`text-xs italic mt-1 ${studyRoomNameError === "통과" ? "text-blue-500" : "text-red-500"
+                            }`}
                     >
                         {studyRoomNameError}
                     </p>
@@ -104,7 +150,9 @@ const StudyRoomForm: React.FC<StudyRoomFormProps> = ({
             {/* 최대 인원 설정 */}
             <div className="mt-5 mb-5">
                 <div className="flex items-center space-x-2">
-                    <label className="block text-gray-700 text-m font-bold mb-3">최대 인원 설정</label>
+                    <label className="block text-gray-700 text-m font-bold mb-3">
+                        최대 인원 설정
+                    </label>
                     <img
                         src={`${process.env.PUBLIC_URL}/assets/images/blueberry-icon.png`}
                         className="w-[25px] h-[25px] mt-[-7px] mb-3"
@@ -115,8 +163,12 @@ const StudyRoomForm: React.FC<StudyRoomFormProps> = ({
                     {[2, 3, 4, 5].map((num) => (
                         <button
                             key={num}
+                            type="button"
                             onClick={() => handleMaxUsersClick(num)}
-                            className={`flex items-center space-x-2 px-7 py-2 rounded-full shadow-md hover:bg-[#6D81D5] hover:text-white transition duration-300 ${maxUsers === num ? 'bg-[#6D81D5] text-white' : 'bg-[#E0E7FF] text-[#4659AA]'}`}
+                            className={`flex items-center space-x-2 px-7 py-2 rounded-full shadow-md hover:bg-[#6D81D5] hover:text-white transition duration-300 ${maxUsers === num
+                                    ? "bg-[#6D81D5] text-white"
+                                    : "bg-[#E0E7FF] text-[#4659AA]"
+                                }`}
                         >
                             {num}명
                         </button>
@@ -124,7 +176,8 @@ const StudyRoomForm: React.FC<StudyRoomFormProps> = ({
                 </div>
                 {maxUsersError && (
                     <p
-                        className={`text-xs italic mt-1 ${maxUsersError === '통과' ? 'text-blue-500' : 'text-red-500'}`}
+                        className={`text-xs italic mt-1 ${maxUsersError === "통과" ? "text-blue-500" : "text-red-500"
+                            }`}
                     >
                         {maxUsersError}
                     </p>
@@ -133,16 +186,23 @@ const StudyRoomForm: React.FC<StudyRoomFormProps> = ({
 
             {/* 카테고리 선택 */}
             <div className="mb-5">
-                <label className="block text-gray-700 text-m font-bold mb-2">카테고리</label>
+                <label className="block text-gray-700 text-m font-bold mb-2">
+                    카테고리
+                </label>
                 <div className="flex space-x-3">
-                    {['캠켜공', '캠끄공'].map((cat) => (
+                    {["캠켜공", "캠끄공"].map((cat) => (
                         <button
                             key={cat}
                             onClick={() => handleCategoryClick(cat)}
-                            className={`flex items-center space-x-2 px-8 py-2 rounded-full shadow-md hover:bg-[#6D81D5] hover:text-white transition duration-300 ${category === cat ? 'bg-[#6D81D5] text-white' : 'bg-[#E0E7FF] text-[#4659AA]'}`}
+                            type="button"
+                            className={`flex items-center space-x-2 px-8 py-2 rounded-full shadow-md hover:bg-[#6D81D5] hover:text-white transition duration-300 ${category === cat
+                                    ? "bg-[#6D81D5] text-white"
+                                    : "bg-[#E0E7FF] text-[#4659AA]"
+                                }`}
                         >
                             <img
-                                src={`${process.env.PUBLIC_URL}/assets/images/${cat === '캠켜공' ? 'cam-on-icon.png' : 'cam-off-icon.png'}`}
+                                src={`${process.env.PUBLIC_URL}/assets/images/${cat === "캠켜공" ? "cam-on-icon.png" : "cam-off-icon.png"
+                                    }`}
                                 alt={cat}
                                 className="w-5 h-5"
                             />
@@ -154,11 +214,14 @@ const StudyRoomForm: React.FC<StudyRoomFormProps> = ({
 
             {/* 대표 이미지 업로드 */}
             <div className="mb-5 relative">
-                <label className="block text-gray-700 text-m font-bold mb-2" htmlFor="thumbnail">
+                <label
+                    className="block text-gray-700 text-m font-bold mb-2"
+                    htmlFor="thumbnail"
+                >
                     대표 이미지
                 </label>
                 <label htmlFor="thumbnail">
-                    {thumbnail && thumbnailError === '통과' ? (
+                    {thumbnail && thumbnailError === "통과" ? (
                         <img
                             src={URL.createObjectURL(thumbnail)}
                             alt="thumbnail preview"
@@ -182,7 +245,8 @@ const StudyRoomForm: React.FC<StudyRoomFormProps> = ({
                 />
                 {thumbnailError && (
                     <p
-                        className={`text-xs italic mt-1 ${thumbnailError === '통과' ? 'text-blue-500' : 'text-red-500'}`}
+                        className={`text-xs italic mt-1 ${thumbnailError === "통과" ? "text-blue-500" : "text-red-500"
+                            }`}
                     >
                         {thumbnailError}
                     </p>
@@ -191,8 +255,14 @@ const StudyRoomForm: React.FC<StudyRoomFormProps> = ({
 
             {/* 암호 설정 */}
             <div className="mb-4 relative">
-                <label className="block text-gray-700 text-m font-bold mb-2" htmlFor="password">
-                    암호 설정 <span className="text-gray-400 text-xs pl-1">({Math.min(password.length, 20)} / 20)</span>
+                <label
+                    className="block text-gray-700 text-m font-bold mb-2"
+                    htmlFor="password"
+                >
+                    암호 설정{" "}
+                    <span className="text-gray-400 text-xs pl-1">
+                        ({Math.min(password.length, 20)} / 20)
+                    </span>
                 </label>
                 <input
                     id="password"
@@ -205,7 +275,8 @@ const StudyRoomForm: React.FC<StudyRoomFormProps> = ({
                 />
                 {passwordError && (
                     <p
-                        className={`text-xs italic mt-1 ${passwordError === '통과' ? 'text-blue-500' : 'text-red-500'}`}
+                        className={`text-xs italic mt-1 ${passwordError === "통과" ? "text-blue-500" : "text-red-500"
+                            }`}
                     >
                         {passwordError}
                     </p>
@@ -214,8 +285,14 @@ const StudyRoomForm: React.FC<StudyRoomFormProps> = ({
 
             {/* 스터디 소개 */}
             <div className="mb-4 relative">
-                <label className="block text-gray-700 text-m font-bold mb-2" htmlFor="description">
-                    스터디 소개 <span className="text-gray-400 text-xs pl-1">({Math.min(description.length, 100)} / 100)</span>
+                <label
+                    className="block text-gray-700 text-m font-bold mb-2"
+                    htmlFor="description"
+                >
+                    스터디 소개{" "}
+                    <span className="text-gray-400 text-xs pl-1">
+                        ({Math.min(description.length, 100)} / 100)
+                    </span>
                 </label>
                 <textarea
                     id="description"
@@ -230,12 +307,16 @@ const StudyRoomForm: React.FC<StudyRoomFormProps> = ({
 
             {/* 스터디룸 생성 버튼 */}
             <div className="flex justify-center mt-10 mb-10 w-full">
-                <SubmitButton isFormValid={isFormValid} handleClick={handleShowToast} text="스터디룸 생성" />
+                <SubmitButton
+                    isFormValid={isFormValid}
+                    handleClick={handleShowToast}
+                    text="스터디룸 생성"
+                />
                 {showToast && (
                     <ToastNotification message="생성 완료!" onClose={handleCloseToast} />
                 )}
             </div>
-        </div>
+        </form>
     );
 };
 
