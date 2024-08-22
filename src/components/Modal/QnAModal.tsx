@@ -1,6 +1,8 @@
 import React, { useState, ChangeEvent, FormEvent } from "react";
 import axiosInstance from "../../utils/axiosInstance";
 
+import beDomain from "../../utils/constants";
+
 type QnAModalProps = {
   closeModal: () => void;
 };
@@ -17,9 +19,12 @@ const QnAModal: React.FC<QnAModalProps> = ({ closeModal }) => {
 
     try {
       setIsLoading(true);
-      const response = await axiosInstance.post("/api/v1/feedback", {
-        content: trimmedContent,
-      });
+      const response = await axiosInstance.post(
+        `${beDomain}/api/v1/feedbacks`,
+        {
+          content: trimmedContent,
+        }
+      );
       if (response.status === 200) {
         // 성공 처리
       }

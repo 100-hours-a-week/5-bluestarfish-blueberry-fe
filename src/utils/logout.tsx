@@ -1,13 +1,10 @@
 import { useLoginedUserStore } from "../store/store";
 
-const deleteCookie = (name: string) => {
-  document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
-};
-
 export const logout = () => {
-  const { setLoginedUser } = useLoginedUserStore.getState();
-  setLoginedUser(null);
+  const { setUserId, setNickname, setProfileImage } = useLoginedUserStore();
 
-  deleteCookie("accessToken");
+  setUserId(0);
+  setNickname("");
+  setProfileImage("");
   //   localStorage.removeItem("accessToken");
 };

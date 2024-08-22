@@ -6,6 +6,8 @@ import ChatStartMessage from "../rooms/ChatStartMessage";
 import ChatEndMessage from "../rooms/ChatEndMessage";
 import axiosInstance from "../../utils/axiosInstance";
 
+import beDomain from "../../utils/constants";
+
 type ChatContainerProps = {};
 
 interface Message {
@@ -26,7 +28,9 @@ const ChatContainer: React.FC<ChatContainerProps> = () => {
 
   const getPreviousMessages = async () => {
     try {
-      const response = await axiosInstance.get(`/api/vi/rooms/${roomId}/chat`);
+      const response = await axiosInstance.get(
+        `${beDomain}/api/v1/rooms/${roomId}/chats`
+      );
 
       if (response.status === 200) {
         console.log("200 OK");
@@ -38,7 +42,7 @@ const ChatContainer: React.FC<ChatContainerProps> = () => {
   };
 
   useEffect(() => {
-    getPreviousMessages();
+    // getPreviousMessages();
     const socket = new SockJS("http://localhost:8080/ws-chat");
     const client = new Client({
       webSocketFactory: () => socket as WebSocket,
@@ -100,23 +104,24 @@ const ChatContainer: React.FC<ChatContainerProps> = () => {
   return (
     <div className="m-2 flex flex-col h-full">
       <div className="flex-grow overflow-y-auto max-h-[530px] p-2">
-        {messages.map((msg, index) =>
-          msg.senderId === 1 ? (
-            <ChatStartMessage
-              key={index} // 배열의 각 항목에 고유한 key 값 설정
-              nickname="You"
-              time={msg.time}
-              message={msg.message}
-            />
-          ) : (
-            <ChatEndMessage
-              key={index} // 배열의 각 항목에 고유한 key 값 설정
-              nickname="You"
-              time={msg.time}
-              message={msg.message}
-            />
-          )
-        )}
+        {Array.isArray(messages) &&
+          messages.map((msg, index) =>
+            msg.senderId === 1 ? (
+              <ChatStartMessage
+                key={index} // 배열의 각 항목에 고유한 key 값 설정
+                nickname="You"
+                time={msg.time}
+                message={msg.message}
+              />
+            ) : (
+              <ChatEndMessage
+                key={index} // 배열의 각 항목에 고유한 key 값 설정
+                nickname="You"
+                time={msg.time}
+                message={msg.message}
+              />
+            )
+          )}
         <div ref={messagesEndRef}></div>
         <div className="flex flex-row gap-1 fixed bottom-3 right-3">
           <input

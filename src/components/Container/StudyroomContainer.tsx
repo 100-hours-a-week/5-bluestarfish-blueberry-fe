@@ -3,7 +3,10 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Client, IMessage } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
 import SmallUserDisplay from "../rooms/SmallUserDisplay";
-import { useStore } from "../../store/store";
+import { useDeviceStore, useLoginedUserStore } from "../../store/store";
+import axiosInstance from "../../utils/axiosInstance";
+
+import beDomain from "../../utils/constants";
 
 type StudyroomContainerProps = {};
 
@@ -16,8 +19,29 @@ interface UserStatus {
   speakerEnabled: boolean;
 }
 
+interface User {
+  id: number;
+  nickname: string;
+  profileImage: string;
+  camEnabled: boolean;
+  micEnabled: boolean;
+  speakerEnabled: boolean;
+}
+
+interface StudyRoom {
+  id: number;
+  title: string;
+  camEnabled: boolean;
+  maxUsers: number;
+  thumbnail: string;
+  users: { id: number; name: string }[];
+}
+
 const StudyroomContainer: React.FC = () => {
+  const [studyRoom, setStudyRoom] = useState<StudyRoom>();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [userStatuses, setUserStatuses] = useState<UserStatus[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
   const { roomId } = useParams<{ roomId: string }>();
   const clientRef = useRef<Client | null>(null);
   const navigate = useNavigate();
@@ -28,9 +52,45 @@ const StudyroomContainer: React.FC = () => {
     toggleCam,
     toggleMic,
     toggleSpeaker,
-  } = useStore();
-  const myUserId = 1;
+  } = useDeviceStore();
+  const { userId, nickname, profileImage } = useLoginedUserStore();
 
+  useEffect(() => {
+    fetchStudyRoom();
+  }, []);
+
+  const fetchStudyRoom = async () => {
+    if (isLoading) return;
+    try {
+      setIsLoading(true);
+      const response = await axiosInstance.get(
+        `${beDomain}/api/v1/rooms/${roomId}`
+      );
+      if (response.status === 200) {
+        setStudyRoom(response.data);
+        setUsers(response.data.users);
+        console.log(response.data);
+      }
+    } catch (error: any) {
+      if (error.response) {
+        if (error.response.status === 404) {
+          console.error(
+            "404 오류: ",
+            error.response.data.message || "스터디룸을 찾을 수 없습니다."
+          );
+        } else {
+          console.error(
+            `오류 발생 (${error.response.status}):`,
+            error.response.data.message || "서버 오류가 발생했습니다."
+          );
+        }
+      } else {
+        console.error("스터디룸 정보를 가져오는 중 오류 발생:", error.message);
+      }
+    } finally {
+      setIsLoading(false); // 로딩 종료
+    }
+  };
   useEffect(() => {
     const socket = new SockJS("http://localhost:8080/ws-study");
     const client = new Client({
@@ -66,7 +126,11 @@ const StudyroomContainer: React.FC = () => {
         clientRef.current.deactivate();
       }
     };
-  }, [roomId]);
+  }, []);
+
+  useEffect(() => {
+    console.log(userStatuses);
+  }, [userStatuses]);
 
   const sendRoomControlUpdate = (update: UserStatus) => {
     if (clientRef.current && clientRef.current.connected) {
@@ -80,9 +144,9 @@ const StudyroomContainer: React.FC = () => {
   const clickCamIcon = () => {
     toggleCam();
     sendRoomControlUpdate({
-      id: myUserId,
-      nickname: "Andy",
-      profileImage: "string",
+      id: userId,
+      nickname: nickname,
+      profileImage: profileImage,
       camEnabled: camEnabled,
       micEnabled,
       speakerEnabled,
@@ -92,9 +156,9 @@ const StudyroomContainer: React.FC = () => {
   const clickMicIcon = () => {
     toggleMic();
     sendRoomControlUpdate({
-      id: myUserId,
-      nickname: "Andy",
-      profileImage: "string",
+      id: userId,
+      nickname: nickname,
+      profileImage: profileImage,
       camEnabled,
       micEnabled: micEnabled,
       speakerEnabled,
@@ -104,9 +168,9 @@ const StudyroomContainer: React.FC = () => {
   const clickSpeakerIcon = () => {
     toggleSpeaker();
     sendRoomControlUpdate({
-      id: myUserId,
-      nickname: "Andy",
-      profileImage: "string",
+      id: userId,
+      nickname: nickname,
+      profileImage: profileImage,
       camEnabled,
       micEnabled,
       speakerEnabled: speakerEnabled,
@@ -120,13 +184,14 @@ const StudyroomContainer: React.FC = () => {
   return (
     <div className="w-full flex flex-col items-center justify-center p-4">
       <div className="my-12  flex flex-wrap gap-8 justify-center">
-        {userStatuses
-          .filter((userStatus) => userStatus.id !== myUserId) // nowUserId와 다른 userStatus만 필터링
-          .map((userStatus) => (
-            <SmallUserDisplay
-              userStatus={userStatus} // 필터링된 userStatus 전달
-            />
-          ))}
+        {Array.isArray(users) &&
+          users
+            .filter((user) => user.id !== userId) // nowUserId와 다른 userStatus만 필터링
+            .map((user) => (
+              <SmallUserDisplay
+                userStatus={user} // 필터링된 userStatus 전달
+              />
+            ))}
       </div>
       <div className="mt-10 flex flex-row gap-5 justify-center items-center">
         <button onClick={clickCamIcon}>

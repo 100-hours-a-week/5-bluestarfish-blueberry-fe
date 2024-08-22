@@ -2,6 +2,8 @@ import React, { useState, useEffect, ChangeEvent, FormEvent } from "react";
 import { validateInputs } from "../../utils/validation"; // 입력값을 검증하는 함수 가져오기
 import axiosInstance from "../../utils/axiosInstance";
 
+import beDomain from "../../utils/constants";
+
 // 로그인에 사용할 테스트 이메일과 비밀번호
 const testEmail = "test@naver.com";
 const testPassword = "Test1234*";
@@ -43,6 +45,23 @@ const LoginForm: React.FC = () => {
     window.location.href = "/"; // 루트 페이지로 리다이렉트
   };
 
+  // 임시 회원가입 함수
+  const signup = async () => {
+    try {
+      const response = await axiosInstance.post(`${beDomain}/api/v1/users`, {
+        email: "test@naver.com",
+        password: "Test1234*",
+      });
+
+      if (response.status === 200) {
+        alert("회원가입 성공!");
+      }
+    } catch (error) {
+      console.log(error);
+      alert("회원가입 실패!");
+    }
+  };
+
   // Axios로 로그인 요청 보내는 함수
   const loginUser = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault(); // 폼 제출 기본 동작 방지
@@ -62,13 +81,10 @@ const LoginForm: React.FC = () => {
     try {
       setIsLoading(true);
       const response = await axiosInstance.post(
-        "/api/v1/auth/login",
+        `${beDomain}/api/v1/auth/login`,
         {
           email: trimmedEmail,
           password: trimmedPassword,
-        },
-        {
-          withCredentials: true,
         }
       );
 
@@ -176,6 +192,7 @@ const LoginForm: React.FC = () => {
         <div className="flex justify-center">
           <button
             className={`relative h-[40px] bg-[#EEEEFF] hover:bg-[#C6CFFF] text-[#777676] font-bold py-3 px-6 rounded-full w-[70%] flex items-center justify-center text-center`}
+            onClick={signup}
           >
             <span className="absolute transform transition-transform duration-300">
               회원가입

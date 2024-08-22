@@ -114,6 +114,7 @@ const RecruitStudyDetailContainer: React.FC = () => {
         studyRoom={
           studyRoom
             ? {
+                id: 1,
                 title: studyRoom.title,
                 camEnabled: studyRoom.camEnabled,
                 currentUsers: studyRoom.users.length,
