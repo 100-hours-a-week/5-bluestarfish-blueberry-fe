@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Lottie from 'react-lottie-player';
 import ToastNotification from '../common/ToastNotification';
 import addPhotoAnimation from '../../animations/add-photo.json'
+import SubmitButton from '../common/SubmitButton';
 
 type StudyRoomFormProps = {
     studyRoomName: string;
@@ -229,13 +230,7 @@ const StudyRoomForm: React.FC<StudyRoomFormProps> = ({
 
             {/* 스터디룸 생성 버튼 */}
             <div className="flex justify-center mt-10 mb-10 w-full">
-                <button
-                    onClick={handleShowToast}
-                    disabled={!isFormValid}
-                    className={`w-[30%] flex justify-center items-center space-x-2 px-4 py-2 rounded-full shadow-md text-center transition duration-300 ${isFormValid ? 'bg-[#6D81D5] text-white hover:bg-[#4659AA]' : 'bg-gray-300 text-gray-500 cursor-not-allowed'}`}
-                >
-                    스터디룸 생성
-                </button>
+                <SubmitButton isFormValid={isFormValid} handleClick={handleShowToast} text="스터디룸 생성" />
                 {showToast && (
                     <ToastNotification message="생성 완료!" onClose={handleCloseToast} />
                 )}
