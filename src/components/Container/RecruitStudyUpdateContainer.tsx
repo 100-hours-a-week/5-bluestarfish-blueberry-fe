@@ -151,6 +151,7 @@ const RecruitStudyUpdateContainer: React.FC = () => {
                     onClick={() => setTab0SelectedStudy(room.id)}
                   >
                     <StudyroomTN
+                      id={room.id}
                       title={room.title}
                       camEnabled={room.camEnabled}
                       currentUsers={room.users.length}
