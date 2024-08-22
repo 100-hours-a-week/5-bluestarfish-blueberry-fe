@@ -92,7 +92,7 @@ export const validateThumbnail = (file: File | null): string => {
         }
         return '통과';
     }
-    return '* 헬퍼텍스트'; // 파일이 없을 때 기본 헬퍼 텍스트로 설정
+    return '* 선택 사항'; // 파일이 없을 때 기본 헬퍼 텍스트로 설정
 };
 
 // 스터디룸 암호 유효성 검사
