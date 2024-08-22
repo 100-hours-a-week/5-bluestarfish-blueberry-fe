@@ -22,7 +22,7 @@ const StudyroomHeader: React.FC<StudyroomHeaderProps> = ({
   };
 
   const enterRecruitStudyCreatePage = () => {
-    navigate("/recruit/create");
+    navigate("/studyroom/create");
   };
 
   const filteredData = studyRooms.filter((item) => {

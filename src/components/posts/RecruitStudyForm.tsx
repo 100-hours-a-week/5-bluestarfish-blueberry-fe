@@ -49,12 +49,12 @@ const RecruitStudyForm: React.FC<StudyFormProps> = ({
         {/* 제목 입력 필드 */}
         <div className="mb-4 relative">
           <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="title">
-            제목 <span className="text-gray-400 text-xs pl-1">({title.length} / 20)</span>  {/* 제목 길이 표시 */}
+            제목 <span className="text-gray-400 text-xs pl-1">({title.length} / 30)</span>  {/* 제목 길이 표시 */}
           </label>
           <input
             id="title"
             type="text"
-            maxLength={20}  // 제목 최대 길이 제한
+            maxLength={30}  // 제목 최대 길이 제한
             value={title}  // 입력된 제목 값
             onChange={handleTitleChange}  // 제목 변경 시 호출될 핸들러
             placeholder="제목을 입력해주세요."  // 입력 필드에 표시될 플레이스홀더
@@ -79,7 +79,7 @@ const RecruitStudyForm: React.FC<StudyFormProps> = ({
             onChange={handleContentChange}  // 내용 변경 시 호출될 핸들러
             placeholder="내용을 입력해주세요."  // 입력 필드에 표시될 플레이스홀더
             rows={5}  // textarea의 행 수
-            className="input peer input-alt h-full w-full border-b-[1px] border-none bg-transparent focus:outline-none focus:ring-0 resize-none"  // 스타일 클래스
+            className="input peer input-alt h-full w-full border-b-[1px] border-none bg-transparent focus:outline-none focus:ring-0 resize-none text-black"  // 스타일 클래스
           />
           <span className="absolute bottom-0 left-0 w-0 h-[1.5px] bg-[#A98BFF] transition-all duration-700 ease-in-out peer-focus:w-full mb-6"></span>
           {/* 내용 헬퍼 텍스트 */}

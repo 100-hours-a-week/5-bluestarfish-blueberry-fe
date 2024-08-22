@@ -31,7 +31,7 @@ const ToastNotification: React.FC<ToastNotificationProps> = ({ message, onClose 
   }, [onClose]);  // onClose가 변경될 때마다 useEffect 재실행
 
   return (
-    <div className="fixed top-4 right-4 bg-white shadow-lg rounded-lg flex items-center p-4 w-72">
+    <div className="fixed top-4 right-4 bg-white shadow-lg rounded-lg flex items-center p-4 w-72 z-[50]">
       <div className="flex items-center">
         {/* 체크 아이콘 */}
         <div className="rounded-full w-8 h-8 flex items-center justify-center mr-3">

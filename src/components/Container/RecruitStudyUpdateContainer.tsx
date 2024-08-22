@@ -1,35 +1,37 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import "../../global.css";
 import StudyroomTN from "../rooms/StudyroomTN";
 import studyRooms from "../../data/studyRooms";
+import studyRecruitData from "../../data/studyRecruitData";
 import RecruitStudyForm from "../posts/RecruitStudyForm";
 import { validateStudyFormInputs } from "../../utils/validation";
 import TabBar from "../posts/TabBar";
 import ToastNotification from "../common/ToastNotification";
-import SubmitButton from "../common/SubmitButton"; // SubmitButton 컴포넌트 가져오기
+import SubmitButton from "../common/SubmitButton";
 
-const RecruitStudyCreateContainer: React.FC = () => {
-  // 탭 0 관련 상태
+const RecruitStudyUpdateContainer: React.FC = () => {
+  const { id } = useParams<{ id: string }>(); // URL에서 id를 가져옴
+  const navigate = useNavigate();
+  
+  // 탭 0 (스터디 룸 멤버 찾기) 관련 상태
   const [tab0SelectedCategory, setTab0SelectedCategory] = useState<string>("");
   const [tab0Title, setTab0Title] = useState("");
   const [tab0Content, setTab0Content] = useState("");
   const [tab0SelectedStudy, setTab0SelectedStudy] = useState<number | null>(null);
 
-  // 탭 1 관련 상태
+  // 탭 1 (스터디 룸 찾기) 관련 상태
   const [tab1SelectedCategory, setTab1SelectedCategory] = useState<string>("");
   const [tab1Title, setTab1Title] = useState("");
   const [tab1Content, setTab1Content] = useState("");
 
-  // 공통 상태
   const [categoryHelperText, setCategoryHelperText] = useState<string>("* 헬퍼텍스트");
   const [titleHelperText, setTitleHelperText] = useState<string>("* 헬퍼텍스트");
-  const [contentHelperText, setContentHelperText] = useState<string>("* 헬퍼텍스트");
+  const [contentHelperText, setContentHelperText] = useState<string>("* 헬퍼텍스트");                                            
   const [studyHelperText, setStudyHelperText] = useState<string>("* 헬퍼텍스트");
   const [isFormValid, setIsFormValid] = useState<boolean>(false);
   const [showToast, setShowToast] = useState(false);
-  const [activeTab, setActiveTab] = useState<number>(0); // 현재 활성화된 탭의 인덱스 상태
-  const navigate = useNavigate(); // 페이지 이동을 위한 useNavigate 훅
+  const [activeTab, setActiveTab] = useState<number>(0);
 
   const categories = [
     { name: "캠켜공", icon: "cam-on-icon.png" },
@@ -37,7 +39,29 @@ const RecruitStudyCreateContainer: React.FC = () => {
   ];
 
   useEffect(() => {
-    // 유효성 검사 함수 호출
+    const postData = studyRecruitData.find((post) => post.id === Number(id));
+
+    if (postData) {
+      console.log("게시글 데이터:", postData);
+
+      if (postData.type === "FINDING_MEMBERS") {
+        setActiveTab(0);
+        setTab0Title(postData.title);
+        setTab0Content(postData.content);
+        setTab0SelectedStudy(postData.roomId);
+        setTab0SelectedCategory(postData.isCamOn ? "캠켜공" : "캠끄공");
+      } else if (postData.type === "FINDING_ROOMS") {
+        setActiveTab(1);
+        setTab1Title(postData.title);
+        setTab1Content(postData.content);
+        setTab1SelectedCategory(postData.isCamOn ? "캠켜공" : "캠끄공");
+      }
+    } else {
+      console.log("해당 ID에 해당하는 게시글이 없습니다.");
+    }
+  }, [id]);
+
+  useEffect(() => {
     const {
       categoryHelperText,
       titleHelperText,
@@ -65,16 +89,21 @@ const RecruitStudyCreateContainer: React.FC = () => {
 
   const handleSubmit = () => {
     if (isFormValid) {
-      console.log("Form submitted:", {
-        tab0SelectedCategory,
-        tab0Title,
-        tab0Content,
-        tab0SelectedStudy,
-        tab1SelectedCategory,
-        tab1Title,
-        tab1Content,
-      });
-      // 제출 로직 추가
+      const postData = studyRecruitData.find((post) => post.id === Number(id));
+      if (postData) {
+        if (activeTab === 0) {
+          postData.title = tab0Title;
+          postData.content = tab0Content;
+          postData.roomId = tab0SelectedStudy || 0;
+          postData.isCamOn = tab0SelectedCategory === "캠켜공";
+        } else if (activeTab === 1) {
+          postData.title = tab1Title;
+          postData.content = tab1Content;
+          postData.isCamOn = tab1SelectedCategory === "캠켜공";
+        }
+        console.log("수정된 게시글 데이터:", postData);
+      }
+      handleShowToast();
     } else {
       alert("모든 필드를 채워주세요.");
     }
@@ -86,26 +115,13 @@ const RecruitStudyCreateContainer: React.FC = () => {
 
   const handleCloseToast = () => {
     setShowToast(false);
-    navigate("/recruit/list"); // 토스트가 닫힐 때 페이지 이동
-  };
-
-  const handleCategorySelect = (category: string) => {
-    if (activeTab === 0) {
-      setTab0SelectedCategory(tab0SelectedCategory === category ? "" : category);
-    } else {
-      setTab1SelectedCategory(tab1SelectedCategory === category ? "" : category);
-    }
-  };
-
-  const handleStudySelect = (studyId: number) => {
-    setTab0SelectedStudy(tab0SelectedStudy === studyId ? null : studyId);
+    navigate(`/recruit/${id}`);
   };
 
   return (
     <div className="container mx-auto flex flex-col items-center mt-10">
-      <h1 className="text-2xl font-bold mb-8 text-black">✍🏻 게시글 작성 ✍🏻</h1>
+      <h1 className="text-2xl font-bold mb-8 text-black">✍🏻 게시글 수정 ✍🏻</h1>
       <div className="w-full max-w-3xl">
-        {/* 상단 탭 바 컴포넌트 */}
         <TabBar activeIndex={activeTab} setActiveIndex={setActiveTab} />
 
         {activeTab === 0 ? (
@@ -118,7 +134,7 @@ const RecruitStudyCreateContainer: React.FC = () => {
               titleHelperText={titleHelperText}
               contentHelperText={contentHelperText}
               categories={categories}
-              handleCategorySelect={handleCategorySelect}
+              handleCategorySelect={(category) => setTab0SelectedCategory(category)}
               handleTitleChange={(e) => setTab0Title(e.target.value)}
               handleContentChange={(e) => setTab0Content(e.target.value)}
             />
@@ -132,10 +148,9 @@ const RecruitStudyCreateContainer: React.FC = () => {
                   <div
                     key={room.id}
                     className="cursor-pointer"
-                    onClick={() => handleStudySelect(room.id)}
+                    onClick={() => setTab0SelectedStudy(room.id)}
                   >
                     <StudyroomTN
-                      id={room.id}
                       title={room.title}
                       camEnabled={room.camEnabled}
                       currentUsers={room.users.length}
@@ -160,20 +175,19 @@ const RecruitStudyCreateContainer: React.FC = () => {
             titleHelperText={titleHelperText}
             contentHelperText={contentHelperText}
             categories={categories}
-            handleCategorySelect={handleCategorySelect}
+            handleCategorySelect={(category) => setTab1SelectedCategory(category)}
             handleTitleChange={(e) => setTab1Title(e.target.value)}
             handleContentChange={(e) => setTab1Content(e.target.value)}
           />
         )}
 
-        {/* SubmitButton 컴포넌트 사용 */}
-        <SubmitButton isFormValid={isFormValid} handleClick={handleShowToast} text="게시글 등록" />
+        <SubmitButton isFormValid={isFormValid} handleClick={handleSubmit} text="수정 완료" />
         {showToast && (
-          <ToastNotification message="등록 완료!" onClose={handleCloseToast} />
+          <ToastNotification message="수정 완료!" onClose={handleCloseToast} />
         )}
       </div>
     </div>
   );
 };
 
-export default RecruitStudyCreateContainer;
+export default RecruitStudyUpdateContainer;
