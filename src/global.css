@@ -18,5 +18,63 @@ div::-webkit-scrollbar {
 
 div::-webkit-scrollbar-thumb {
     background-color: #BDBDFF;
-    border-radius: 4px; 
+    border-radius: 4px;
+}
+
+/* From Uiverse.io by AlimurtuzaCodes */
+.btn {
+    border: none;
+    width: 15em;
+    height: 4em;
+    border-radius: 3em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    background: #1C1A1C;
+    cursor: pointer;
+    transition: all 450ms ease-in-out;
+}
+
+.sparkle {
+    fill: #AAAAAA;
+    transition: all 800ms ease;
+}
+
+.text {
+    font-weight: 600;
+    color: #AAAAAA;
+    font-size: medium;
+}
+
+.btn:hover {
+    background: linear-gradient(0deg, #A47CF3, #683FEA);
+    box-shadow: inset 0px 1px 0px 0px rgba(255, 255, 255, 0.4),
+        inset 0px -4px 0px 0px rgba(0, 0, 0, 0.2),
+        0px 0px 0px 4px rgba(255, 255, 255, 0.2),
+        0px 0px 100px 0px #9917FF;
+    transform: translateY(-2px);
+}
+
+.btn:hover .text {
+    color: white;
+}
+
+.btn:hover .sparkle {
+    fill: white;
+    transform: scale(1.2);
+}
+
+.btn:disabled,
+.btn[disabled] {
+    background: #6c757d;
+    box-shadow: none;
+}
+
+.btn:disabled .text {
+    color: #d1d5db;
+}
+
+.btn:disabled .sparkle {
+    fill: #d1d5db;
 }
