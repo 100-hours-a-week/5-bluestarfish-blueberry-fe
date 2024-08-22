@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 
 type StudyroomTNProps = {
+  id: number;
   title: string;
   camEnabled: boolean;
   currentUsers: number;
@@ -10,6 +11,7 @@ type StudyroomTNProps = {
 };
 
 const StudyroomTN: React.FC<StudyroomTNProps> = ({
+  id,
   title,
   camEnabled,
   currentUsers,
@@ -19,7 +21,7 @@ const StudyroomTN: React.FC<StudyroomTNProps> = ({
 }) => {
   const navigate = useNavigate(); // 페이지 이동을 위한 useNavigate 훅
   const enterStudyRoom = () => {
-    navigate("/wait/1");
+    navigate(`/wait/${id}`);
   };
 
   return (

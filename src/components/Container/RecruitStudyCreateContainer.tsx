@@ -153,6 +153,7 @@ const RecruitStudyCreateContainer: React.FC = () => {
                     onClick={() => handleStudySelect(room.id)}
                   >
                     <StudyroomTN
+                      id={room.id}
                       title={room.title}
                       camEnabled={room.camEnabled}
                       currentUsers={room.users.length}
