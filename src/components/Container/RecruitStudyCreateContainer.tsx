@@ -68,18 +68,32 @@ const RecruitStudyCreateContainer: React.FC = () => {
 
   const handleSubmit = async () => {
     if (isFormValid) {
-      const requestBody = {
+      // 기본 requestBody 설정
+      // let requestBody: any = {
+      //   userId: 1,  // 고정된 userId, 실제로는 로그인한 사용자의 ID를 사용
+      //   title: activeTab === 0 ? tab0Title : tab1Title,
+      //   content: activeTab === 0 ? tab0Content : tab1Content,
+      //   postType: activeTab === 0 ? "FINDING_MEMBERS" : "FINDING_ROOMS",
+      //   isRecruited: false,
+      // };
+
+      let requestBody: any = {
         userId: 1,  // 고정된 userId, 실제로는 로그인한 사용자의 ID를 사용
-        roomId: activeTab === 0 ? tab0SelectedStudy : null,  // 탭에 따라 선택된 roomId
         title: activeTab === 0 ? tab0Title : tab1Title,
         content: activeTab === 0 ? tab0Content : tab1Content,
         postType: activeTab === 0 ? "FINDING_MEMBERS" : "FINDING_ROOMS",
         isRecruited: false,
+        roomId: activeTab === 0 ? tab0SelectedStudy : 1,  // activeTab이 1인 경우 roomId를 0으로 설정
       };
-
+  
+      // 탭 0인 경우에만 roomId 추가
+      if (activeTab === 0 && tab0SelectedStudy !== null) {
+        requestBody.roomId = tab0SelectedStudy;
+      }
+  
       try {
         const response = await axiosInstance.post(`${beDomain}/api/v1/posts`, requestBody);
-
+  
         if (response.status === 201) {
           console.log("게시글 작성 성공:", response.data);
           handleShowToast();
@@ -92,6 +106,7 @@ const RecruitStudyCreateContainer: React.FC = () => {
       alert("모든 필드를 채워주세요.");
     }
   };
+  
 
   const handleShowToast = () => {
     setShowToast(true);

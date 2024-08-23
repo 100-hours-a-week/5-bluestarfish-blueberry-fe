@@ -43,6 +43,7 @@ const ToastNotification: React.FC<ToastNotificationProps> = ({ message, onClose 
       {/* 닫기 버튼 */}
       <button
         className="absolute top-2 right-2 text-gray-400 hover:text-gray-600"
+        type="button"
         onClick={onClose}  // 클릭 시 알림을 닫음
       >
         &#x2715;  {/* 'x' 문자 */}

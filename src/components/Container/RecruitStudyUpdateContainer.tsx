@@ -9,6 +9,9 @@ import { validateStudyFormInputs } from "../../utils/validation";
 import TabBar from "../posts/TabBar";
 import ToastNotification from "../common/ToastNotification";
 import SubmitButton from "../common/SubmitButton";
+import axiosInstance from "../../utils/axiosInstance";
+
+import beDomain from "../../utils/constants";
 
 const RecruitStudyUpdateContainer: React.FC = () => {
   const { id } = useParams<{ id: string }>(); // URL에서 id를 가져옴
@@ -87,23 +90,50 @@ const RecruitStudyUpdateContainer: React.FC = () => {
     );
   }, [tab0SelectedCategory, tab0Title, tab0Content, tab0SelectedStudy, tab1SelectedCategory, tab1Title, tab1Content, activeTab]);
 
-  const handleSubmit = () => {
+  // const handleSubmit = () => {
+  //   if (isFormValid) {
+  //     const postData = studyRecruitData.find((post) => post.id === Number(id));
+  //     if (postData) {
+  //       if (activeTab === 0) {
+  //         postData.title = tab0Title;
+  //         postData.content = tab0Content;
+  //         postData.roomId = tab0SelectedStudy || 0;
+  //         postData.isCamOn = tab0SelectedCategory === "캠켜공";
+  //       } else if (activeTab === 1) {
+  //         postData.title = tab1Title;
+  //         postData.content = tab1Content;
+  //         postData.isCamOn = tab1SelectedCategory === "캠켜공";
+  //       }
+  //       console.log("수정된 게시글 데이터:", postData);
+  //     }
+  //     handleShowToast();
+  //   } else {
+  //     alert("모든 필드를 채워주세요.");
+  //   }
+  // };
+
+  const handleSubmit = async () => {
     if (isFormValid) {
-      const postData = studyRecruitData.find((post) => post.id === Number(id));
-      if (postData) {
-        if (activeTab === 0) {
-          postData.title = tab0Title;
-          postData.content = tab0Content;
-          postData.roomId = tab0SelectedStudy || 0;
-          postData.isCamOn = tab0SelectedCategory === "캠켜공";
-        } else if (activeTab === 1) {
-          postData.title = tab1Title;
-          postData.content = tab1Content;
-          postData.isCamOn = tab1SelectedCategory === "캠켜공";
+      const requestBody = {
+        userId: 1,  // 고정된 userId, 실제로는 로그인한 사용자의 ID를 사용
+        roomId: activeTab === 0 ? tab0SelectedStudy : null,  // 탭에 따라 선택된 roomId
+        title: activeTab === 0 ? tab0Title : tab1Title,
+        content: activeTab === 0 ? tab0Content : tab1Content,
+        postType: activeTab === 0 ? "FINDING_MEMBERS" : "FINDING_ROOMS",
+        isRecruited: false,
+      };
+
+      try {
+        const response = await axiosInstance.patch(`${beDomain}/api/v1/posts`, requestBody);
+
+        if (response.status === 204) {
+          console.log("게시글 수정 성공:", response.data);
+          handleShowToast();
         }
-        console.log("수정된 게시글 데이터:", postData);
+      } catch (error) {
+        console.error("게시글 수정 실패:", error);
+        alert("서버 오류가 발생했습니다. 다시 시도해주세요.");
       }
-      handleShowToast();
     } else {
       alert("모든 필드를 채워주세요.");
     }
