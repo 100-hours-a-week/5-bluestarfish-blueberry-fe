@@ -7,7 +7,10 @@ import RecruitStudyForm from "../posts/RecruitStudyForm";
 import { validateStudyFormInputs } from "../../utils/validation";
 import TabBar from "../posts/TabBar";
 import ToastNotification from "../common/ToastNotification";
-import SubmitButton from "../common/SubmitButton"; // SubmitButton 컴포넌트 가져오기
+import SubmitButton from "../common/SubmitButton";
+import axiosInstance from "../../utils/axiosInstance";
+
+import beDomain from "../../utils/constants";
 
 const RecruitStudyCreateContainer: React.FC = () => {
   // 탭 0 관련 상태
@@ -63,22 +66,47 @@ const RecruitStudyCreateContainer: React.FC = () => {
     );
   }, [tab0SelectedCategory, tab0Title, tab0Content, tab0SelectedStudy, tab1SelectedCategory, tab1Title, tab1Content, activeTab]);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (isFormValid) {
-      console.log("Form submitted:", {
-        tab0SelectedCategory,
-        tab0Title,
-        tab0Content,
-        tab0SelectedStudy,
-        tab1SelectedCategory,
-        tab1Title,
-        tab1Content,
-      });
-      // 제출 로직 추가
+      // 기본 requestBody 설정
+      // let requestBody: any = {
+      //   userId: 1,  // 고정된 userId, 실제로는 로그인한 사용자의 ID를 사용
+      //   title: activeTab === 0 ? tab0Title : tab1Title,
+      //   content: activeTab === 0 ? tab0Content : tab1Content,
+      //   postType: activeTab === 0 ? "FINDING_MEMBERS" : "FINDING_ROOMS",
+      //   isRecruited: false,
+      // };
+
+      let requestBody: any = {
+        userId: 1,  // 고정된 userId, 실제로는 로그인한 사용자의 ID를 사용
+        title: activeTab === 0 ? tab0Title : tab1Title,
+        content: activeTab === 0 ? tab0Content : tab1Content,
+        postType: activeTab === 0 ? "FINDING_MEMBERS" : "FINDING_ROOMS",
+        isRecruited: false,
+        roomId: activeTab === 0 ? tab0SelectedStudy : 1,  // activeTab이 1인 경우 roomId를 0으로 설정
+      };
+  
+      // 탭 0인 경우에만 roomId 추가
+      if (activeTab === 0 && tab0SelectedStudy !== null) {
+        requestBody.roomId = tab0SelectedStudy;
+      }
+  
+      try {
+        const response = await axiosInstance.post(`${beDomain}/api/v1/posts`, requestBody);
+  
+        if (response.status === 201) {
+          console.log("게시글 작성 성공:", response.data);
+          handleShowToast();
+        }
+      } catch (error) {
+        console.error("게시글 작성 실패:", error);
+        alert("서버 오류가 발생했습니다. 다시 시도해주세요.");
+      }
     } else {
       alert("모든 필드를 채워주세요.");
     }
   };
+  
 
   const handleShowToast = () => {
     setShowToast(true);
@@ -167,7 +195,7 @@ const RecruitStudyCreateContainer: React.FC = () => {
         )}
 
         {/* SubmitButton 컴포넌트 사용 */}
-        <SubmitButton isFormValid={isFormValid} handleClick={handleShowToast} text="게시글 등록" />
+        <SubmitButton isFormValid={isFormValid} handleClick={handleSubmit} text="게시글 등록" />
         {showToast && (
           <ToastNotification message="등록 완료!" onClose={handleCloseToast} />
         )}

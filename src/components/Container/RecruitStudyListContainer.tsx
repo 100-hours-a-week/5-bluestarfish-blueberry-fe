@@ -1,17 +1,39 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../../global.css";
 import { useNavigate } from "react-router-dom";
-import studyRecruitData from "../../data/studyRecruitData";
+import axiosInstance from "../../utils/axiosInstance";
 import CategorySelector from "../rooms/CategorySelector";
 import RecruitPostList from "../posts/RecruitPostList";
+import beDomain from "../../utils/constants";
+
+interface Post {
+  id: number;
+  title: string;
+  postType: string;
+  user: {
+    nickname: string;
+    profileImage?: string | null;
+  };
+  room: {
+    camEnabled: boolean;
+  };
+  recruited: boolean;
+}
+
+interface ApiResponse {
+  data: {
+    content: Array<Post>;
+    totalPages: number;
+    totalElements: number;
+  };
+}
 
 const StudyRecruitListContainer: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState("전체보기");
   const [selectedType, setSelectedType] = useState("");
+  const [posts, setPosts] = useState<Array<Post>>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
-  const studyRecruitSortedData = studyRecruitData.sort(
-    (a, b) => b.createdAt - a.createdAt
-  );
 
   const categories = [
     { name: "전체보기", icon: "list-icon.png" },
@@ -23,38 +45,53 @@ const StudyRecruitListContainer: React.FC = () => {
     { name: "스터디 룸 찾기", icon: "room-icon.png" },
   ];
 
+  useEffect(() => {
+    fetchPosts();
+  }, [selectedCategory, selectedType]);
+
+  const fetchPosts = async () => {
+    try {
+      setIsLoading(true);
+      const recruited = selectedCategory === "모집 중";
+      const type =
+        selectedType === "스터디 멤버 찾기"
+          ? "FINDING_MEMBERS"
+          : selectedType === "스터디 룸 찾기"
+          ? "FINDING_ROOMS"
+          : "";
+
+      const response = await axiosInstance.get<ApiResponse>(
+        `${beDomain}/api/v1/posts`,
+        {
+          params: {
+            page: 0,
+            type,
+            recruited,
+          },
+        }
+      );
+      
+      const postsData = response.data.data.content;
+      setPosts(postsData);
+    } catch (error) {
+      console.error("게시글 목록을 불러오지 못했습니다:", error);
+      setPosts([]); // 에러 발생 시 빈 배열로 설정
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const handleCategoryClick = (category: string) => {
     setSelectedCategory(category);
   };
 
   const handleTypeClick = (type: string) => {
-    if (selectedType === type) {
-      setSelectedType("");
-    } else {
-      setSelectedType(type);
-    }
-  };
-
-  const handlePostClick = () => {
-    navigate("/recruit/list");
+    setSelectedType(selectedType === type ? "" : type);
   };
 
   const handleCreatePostClick = () => {
     navigate("/recruit/create");
   };
-
-  const filteredData = studyRecruitSortedData.filter((item) => {
-    const matchesCategory =
-      selectedCategory === "전체보기" ||
-      (selectedCategory === "모집 중" && item.isRecruited);
-    const matchesType =
-      selectedType === "" ||
-      item.type ===
-        (selectedType === "스터디 멤버 찾기"
-          ? "FINDING_MEMBERS"
-          : "FINDING_ROOMS");
-    return matchesCategory && matchesType;
-  });
 
   return (
     <div className="flex flex-col items-center w-full bg-white mb-10">
@@ -81,8 +118,13 @@ const StudyRecruitListContainer: React.FC = () => {
           handleCategoryClick={handleCategoryClick}
           handleTypeClick={handleTypeClick}
         />
+
         {/* 모집 공고 글 목록 */}
-        <RecruitPostList posts={filteredData} />
+        {isLoading ? (
+          <div>Loading...</div>
+        ) : (
+          <RecruitPostList posts={posts} />
+        )}
       </div>
     </div>
   );
