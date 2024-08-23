@@ -2,7 +2,7 @@ type TimerProps = {};
 
 const Timer: React.FC<TimerProps> = () => {
   return (
-    <div className="text-black text-shadow-lg">
+    <div className="text-black">
       <div className="flex gap-2 mx-4">
         <img
           src={`${process.env.PUBLIC_URL}/assets/images/timer-black.png`}

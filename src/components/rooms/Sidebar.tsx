@@ -53,7 +53,7 @@ const Sidebar: React.FC<SidebarProps> = ({ toggleSidebar }) => {
             activeButton === "home" ? "ml-[140px]" : "ml-[212px]"
           } w-[50px] h-[2px] bg-black`}
         ></div>
-        <div className="mt-10 w-full">
+        <div className="mt-5 w-full">
           {activeButton === "home" && <HomeContainer />}
           {activeButton === "chat" && <ChatContainer />}
         </div>

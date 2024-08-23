@@ -3,8 +3,6 @@ import { useParams } from "react-router-dom";
 import StudyroomContainer from "../components/Container/StudyroomContainer";
 import Sidebar from "../components/rooms/Sidebar";
 
-import beDomain from "../utils/constants";
-
 const StudyroomPage: React.FC = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const { roomId } = useParams<{ roomId: string }>(); // URL에서 roomId를 가져옴
