@@ -1,8 +1,6 @@
 import React, { useState, ChangeEvent, FormEvent } from "react";
 import axiosInstance from "../../utils/axiosInstance";
 
-import beDomain from "../../utils/constants";
-
 type QnAModalProps = {
   closeModal: () => void;
 };
@@ -20,7 +18,7 @@ const QnAModal: React.FC<QnAModalProps> = ({ closeModal }) => {
     try {
       setIsLoading(true);
       const response = await axiosInstance.post(
-        `${beDomain}/api/v1/feedbacks`,
+        `${process.env.REACT_APP_API_URL}/api/v1/feedbacks`,
         {
           content: trimmedContent,
         }

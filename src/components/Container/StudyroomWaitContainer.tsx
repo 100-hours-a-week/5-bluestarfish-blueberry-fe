@@ -4,8 +4,6 @@ import LargeUserDisplay from "../rooms/LargeUserDisplay";
 import axiosInstance from "../../utils/axiosInstance";
 import { useDeviceStore } from "../../store/store";
 
-import beDomain from "../../utils/constants";
-
 type StudyroomWaitContainerProps = {};
 
 const StudyroomWaitContainer: React.FC = () => {
@@ -33,7 +31,7 @@ const StudyroomWaitContainer: React.FC = () => {
     try {
       setIsLoading(true);
       const response = await axiosInstance.patch(
-        `${beDomain}/api/v1/rooms/${roomId}/users/${userId}`,
+        `${process.env.REACT_APP_API_URL}/api/v1/rooms/${roomId}/users/${userId}`,
         {
           isActive: "True",
         }

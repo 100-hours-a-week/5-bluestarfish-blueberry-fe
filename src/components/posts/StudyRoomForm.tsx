@@ -5,7 +5,6 @@ import ToastNotification from "../common/ToastNotification";
 import addPhotoAnimation from "../../animations/add-photo.json";
 import SubmitButton from "../common/SubmitButton";
 import axiosInstance from "../../utils/axiosInstance";
-
 import beDomain from "../../utils/constants";
 
 type StudyRoomFormProps = {

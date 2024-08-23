@@ -16,7 +16,7 @@ const MainPageContainer: React.FC = () => {
   };
 
   return (
-    <body className="flex flex-col mt-[80px] items-center w-full bg-white">
+    <div className="flex flex-col mt-[80px] items-center w-full bg-white">
       <Carousel />
       <div className="w-full]">
         <RankingSlider />
@@ -33,7 +33,7 @@ const MainPageContainer: React.FC = () => {
         </div>
       </div>
       {isQnAModalOpen && <QnAModal closeModal={closeQnAModal} />}
-    </body>
+    </div>
   );
 };
 
