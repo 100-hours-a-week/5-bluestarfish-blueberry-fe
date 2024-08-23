@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from "react";
 import StudyroomHeader from "../rooms/StudyroomHeader";
-import StudyroomTN from "../rooms/StudyroomTN";
+import StudyroomMTN from "../rooms/StudyroomMTN";
 import StudyroomFooter from "../rooms/StudyroomFooter";
 import dummyStudyRooms from "../../data/studyRooms";
 import { useNavigate, useParams } from "react-router-dom";
 import axiosInstance from "../../utils/axiosInstance";
-
-import beDomain from "../../utils/constants";
 
 interface StudyRoom {
   id: number;
@@ -36,6 +34,7 @@ const StudyroomTNContainer: React.FC = () => {
 
   useEffect(() => {
     setFilteredData(studyRooms);
+    console.log(studyRooms);
   }, [studyRooms]);
 
   useEffect(() => {
@@ -73,7 +72,9 @@ const StudyroomTNContainer: React.FC = () => {
     if (isLoading) return;
     try {
       setIsLoading(true);
-      const response = await axiosInstance.get(`${beDomain}/api/v1/rooms`);
+      const response = await axiosInstance.get(
+        `${process.env.REACT_APP_API_URL}/api/v1/rooms`
+      );
       setStudyRooms(
         Array.isArray(response.data.data.content)
           ? response.data.data.content
@@ -88,14 +89,17 @@ const StudyroomTNContainer: React.FC = () => {
 
   const makeStudyroom = async () => {
     try {
-      const response = await axiosInstance.post(`${beDomain}/api/v1/rooms`, {
-        title: "모각공",
-        maxUsers: 5,
-        camEnabled: true,
-        thumbnail: "s3 url",
-        password: "qlalsfqjsgh12!@",
-        description: "asdasdasdasdasdadadasda",
-      });
+      const response = await axiosInstance.post(
+        `${process.env.REACT_APP_API_URL}/api/v1/rooms`,
+        {
+          title: "모각공",
+          maxUsers: 5,
+          camEnabled: true,
+          thumbnail: "s3 url",
+          password: "qlalsfqjsgh12!@",
+          description: "asdasdasdasdasdadadasda",
+        }
+      );
 
       if (response.status === 200) {
         alert("스터디룸 생성 성공!");
@@ -117,7 +121,7 @@ const StudyroomTNContainer: React.FC = () => {
         {filteredData.length > 0 ? (
           filteredData.map((room) => (
             <div key={room.id} className="cursor-pointer flex-grow">
-              <StudyroomTN
+              <StudyroomMTN
                 id={room.id}
                 title={room.title}
                 camEnabled={room.camEnabled}

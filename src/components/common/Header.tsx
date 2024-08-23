@@ -8,14 +8,7 @@ const Header: React.FC = () => {
   const [isAlarmModalOpen, setAlarmModalOpen] = useState(false);
 
   // Zustand로부터 로그인된 유저 정보를 가져옵니다
-  const {
-    userId,
-    nickname,
-    profileImage,
-    setUserId,
-    setNickname,
-    setProfileImage,
-  } = useLoginedUserStore();
+  const { userId, profileImage } = useLoginedUserStore();
 
   const toggleModal = () => {
     setModalOpen(!isModalOpen);

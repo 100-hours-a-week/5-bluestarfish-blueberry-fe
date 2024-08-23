@@ -4,20 +4,8 @@ import { Client, IMessage } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
 import SmallUserDisplay from "../rooms/SmallUserDisplay";
 import { useDeviceStore, useLoginedUserStore } from "../../store/store";
+import { useUserStore } from "../../store/userStore";
 import axiosInstance from "../../utils/axiosInstance";
-
-import beDomain from "../../utils/constants";
-
-type StudyroomContainerProps = {};
-
-interface UserStatus {
-  id: number;
-  nickname: string;
-  profileImage: string;
-  camEnabled: boolean;
-  micEnabled: boolean;
-  speakerEnabled: boolean;
-}
 
 interface User {
   id: number;
@@ -40,8 +28,6 @@ interface StudyRoom {
 const StudyroomContainer: React.FC = () => {
   const [studyRoom, setStudyRoom] = useState<StudyRoom>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [userStatuses, setUserStatuses] = useState<UserStatus[]>([]);
-  const [users, setUsers] = useState<User[]>([]);
   const { roomId } = useParams<{ roomId: string }>();
   const clientRef = useRef<Client | null>(null);
   const navigate = useNavigate();
@@ -55,21 +41,27 @@ const StudyroomContainer: React.FC = () => {
   } = useDeviceStore();
   const { userId, nickname, profileImage } = useLoginedUserStore();
 
+  const { users, setUsers } = useUserStore();
+
   useEffect(() => {
     fetchStudyRoom();
   }, []);
+
+  useEffect(() => {
+    console.log(studyRoom);
+    console.log(users);
+  }, [users]);
 
   const fetchStudyRoom = async () => {
     if (isLoading) return;
     try {
       setIsLoading(true);
       const response = await axiosInstance.get(
-        `${beDomain}/api/v1/rooms/${roomId}`
+        `${process.env.REACT_APP_API_URL}/api/v1/rooms/${roomId}`
       );
       if (response.status === 200) {
         setStudyRoom(response.data);
-        setUsers(response.data.users);
-        console.log(response.data);
+        setUsers(response.data.data.maxUsers);
       }
     } catch (error: any) {
       if (error.response) {
@@ -99,8 +91,8 @@ const StudyroomContainer: React.FC = () => {
         if (!client || !roomId) return;
         client.subscribe(`/rooms/${roomId}/management`, (message: IMessage) => {
           const body = JSON.parse(message.body);
-          const users: UserStatus[] = body.map(
-            (user: any): UserStatus => ({
+          const users: User[] = body.map(
+            (user: any): User => ({
               id: user.id,
               nickname: user.nickname,
               profileImage: user.profileImage,
@@ -110,7 +102,7 @@ const StudyroomContainer: React.FC = () => {
             })
           );
           // 상태 업데이트
-          setUserStatuses(users);
+          setUsers(users);
         });
       },
       onStompError: (error) => {
@@ -129,10 +121,10 @@ const StudyroomContainer: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    console.log(userStatuses);
-  }, [userStatuses]);
+    console.log(users);
+  }, [users]);
 
-  const sendRoomControlUpdate = (update: UserStatus) => {
+  const sendRoomControlUpdate = (update: User) => {
     if (clientRef.current && clientRef.current.connected) {
       clientRef.current.publish({
         destination: `/rooms/${roomId}/management`,

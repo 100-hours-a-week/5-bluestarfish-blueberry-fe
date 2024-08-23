@@ -2,8 +2,6 @@ import React, { useState, useEffect, ChangeEvent, FormEvent } from "react";
 import { validateInputs } from "../../utils/validation"; // 입력값을 검증하는 함수 가져오기
 import axiosInstance from "../../utils/axiosInstance";
 
-import beDomain from "../../utils/constants";
-
 // 로그인에 사용할 테스트 이메일과 비밀번호
 const testEmail = "test@naver.com";
 const testPassword = "Test1234*";
@@ -48,10 +46,14 @@ const LoginForm: React.FC = () => {
   // 임시 회원가입 함수
   const signup = async () => {
     try {
-      const response = await axiosInstance.post(`${beDomain}/api/v1/users`, {
-        email: "test@naver.com",
-        password: "Test1234*",
-      });
+      const response = await axiosInstance.post(
+        `${process.env.REACT_APP_API_URL}/api/v1/users`,
+        {
+          email: "test@naver.com",
+          nickname: "ian",
+          password: "Test1234*",
+        }
+      );
 
       if (response.status === 200) {
         alert("회원가입 성공!");
@@ -81,7 +83,7 @@ const LoginForm: React.FC = () => {
     try {
       setIsLoading(true);
       const response = await axiosInstance.post(
-        `${beDomain}/api/v1/auth/login`,
+        `${process.env.REACT_APP_API_URL}/api/v1/auth/login`,
         {
           email: trimmedEmail,
           password: trimmedPassword,
@@ -89,16 +91,19 @@ const LoginForm: React.FC = () => {
       );
 
       if (response.status === 200) {
-        setHelperText("* 로그인에 성공했습니다.");
-        setHelperTextColor("text-blue-500");
-        setTimeout(() => {
-          redirectToPostListPage();
-        }, 3000);
+        redirectToPostListPage();
       } else {
         setHelperText("* 이메일 또는 비밀번호를 다시 확인해주세요.");
         setHelperTextColor("text-red-500");
       }
-    } catch (error) {
+    } catch (error: any) {
+      if (error.response) {
+        if (error.response.status === 401) {
+          console.error("401: ", "Unauthorized");
+        }
+      } else {
+        console.error("로그인 응답을 받아오는 중 오류 발생:", error.message);
+      }
       console.error(error);
       setHelperText("* 서버 오류가 발생했습니다. 다시 시도해주세요.");
       setHelperTextColor("text-red-500");

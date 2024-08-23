@@ -1,13 +1,15 @@
 type ChatEndMessageProps = {
-  nickname: string;
-  time: string;
   message: string;
+  senderNickname: string;
+  senderProfileImage: string;
+  createdAt: string;
 };
 
 const ChatEndMessage: React.FC<ChatEndMessageProps> = ({
-  nickname,
-  time,
   message,
+  senderNickname,
+  senderProfileImage,
+  createdAt,
 }) => {
   return (
     <div className="chat chat-end">
@@ -20,11 +22,11 @@ const ChatEndMessage: React.FC<ChatEndMessageProps> = ({
         </div>
       </div>
       <div className="chat-header text-black">
-        {nickname}
-        <time className="text-xs opacity-50">{time}</time>
+        {senderNickname}
+        <time className="text-xs opacity-50">{createdAt}</time>
       </div>
       <div className="chat-bubble">{message}</div>
-      <div className="chat-footer opacity-50">Delivered</div>
+      <div className="chat-footer opacity-50 text-black">{createdAt}</div>
     </div>
   );
 };

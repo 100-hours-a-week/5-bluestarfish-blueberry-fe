@@ -16,3 +16,15 @@ npm install tailwindcss@latest postcss@latest autoprefixer@latest
 
 // zustand 설치
 npm install zustand
+
+# production 배포 env실행
+
+npm run build
+
+# development 개발 env실행
+
+npm start
+
+# test 개발 env실행
+
+npm run test
