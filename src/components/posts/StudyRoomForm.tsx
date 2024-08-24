@@ -99,7 +99,6 @@ const StudyRoomForm: React.FC<StudyRoomFormProps> = ({
   };
 
   const handleCloseToast = () => {
-    setShowToast(false);
     navigate("/");
   };
 

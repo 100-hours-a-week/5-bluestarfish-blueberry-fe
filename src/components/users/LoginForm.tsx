@@ -1,10 +1,8 @@
 import React, { useState, useEffect, ChangeEvent, FormEvent } from "react";
 import { validateInputs } from "../../utils/validation"; // 입력값을 검증하는 함수 가져오기
 import axiosInstance from "../../utils/axiosInstance";
-
-// 로그인에 사용할 테스트 이메일과 비밀번호
-const testEmail = "test@naver.com";
-const testPassword = "Test1234*";
+import { useNavigate } from "react-router-dom";
+import { useLoginedUserStore } from "../../store/store";
 
 const LoginForm: React.FC = () => {
   const [email, setEmail] = useState<string>(""); // 이메일 입력 상태
@@ -14,6 +12,14 @@ const LoginForm: React.FC = () => {
     useState<string>("text-red-500"); // 핼퍼 텍스트 색상 상태
   const [isValid, setIsValid] = useState<boolean>(false); // 입력값의 유효성 상태
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const {
+    userId,
+    nickname,
+    profileImage,
+    setUserId,
+    setNickname,
+    setProfileImage,
+  } = useLoginedUserStore();
 
   // useEffect 훅을 사용해 이메일과 비밀번호가 변경될 때마다 유효성 검사 수행
   useEffect(() => {
@@ -43,24 +49,36 @@ const LoginForm: React.FC = () => {
     window.location.href = "/"; // 루트 페이지로 리다이렉트
   };
 
-  // 임시 회원가입 함수
-  const signup = async () => {
-    try {
-      const response = await axiosInstance.post(
-        `${process.env.REACT_APP_API_URL}/api/v1/users`,
-        {
-          email: "test@naver.com",
-          nickname: "ian",
-          password: "Test1234*",
-        }
-      );
+  const navigate = useNavigate();
 
+  // 임시 회원가입 함수
+  const signup = () => {
+    navigate("/signup");
+  };
+
+  const setUserInfo = async () => {
+    try {
+      const response = await axiosInstance.get(
+        `${process.env.REACT_APP_API_URL}/api/v1/users/whoami`
+      );
       if (response.status === 200) {
-        alert("회원가입 성공!");
+        setUserId(response.data.data.id);
+        setNickname(response.data.data.nickname);
+        setProfileImage(response.data.data.profile_image);
+        redirectToPostListPage();
       }
-    } catch (error) {
-      console.log(error);
-      alert("회원가입 실패!");
+    } catch (error: any) {
+      if (error.response) {
+        if (error.response.status === 404) {
+          console.error("404: ", "Not found");
+        }
+      } else {
+        console.error(
+          "로그인 유저 정보를 받아오는 중 오류 발생:",
+          error.message
+        );
+      }
+      console.error(error);
     }
   };
 
@@ -91,7 +109,8 @@ const LoginForm: React.FC = () => {
       );
 
       if (response.status === 200) {
-        redirectToPostListPage();
+        await setUserInfo();
+        console.log(userId, nickname, profileImage);
       } else {
         setHelperText("* 이메일 또는 비밀번호를 다시 확인해주세요.");
         setHelperTextColor("text-red-500");

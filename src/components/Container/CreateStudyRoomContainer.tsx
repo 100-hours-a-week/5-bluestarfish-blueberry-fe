@@ -1,26 +1,28 @@
-import React, { useState } from 'react';
-import StudyRoomForm from '../posts/StudyRoomForm';
+import React, { useState } from "react";
+import StudyRoomForm from "../posts/StudyRoomForm";
 import {
   validateStudyRoomName,
   validateMaxUsers,
   validateThumbnail,
-  validatePassword
-} from '../../utils/validation';
+  validatePassword,
+} from "../../utils/validation";
 
 const CreateStudyRoomContainer: React.FC = () => {
-  const [studyRoomName, setStudyRoomName] = useState('');
+  const [studyRoomName, setStudyRoomName] = useState("");
   const [maxUsers, setMaxUsers] = useState<number | null>(null);
   const [category, setCategory] = useState<string | null>(null);
   const [thumbnail, setThumbnail] = useState<File | null>(null);
-  const [password, setPassword] = useState('');
-  const [description, setDescription] = useState('');
+  const [password, setPassword] = useState("");
+  const [description, setDescription] = useState("");
 
-  const [studyRoomNameError, setStudyRoomNameError] = useState('* 헬퍼텍스트');
-  const [maxUsersError, setMaxUsersError] = useState('* 헬퍼텍스트');
-  const [thumbnailError, setThumbnailError] = useState('* 선택 사항');
-  const [passwordError, setPasswordError] = useState('* 선택 사항');
+  const [studyRoomNameError, setStudyRoomNameError] = useState("* 헬퍼텍스트");
+  const [maxUsersError, setMaxUsersError] = useState("* 헬퍼텍스트");
+  const [thumbnailError, setThumbnailError] = useState("* 선택 사항");
+  const [passwordError, setPasswordError] = useState("* 선택 사항");
 
-  const handleStudyRoomNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleStudyRoomNameChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const name = e.target.value;
     setStudyRoomName(name);
     setStudyRoomNameError(validateStudyRoomName(name));
@@ -50,26 +52,26 @@ const CreateStudyRoomContainer: React.FC = () => {
     setPasswordError(isPasswordValid);
 
     return (
-      isStudyRoomNameValid === '통과' &&
-      isMaxUsersValid === '통과' &&
-      (thumbnailError === '* 선택 사항' || thumbnailError === '통과') &&
-      (passwordError === '* 선택 사항' || passwordError === '통과')
+      isStudyRoomNameValid === "통과" &&
+      isMaxUsersValid === "통과" &&
+      (thumbnailError === "* 선택 사항" || thumbnailError === "통과") &&
+      (passwordError === "* 선택 사항" || passwordError === "통과")
     );
   };
 
   const handleSubmit = () => {
     if (validateForm()) {
-      console.log('스터디룸 생성 성공');
+      console.log("스터디룸 생성 성공");
     }
   };
 
   const handleMaxUsersClick = (selectedMaxUsers: number) => {
     if (maxUsers === selectedMaxUsers) {
       setMaxUsers(null);
-      setMaxUsersError('최대 인원을 선택해주세요.');
+      setMaxUsersError("최대 인원을 선택해주세요.");
     } else {
       setMaxUsers(selectedMaxUsers);
-      setMaxUsersError('통과');
+      setMaxUsersError("통과");
     }
   };
 
@@ -83,7 +85,9 @@ const CreateStudyRoomContainer: React.FC = () => {
 
   return (
     <div className="container mx-auto flex flex-col items-center bg-[#EEEEFF] mt-[100px] mb-[30px] w-[60%] pt-[30px] pb-[30px] rounded-lg">
-      <h1 className="text-2xl font-bold mt-4 mb-20 text-black">📚 스터디룸 만들기 📚</h1>
+      <h1 className="text-2xl font-bold mt-4 mb-20 text-black">
+        📚 스터디룸 만들기 📚
+      </h1>
       <StudyRoomForm
         studyRoomName={studyRoomName}
         maxUsers={maxUsers}

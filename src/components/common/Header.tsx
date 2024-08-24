@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import HeaderModal from "../Modal/HeaderModal";
 import AlarmModal from "../Modal/AlarmModal";
@@ -8,7 +8,7 @@ const Header: React.FC = () => {
   const [isAlarmModalOpen, setAlarmModalOpen] = useState(false);
 
   // Zustand로부터 로그인된 유저 정보를 가져옵니다
-  const { userId, profileImage } = useLoginedUserStore();
+  const { userId, nickname, profileImage } = useLoginedUserStore();
 
   const toggleModal = () => {
     setModalOpen(!isModalOpen);
@@ -25,6 +25,12 @@ const Header: React.FC = () => {
   const closeAlarmModal = () => {
     setAlarmModalOpen(false);
   };
+
+  useEffect(() => {
+    console.log(
+      `userId = ${userId}, nickname = ${nickname}, image = ${profileImage}`
+    );
+  });
 
   return (
     <header className="fixed w-full bg-white z-50">
