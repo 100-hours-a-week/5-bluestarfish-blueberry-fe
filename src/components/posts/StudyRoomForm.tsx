@@ -100,7 +100,7 @@ const StudyRoomForm: React.FC<StudyRoomFormProps> = ({
     const handleCloseToast = () => {
         setTimeout(() => {
           setShowToast(false);
-          navigate("/recruit/list");
+          navigate("/");
         }, 0);
       };
       
