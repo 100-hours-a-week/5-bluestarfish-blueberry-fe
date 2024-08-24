@@ -1,4 +1,4 @@
-import create from "zustand";
+import { create } from "zustand";
 
 // User 인터페이스 정의
 interface User {
