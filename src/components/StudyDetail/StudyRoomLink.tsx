@@ -3,6 +3,7 @@ import StudyroomTN from "../rooms/StudyroomTN";
 
 interface StudyRoomLinkProps {
   studyRoom: {
+    id: number;
     title: string;
     camEnabled: boolean;
     currentUsers: number;
@@ -35,6 +36,7 @@ const StudyRoomLink: React.FC<StudyRoomLinkProps> = ({
           }`}
         >
           <StudyroomTN
+            id={studyRoom.id}
             title={studyRoom.title}
             camEnabled={studyRoom.camEnabled}
             currentUsers={studyRoom.currentUsers}

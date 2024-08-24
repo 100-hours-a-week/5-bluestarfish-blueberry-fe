@@ -17,9 +17,12 @@ const QnAModal: React.FC<QnAModalProps> = ({ closeModal }) => {
 
     try {
       setIsLoading(true);
-      const response = await axiosInstance.post("/api/v1/feedback", {
-        content: trimmedContent,
-      });
+      const response = await axiosInstance.post(
+        `${process.env.REACT_APP_API_URL}/api/v1/feedbacks`,
+        {
+          content: trimmedContent,
+        }
+      );
       if (response.status === 200) {
         // 성공 처리
       }

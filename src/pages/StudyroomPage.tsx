@@ -2,56 +2,11 @@ import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import StudyroomContainer from "../components/Container/StudyroomContainer";
 import Sidebar from "../components/rooms/Sidebar";
-import axiosInstance from "../utils/axiosInstance";
-
-interface StudyRoom {
-  id: number;
-  title: string;
-  camEnabled: boolean;
-  maxUsers: number;
-  thumbnail: string;
-  users: { id: number; name: string }[];
-}
 
 const StudyroomPage: React.FC = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [studyRoom, setStudyRoom] = useState<StudyRoom>();
   const { roomId } = useParams<{ roomId: string }>(); // URL에서 roomId를 가져옴
-  const [isLoading, setIsLoading] = useState<boolean>(false);
   const myUserId = 1;
-
-  useEffect(() => {
-    fetchStudyRoom();
-  }, []);
-
-  const fetchStudyRoom = async () => {
-    if (isLoading) return;
-    try {
-      setIsLoading(true);
-      const response = await axiosInstance.get(`/api/v1/rooms/${roomId}`);
-      if (response.status === 200) {
-        setStudyRoom(response.data);
-      }
-    } catch (error: any) {
-      if (error.response) {
-        if (error.response.status === 404) {
-          console.error(
-            "404 오류: ",
-            error.response.data.message || "스터디룸을 찾을 수 없습니다."
-          );
-        } else {
-          console.error(
-            `오류 발생 (${error.response.status}):`,
-            error.response.data.message || "서버 오류가 발생했습니다."
-          );
-        }
-      } else {
-        console.error("스터디룸 정보를 가져오는 중 오류 발생:", error.message);
-      }
-    } finally {
-      setIsLoading(false); // 로딩 종료
-    }
-  };
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);

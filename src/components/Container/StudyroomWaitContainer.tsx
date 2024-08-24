@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import LargeUserDisplay from "../rooms/LargeUserDisplay";
 import axiosInstance from "../../utils/axiosInstance";
-import { useStore } from "../../store/store";
+import { useDeviceStore } from "../../store/store";
 
 type StudyroomWaitContainerProps = {};
 
@@ -18,10 +18,12 @@ const StudyroomWaitContainer: React.FC = () => {
     toggleCam,
     toggleMic,
     toggleSpeaker,
-  } = useStore();
+  } = useDeviceStore();
 
   const handleClick = () => {
-    enterStudyRoom();
+    // enterStudyRoom();
+    navigate(`/studyroom/${roomId}`);
+    //
   };
 
   const enterStudyRoom = async () => {
@@ -29,7 +31,7 @@ const StudyroomWaitContainer: React.FC = () => {
     try {
       setIsLoading(true);
       const response = await axiosInstance.patch(
-        `/api/v1/rooms/${roomId}/users/${userId}`,
+        `${process.env.REACT_APP_API_URL}/api/v1/rooms/${roomId}/users/${userId}`,
         {
           isActive: "True",
         }
