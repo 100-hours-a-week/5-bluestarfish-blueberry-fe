@@ -237,6 +237,7 @@ const SignupForm: React.FC = () => {
 
     try {
       setIsLoading(true);
+      console.log(`${process.env.REACT_APP_API_URL}/api/v1/users`);
       const response = await axiosInstance.post(
         `${process.env.REACT_APP_API_URL}/api/v1/users`,
         {
@@ -446,7 +447,7 @@ const SignupForm: React.FC = () => {
         {/* 비밀번호 확인 입력 필드 */}
         <div className="relative mb-6 mt-6">
           <input
-            type="confirmPassword"
+            type="password"
             id="confirmPassword"
             value={confirmPassword}
             onChange={(e: ChangeEvent<HTMLInputElement>) =>
