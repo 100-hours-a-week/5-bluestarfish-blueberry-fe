@@ -13,6 +13,7 @@ import RecruitStudyCreatePage from "./pages/RecruitStudyCreatePage";
 import RecruitStudyDetailPage from "./pages/RecruitStudyDetailPage";
 import CreateStudyRoomPage from "./pages/CreateStudyRoomPage";
 import RecruitStudyUpdatePage from "./pages/RecruitStudyUpdatePage";
+import StudyRoomsListPage from "./pages/StudyRoomsListPage";
 import Home from "./components/common/test/Test";
 
 function App() {
@@ -30,6 +31,7 @@ function App() {
         <Route path="/studyroom/create" element={<CreateStudyRoomPage />} />
         <Route path="/test/:roomId" element={<Home />} />
         <Route path="/recruit/update/:id" element={<RecruitStudyUpdatePage />} />
+        <Route path="/rooms/list" element={<StudyRoomsListPage />} />
       </Routes>
     </BrowserRouter>
   );
