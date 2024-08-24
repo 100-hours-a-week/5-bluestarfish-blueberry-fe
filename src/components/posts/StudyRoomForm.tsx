@@ -5,6 +5,7 @@ import ToastNotification from "../common/ToastNotification";
 import addPhotoAnimation from "../../animations/add-photo.json";
 import SubmitButton from "../common/SubmitButton";
 import axiosInstance from "../../utils/axiosInstance";
+import beDomain from "../../utils/constants";
 
 type StudyRoomFormProps = {
   studyRoomName: string;
@@ -72,21 +73,19 @@ const StudyRoomForm: React.FC<StudyRoomFormProps> = ({
     event.preventDefault(); // 폼 제출 기본 동작 방지
     if (isLoading) return;
 
+    alert("asd");
     const trimmeedTitle = studyRoomName.trim();
 
     try {
       setIsLoading(true);
-      const response = await axiosInstance.post(
-        `${process.env.REACT_APP_API_URL}/api/v1/rooms`,
-        {
-          title: trimmeedTitle,
-          maxUsers: maxUsers,
-          camEnabled: isCam,
-          thumbnail: thumbnail,
-          password: password,
-          description: description,
-        }
-      );
+      const response = await axiosInstance.post(`${beDomain}/api/v1/rooms`, {
+        title: trimmeedTitle,
+        maxUsers: maxUsers,
+        camEnabled: isCam,
+        thumbnail: thumbnail,
+        password: password,
+        description: description,
+      });
 
       if (response.status === 200) {
       } else {
@@ -99,7 +98,10 @@ const StudyRoomForm: React.FC<StudyRoomFormProps> = ({
   };
 
   const handleCloseToast = () => {
-    navigate("/");
+    setTimeout(() => {
+      setShowToast(false);
+      navigate("/");
+    }, 0);
   };
 
   return (
