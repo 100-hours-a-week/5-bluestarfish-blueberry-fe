@@ -1,3 +1,5 @@
+import axiosInstance from "./axiosInstance";
+
 // 이메일 유효성 검사
 export const isValidEmail = (email: string): boolean => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -47,6 +49,36 @@ export const validateStudyFormInputs = (
     contentHelperText,
     studyHelperText,
   };
+};
+
+// 이메일과 비밀번호를 모두 검증하는 함수
+export const validateEmail = (email: string): string => {
+  if (!email) {
+    return "이메일을 입력해주세요.";
+  }
+  if (email.length < 5) {
+    return "이메일은 최소 5자리 이상이어야 합니다.";
+  } else if (email.length < 5) {
+    return "이메일은 최소 5자리 이상이어야 합니다.";
+  }
+  if (!isValidEmail(email)) {
+    return "유효하지 않은 이메일 형식입니다.";
+  }
+  return "";
+};
+
+// 스터디룸 암호 유효성 검사
+export const validateUserPassword = (pw: string): string => {
+  if (!pw) {
+    return "비밀번호를 입력해주세요.";
+  } else if (pw.length < 5) {
+    return "비밀번호는 최소 5자리 이상이어야 합니다.";
+  }
+
+  if (!isValidPassword(pw)) {
+    return "유효하지 않은 비밀번호 형식입니다.";
+  }
+  return "";
 };
 
 // 이메일과 비밀번호를 모두 검증하는 함수
