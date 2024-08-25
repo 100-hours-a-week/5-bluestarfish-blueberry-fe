@@ -1,12 +1,13 @@
 import React from "react";
 import StudyroomTN from "../rooms/StudyroomTN";
+import DefaultThumbnail from "../../images/study-thumbnail-3.png"
 
 // StudyRoomLink 컴포넌트가 받을 props의 타입 정의
 interface StudyRoomLinkProps {
   studyRoom: {
     id: number;
     title: string;
-    camEnabled: boolean;
+    postCamEnabled: boolean;
     currentUsers: number;
     maxUsers: number;
     thumbnail: string;
@@ -44,10 +45,10 @@ const StudyRoomLink: React.FC<StudyRoomLinkProps> = ({
           <StudyroomTN
             id={studyRoom.id}
             title={studyRoom.title}
-            camEnabled={studyRoom.camEnabled}
+            camEnabled={studyRoom.postCamEnabled}
             currentUsers={studyRoom.currentUsers}
             maxUsers={studyRoom.maxUsers}
-            thumbnail={studyRoom.thumbnail}
+            thumbnail={studyRoom.thumbnail || DefaultThumbnail}
             isSelected={false}
           />
         </div>
