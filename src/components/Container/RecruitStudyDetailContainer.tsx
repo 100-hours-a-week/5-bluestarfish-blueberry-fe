@@ -1,15 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-<<<<<<< HEAD
-import studyRecruitData from "../../data/studyRecruitData";
-import studyRooms from "../../data/studyRooms";
-import StudyHeader from "../StudyDetail/StudyHeader";
-import StudyContent from "../StudyDetail/StudyContent";
-import StudyRoomLink from "../StudyDetail/StudyRoomLink";
-import CommentSection from "../StudyDetail/CommentSection";
-import DeletePostModal from "../common/DeletePostModal"; // 모달 컴포넌트 import
-import axiosInstance from "../../utils/axiosInstance"; // Axios 인스턴스 import
-=======
 import studyRecruitData from "../../data/studyRecruitData"; // 스터디 모집 더미 데이터 import
 import studyRooms from "../../data/studyRooms"; // 스터디 룸 더미 데이터 import
 import StudyHeader from "../StudyDetail/StudyHeader"; // 스터디 헤더 컴포넌트 import
@@ -18,8 +8,6 @@ import StudyRoomLink from "../StudyDetail/StudyRoomLink"; // 스터디 룸 링�
 import CommentSection from "../StudyDetail/CommentSection"; // 댓글 섹션 컴포넌트 import
 import DeletePostModal from "../common/DeletePostModal"; // 모달 컴포넌트 import
 import axiosInstance from "../../utils/axiosInstance"; // Axios 인스턴스 import
-import beDomain from "../../utils/constants"; // 서버 도메인 import
->>>>>>> upstream/dev
 
 const RecruitStudyDetailContainer: React.FC = () => {
   // URL 파라미터에서 ID를 가져오기
@@ -36,12 +24,6 @@ const RecruitStudyDetailContainer: React.FC = () => {
       profileImage: string;
     }[]
   >([]);
-<<<<<<< HEAD
-  const [isRecruited, setIsRecruited] = useState(false);
-  const [showDeleteModal, setShowDeleteModal] = useState(false); // 모달 표시 여부 상태
-=======
->>>>>>> upstream/dev
-
   // 모집 완료 여부 상태 관리
   const [isRecruited, setIsRecruited] = useState(false);
   // 삭제 모달 표시 여부 상태 관리
@@ -113,23 +95,16 @@ const RecruitStudyDetailContainer: React.FC = () => {
 
   // 게시글 수정 페이지로 이동하는 함수
   const handleEditPost = () => {
-<<<<<<< HEAD
-    // 게시글 수정 로직
-=======
->>>>>>> upstream/dev
     navigate(`/recruit/update/${studyId}`);
   };
 
   // 게시글을 삭제하는 함수
   const handleDeletePost = async () => {
     try {
-<<<<<<< HEAD
       await axiosInstance.delete(
         `${process.env.REACT_APP_API_URL}/api/v1/posts/${studyId}`
       );
-=======
-      await axiosInstance.delete(`${beDomain}/api/v1/posts/${studyId}`);
->>>>>>> upstream/dev
+
       navigate("/recruit/list"); // 삭제 후 목록 페이지로 이동
     } catch (error) {
       console.error("게시글 삭제 실패:", error);
@@ -164,11 +139,7 @@ const RecruitStudyDetailContainer: React.FC = () => {
         isAuthor={isAuthor}
         onCompleteRecruitment={handleCompleteRecruitment}
         onEditPost={handleEditPost}
-<<<<<<< HEAD
-        onDeletePost={() => setShowDeleteModal(true)} // 모달 표시
-=======
         onDeletePost={() => setShowDeleteModal(true)} // 삭제 모달을 표시
->>>>>>> upstream/dev
       />
 
       {/* 스터디 콘텐츠 컴포넌트 */}
@@ -202,11 +173,8 @@ const RecruitStudyDetailContainer: React.FC = () => {
       {/* 삭제 모달 컴포넌트 */}
       {showDeleteModal && (
         <DeletePostModal
-<<<<<<< HEAD
           onConfirm={handleDeletePost} // 게시글 삭제
-=======
-          onConfirm={handleDeletePost} // 삭제 확정 시 호출
->>>>>>> upstream/dev
+
           onCancel={() => setShowDeleteModal(false)} // 모달 닫기
         />
       )}

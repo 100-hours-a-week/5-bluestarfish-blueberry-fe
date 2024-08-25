@@ -11,22 +11,13 @@ import ToastNotification from "../common/ToastNotification"; // 토스트 알림
 import SubmitButton from "../common/SubmitButton"; // 제출 버튼 컴포넌트
 import axiosInstance from "../../utils/axiosInstance"; // Axios 인스턴스
 
-<<<<<<< HEAD
-=======
-import beDomain from "../../utils/constants"; // 서버 도메인 상수
 
-// 게시글 수정 컨테이너 컴포넌트
->>>>>>> upstream/dev
 const RecruitStudyUpdateContainer: React.FC = () => {
   const { id } = useParams<{ id: string }>(); // URL에서 게시글 ID를 가져옴
   const navigate = useNavigate();
-<<<<<<< HEAD
 
-  // 탭 0 (스터디 룸 멤버 찾기) 관련 상태
-=======
   
   // 탭 0 (스터디 룸 멤버 찾기) 관련 상태 관리
->>>>>>> upstream/dev
   const [tab0SelectedCategory, setTab0SelectedCategory] = useState<string>("");
   const [tab0Title, setTab0Title] = useState("");
   const [tab0Content, setTab0Content] = useState("");
@@ -39,7 +30,6 @@ const RecruitStudyUpdateContainer: React.FC = () => {
   const [tab1Title, setTab1Title] = useState("");
   const [tab1Content, setTab1Content] = useState("");
 
-<<<<<<< HEAD
   const [categoryHelperText, setCategoryHelperText] =
     useState<string>("* 헬퍼텍스트");
   const [titleHelperText, setTitleHelperText] =
@@ -48,13 +38,7 @@ const RecruitStudyUpdateContainer: React.FC = () => {
     useState<string>("* 헬퍼텍스트");
   const [studyHelperText, setStudyHelperText] =
     useState<string>("* 헬퍼텍스트");
-=======
-  // 폼 유효성 검사를 위한 상태
-  const [categoryHelperText, setCategoryHelperText] = useState<string>("* 헬퍼텍스트");
-  const [titleHelperText, setTitleHelperText] = useState<string>("* 헬퍼텍스트");
-  const [contentHelperText, setContentHelperText] = useState<string>("* 헬퍼텍스트");                                            
-  const [studyHelperText, setStudyHelperText] = useState<string>("* 헬퍼텍스트");
->>>>>>> upstream/dev
+
   const [isFormValid, setIsFormValid] = useState<boolean>(false);
   const [showToast, setShowToast] = useState(false);
   const [activeTab, setActiveTab] = useState<number>(0); // 현재 활성화된 탭 (0: 멤버 찾기, 1: 룸 찾기)
@@ -132,7 +116,6 @@ const RecruitStudyUpdateContainer: React.FC = () => {
   const handleSubmit = async () => {
     if (isFormValid) {
       const requestBody = {
-<<<<<<< HEAD
         userId: 1, // 고정된 userId, 실제로는 로그인한 사용자의 ID를 사용
         roomId: activeTab === 0 ? tab0SelectedStudy : null, // 탭에 따라 선택된 roomId
         title: activeTab === 0 ? tab0Title : tab1Title,
@@ -146,18 +129,7 @@ const RecruitStudyUpdateContainer: React.FC = () => {
           `${process.env.REACT_APP_API_URL}/api/v1/posts`,
           requestBody
         );
-=======
-        userId: 1,  // 고정된 사용자 ID (실제 애플리케이션에서는 로그인한 사용자 ID를 사용해야 함)
-        roomId: activeTab === 0 ? tab0SelectedStudy : null,  // 탭에 따라 선택된 스터디 룸 ID
-        title: activeTab === 0 ? tab0Title : tab1Title, // 제목
-        content: activeTab === 0 ? tab0Content : tab1Content, // 내용
-        postType: activeTab === 0 ? "FINDING_MEMBERS" : "FINDING_ROOMS", // 게시글 타입
-        isRecruited: false, // 모집 상태 (여기서는 기본값 false)
-      };
 
-      try {
-        const response = await axiosInstance.patch(`${beDomain}/api/v1/posts`, requestBody); // 게시글 수정 요청
->>>>>>> upstream/dev
 
         if (response.status === 204) {
           console.log("게시글 수정 성공:", response.data);
@@ -233,16 +205,12 @@ const RecruitStudyUpdateContainer: React.FC = () => {
                   </div>
                 ))}
               </div>
-<<<<<<< HEAD
               <p
                 className={`text-${
                   tab0SelectedStudy !== null ? "blue" : "red"
                 }-500 text-xs italic mt-3`}
               >
-=======
-              {/* 선택된 스터디 룸이 없을 경우 경고 메시지 표시 */}
-              <p className={`text-${tab0SelectedStudy !== null ? "blue" : "red"}-500 text-xs italic mt-3`}>
->>>>>>> upstream/dev
+
                 {studyHelperText}
               </p>
             </div>
@@ -264,17 +232,12 @@ const RecruitStudyUpdateContainer: React.FC = () => {
           />
         )}
 
-<<<<<<< HEAD
         <SubmitButton
           isFormValid={isFormValid}
           handleClick={handleSubmit}
           text="수정 완료"
         />
-=======
-        {/* 수정 완료 버튼 */}
-        <SubmitButton isFormValid={isFormValid} handleClick={handleSubmit} text="수정 완료" />
-        {/* 토스트 알림 */}
->>>>>>> upstream/dev
+
         {showToast && (
           <ToastNotification message="수정 완료!" onClose={handleCloseToast} />
         )}
