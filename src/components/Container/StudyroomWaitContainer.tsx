@@ -21,7 +21,7 @@ const StudyroomWaitContainer: React.FC = () => {
   } = useDeviceStore();
 
   const handleClick = () => {
-    // enterStudyRoom();
+    enterStudyRoom();
     navigate(`/studyroom/${roomId}`);
     //
   };
@@ -30,21 +30,25 @@ const StudyroomWaitContainer: React.FC = () => {
     if (isLoading) return;
     try {
       setIsLoading(true);
-      const response = await axiosInstance.patch(
+      const response = await axiosInstance.post(
         `${process.env.REACT_APP_API_URL}/api/v1/rooms/${roomId}/users/${userId}`,
         {
-          isActive: "True",
+          host: false,
+          active: true,
+          camEnabled: camEnabled,
+          micEnabled: micEnabled,
+          speakerEnabled: speakerEnabled,
+          goalTime: "14:30:30",
+          dayTime: "15:30:30",
         }
       );
-      if (response.status === 200) {
-        console.log("200 OK");
+      if (response.status === 204) {
+        console.log("204 No Content");
         navigate(`/studyroom/${roomId}`);
       }
     } catch (error: any) {
       if (error.response) {
-        if (error.response.status === 204) {
-          console.error("204: ", "No Content");
-        } else if (error.response.status === 404) {
+        if (error.response.status === 404) {
           console.error("404: ", "Not Found");
         } else {
           console.error(
@@ -53,7 +57,7 @@ const StudyroomWaitContainer: React.FC = () => {
           );
         }
       } else {
-        console.error("스터디룸 정보를 가져오는 중 오류 발생:", error.message);
+        console.error("스터디룸 입장 중 오류 발생:", error.message);
       }
     } finally {
       setIsLoading(false); // 로딩 종료
