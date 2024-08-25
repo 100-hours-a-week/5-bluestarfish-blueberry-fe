@@ -26,6 +26,12 @@ const LoginForm: React.FC = () => {
     checkInputs(); // 입력값 유효성 검사 함수 호출
   }, [email, password]); // email 또는 password가 변경될 때마다 호출
 
+  useEffect(() => {
+    console.log(
+      `userId = ${userId}, nickname = ${nickname}, image = ${profileImage}`
+    );
+  }, [userId]);
+
   // 입력값 유효성 검사 함수
   const checkInputs = () => {
     const trimmedEmail = email.trim(); // 이메일 양끝 공백 제거
@@ -62,10 +68,16 @@ const LoginForm: React.FC = () => {
         `${process.env.REACT_APP_API_URL}/api/v1/users/whoami`
       );
       if (response.status === 200) {
-        setUserId(response.data.data.id);
-        setNickname(response.data.data.nickname);
-        setProfileImage(response.data.data.profile_image);
-        redirectToPostListPage();
+        console.log(response.data.data.id);
+        await Promise.all([
+          setUserId(response.data.data.id),
+          setNickname(response.data.data.nickname),
+          setProfileImage(response.data.data.profile_image),
+        ]);
+        console.log("123");
+        console.log(userId, nickname, profileImage);
+        // redirectToPostListPage();
+        navigate(`/`);
       }
     } catch (error: any) {
       if (error.response) {
@@ -109,6 +121,7 @@ const LoginForm: React.FC = () => {
       );
 
       if (response.status === 200) {
+        navigate(`/`);
         await setUserInfo();
         console.log(userId, nickname, profileImage);
       } else {

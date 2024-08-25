@@ -5,7 +5,6 @@ import ToastNotification from "../common/ToastNotification";
 import addPhotoAnimation from "../../animations/add-photo.json";
 import SubmitButton from "../common/SubmitButton";
 import axiosInstance from "../../utils/axiosInstance";
-import beDomain from "../../utils/constants";
 
 type StudyRoomFormProps = {
   studyRoomName: string;
@@ -78,14 +77,17 @@ const StudyRoomForm: React.FC<StudyRoomFormProps> = ({
 
     try {
       setIsLoading(true);
-      const response = await axiosInstance.post(`${beDomain}/api/v1/rooms`, {
-        title: trimmeedTitle,
-        maxUsers: maxUsers,
-        camEnabled: isCam,
-        thumbnail: thumbnail,
-        password: password,
-        description: description,
-      });
+      const response = await axiosInstance.post(
+        `${process.env.REACT_APP_API_URL}/api/v1/rooms`,
+        {
+          title: trimmeedTitle,
+          maxUsers: maxUsers,
+          camEnabled: isCam,
+          thumbnail: thumbnail,
+          password: password,
+          description: description,
+        }
+      );
 
       if (response.status === 200) {
       } else {

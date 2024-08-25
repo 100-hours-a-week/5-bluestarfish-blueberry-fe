@@ -4,8 +4,13 @@ import RankingSlider from "../users/RankingSlider";
 import StudyroomTNContainer from "./StudyroomTNContainer";
 import QnAModal from "../Modal/QnAModal";
 
+import { useEffect } from "react";
+import { useLoginedUserStore } from "../../store/store";
+
 const MainPageContainer: React.FC = () => {
   const [isQnAModalOpen, setQnAModalOpen] = useState(false);
+
+  const { userId, nickname, profileImage } = useLoginedUserStore();
 
   const closeQnAModal = () => {
     setQnAModalOpen(false);
@@ -14,6 +19,12 @@ const MainPageContainer: React.FC = () => {
   const openQnAModal = () => {
     setQnAModalOpen(true);
   };
+
+  useEffect(() => {
+    console.log(
+      `userId = ${userId}, nickname = ${nickname}, image = ${profileImage}`
+    );
+  }, [userId]);
 
   return (
     <div className="flex flex-col mt-[80px] items-center w-full bg-white">

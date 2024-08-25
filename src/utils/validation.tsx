@@ -1,5 +1,3 @@
-import axiosInstance from "./axiosInstance";
-
 // 이메일 유효성 검사
 export const isValidEmail = (email: string): boolean => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

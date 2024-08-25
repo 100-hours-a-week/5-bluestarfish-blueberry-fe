@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../utils/axiosInstance";
 import CategorySelector from "../rooms/CategorySelector";
 import RecruitPostList from "../posts/RecruitPostList";
-import beDomain from "../../utils/constants";
 
 interface Post {
   id: number;
@@ -61,7 +60,7 @@ const StudyRecruitListContainer: React.FC = () => {
           : "";
 
       const response = await axiosInstance.get<ApiResponse>(
-        `${beDomain}/api/v1/posts`,
+        `${process.env.REACT_APP_API_URL}/api/v1/posts`,
         {
           params: {
             page: 0,
@@ -70,7 +69,7 @@ const StudyRecruitListContainer: React.FC = () => {
           },
         }
       );
-      
+
       const postsData = response.data.data.content;
       setPosts(postsData);
     } catch (error) {
@@ -120,11 +119,7 @@ const StudyRecruitListContainer: React.FC = () => {
         />
 
         {/* 모집 공고 글 목록 */}
-        {isLoading ? (
-          <div>Loading...</div>
-        ) : (
-          <RecruitPostList posts={posts} />
-        )}
+        {isLoading ? <div>Loading...</div> : <RecruitPostList posts={posts} />}
       </div>
     </div>
   );

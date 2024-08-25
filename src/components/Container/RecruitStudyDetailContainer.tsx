@@ -6,9 +6,8 @@ import StudyHeader from "../StudyDetail/StudyHeader";
 import StudyContent from "../StudyDetail/StudyContent";
 import StudyRoomLink from "../StudyDetail/StudyRoomLink";
 import CommentSection from "../StudyDetail/CommentSection";
-import DeletePostModal from "../common/DeletePostModal";  // 모달 컴포넌트 import
-import axiosInstance from "../../utils/axiosInstance";  // Axios 인스턴스 import
-import beDomain from "../../utils/constants";  // 서버 도메인 import
+import DeletePostModal from "../common/DeletePostModal"; // 모달 컴포넌트 import
+import axiosInstance from "../../utils/axiosInstance"; // Axios 인스턴스 import
 
 const RecruitStudyDetailContainer: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -24,7 +23,7 @@ const RecruitStudyDetailContainer: React.FC = () => {
     }[]
   >([]);
   const [isRecruited, setIsRecruited] = useState(false);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);  // 모달 표시 여부 상태
+  const [showDeleteModal, setShowDeleteModal] = useState(false); // 모달 표시 여부 상태
 
   const studyId = id ? parseInt(id, 10) : null;
   const study = studyRecruitData.find((item) => item.id === studyId);
@@ -81,13 +80,15 @@ const RecruitStudyDetailContainer: React.FC = () => {
 
   const handleEditPost = () => {
     // 게시글 수정 로직
-    navigate(`/recruit/update/${studyId}`)
+    navigate(`/recruit/update/${studyId}`);
   };
 
   const handleDeletePost = async () => {
     try {
-      await axiosInstance.delete(`${beDomain}/api/v1/posts/${studyId}`);
-      navigate("/recruit/list");  // 삭제 후 목록 페이지로 이동
+      await axiosInstance.delete(
+        `${process.env.REACT_APP_API_URL}/api/v1/posts/${studyId}`
+      );
+      navigate("/recruit/list"); // 삭제 후 목록 페이지로 이동
     } catch (error) {
       console.error("게시글 삭제 실패:", error);
       alert("게시글 삭제에 실패했습니다. 다시 시도해 주세요.");
@@ -116,7 +117,7 @@ const RecruitStudyDetailContainer: React.FC = () => {
         isAuthor={isAuthor}
         onCompleteRecruitment={handleCompleteRecruitment}
         onEditPost={handleEditPost}
-        onDeletePost={() => setShowDeleteModal(true)}  // 모달 표시
+        onDeletePost={() => setShowDeleteModal(true)} // 모달 표시
       />
 
       <StudyContent content={study.content} />
@@ -146,8 +147,8 @@ const RecruitStudyDetailContainer: React.FC = () => {
 
       {showDeleteModal && (
         <DeletePostModal
-          onConfirm={handleDeletePost}  // 게시글 삭제
-          onCancel={() => setShowDeleteModal(false)}  // 모달 닫기
+          onConfirm={handleDeletePost} // 게시글 삭제
+          onCancel={() => setShowDeleteModal(false)} // 모달 닫기
         />
       )}
     </div>

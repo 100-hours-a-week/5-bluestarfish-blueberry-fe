@@ -30,7 +30,7 @@ const Header: React.FC = () => {
     console.log(
       `userId = ${userId}, nickname = ${nickname}, image = ${profileImage}`
     );
-  });
+  }, [userId]);
 
   return (
     <header className="fixed w-full bg-white z-50">
