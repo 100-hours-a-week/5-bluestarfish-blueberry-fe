@@ -13,9 +13,9 @@ interface Post {
     nickname: string;
     profileImage?: string | null;
   };
-  room: {
+  room?: {
     camEnabled: boolean;
-  };
+  } | null; // room이 null일 수 있으므로 optional로 처리
   recruited: boolean;
 }
 
@@ -88,9 +88,14 @@ const StudyRecruitListContainer: React.FC = () => {
     setSelectedType(selectedType === type ? "" : type);
   };
 
-  const handleCreatePostClick = () => {
+  const handlePostClick = (postId: number) => {
+    navigate(`/recruit/${postId}`);
+  };
+
+  const handleCreatePostClick = async () => {
     navigate("/recruit/create");
   };
+  
 
   return (
     <div className="flex flex-col items-center w-full bg-white mb-10">
@@ -119,7 +124,11 @@ const StudyRecruitListContainer: React.FC = () => {
         />
 
         {/* 모집 공고 글 목록 */}
-        {isLoading ? <div>Loading...</div> : <RecruitPostList posts={posts} />}
+        {isLoading ? (
+          <div>Loading...</div>
+        ) : (
+          <RecruitPostList posts={posts} onPostClick={handlePostClick} />
+        )}
       </div>
     </div>
   );

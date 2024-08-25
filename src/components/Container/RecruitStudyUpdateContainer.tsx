@@ -11,12 +11,10 @@ import ToastNotification from "../common/ToastNotification"; // 토스트 알림
 import SubmitButton from "../common/SubmitButton"; // 제출 버튼 컴포넌트
 import axiosInstance from "../../utils/axiosInstance"; // Axios 인스턴스
 
-
 const RecruitStudyUpdateContainer: React.FC = () => {
   const { id } = useParams<{ id: string }>(); // URL에서 게시글 ID를 가져옴
   const navigate = useNavigate();
 
-  
   // 탭 0 (스터디 룸 멤버 찾기) 관련 상태 관리
   const [tab0SelectedCategory, setTab0SelectedCategory] = useState<string>("");
   const [tab0Title, setTab0Title] = useState("");
@@ -130,7 +128,6 @@ const RecruitStudyUpdateContainer: React.FC = () => {
           requestBody
         );
 
-
         if (response.status === 204) {
           console.log("게시글 수정 성공:", response.data);
           handleShowToast(); // 성공 시 토스트 알림 표시
@@ -197,7 +194,7 @@ const RecruitStudyUpdateContainer: React.FC = () => {
                       id={room.id}
                       title={room.title}
                       camEnabled={room.camEnabled}
-                      currentUsers={room.users.length}
+                      currentUsers={room.memberNumber}
                       maxUsers={room.maxUsers}
                       thumbnail={room.thumbnail}
                       isSelected={tab0SelectedStudy === room.id} // 선택된 룸인지 여부에 따라 스타일 변경
@@ -210,7 +207,6 @@ const RecruitStudyUpdateContainer: React.FC = () => {
                   tab0SelectedStudy !== null ? "blue" : "red"
                 }-500 text-xs italic mt-3`}
               >
-
                 {studyHelperText}
               </p>
             </div>
