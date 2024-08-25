@@ -23,7 +23,7 @@ const ChatStartMessage: React.FC<ChatStartMessageProps> = ({
       </div>
       <div className="chat-header text-black">
         {senderNickname}
-        <time className="text-xs opacity-50">{createdAt}</time>
+        <time className="text-xs opacity-50"></time>
       </div>
       <div className="chat-bubble">{message}</div>
       <div className="chat-footer opacity-50 text-black">{createdAt}</div>

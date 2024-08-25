@@ -98,7 +98,7 @@ const LoginForm: React.FC = () => {
         console.error("로그인 응답을 받아오는 중 오류 발생:", error.message);
       }
       console.error(error);
-      setHelperText("* 서버 오류가 발생했습니다. 다시 시도해주세요.");
+      setHelperText("*이메일 또는 비밀번호가 올바르지 않습니다.");
       setHelperTextColor("text-red-500");
     } finally {
       setIsLoading(false); // 로딩 종료
