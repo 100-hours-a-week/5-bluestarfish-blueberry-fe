@@ -88,16 +88,6 @@ const RecruitStudyCreateContainer: React.FC = () => {
         content: activeTab === 0 ? tab0Content : tab1Content,
         postType: activeTab === 0 ? "FINDING_MEMBERS" : "FINDING_ROOMS",
         isRecruited: false,
-<<<<<<< HEAD
-        roomId: activeTab === 0 ? tab0SelectedStudy : 1, // activeTab이 1인 경우 roomId를 0으로 설정
-      };
-
-      // 탭 0인 경우에만 roomId 추가
-      if (activeTab === 0 && tab0SelectedStudy !== null) {
-        requestBody.roomId = tab0SelectedStudy;
-      }
-
-=======
       };
 
       // let requestBody: any = {
@@ -113,7 +103,6 @@ const RecruitStudyCreateContainer: React.FC = () => {
       //   requestBody.roomId = tab0SelectedStudy;
       // }
   
->>>>>>> upstream/dev
       try {
         const response = await axiosInstance.post(
           `${process.env.REACT_APP_API_URL}/api/v1/posts`,
