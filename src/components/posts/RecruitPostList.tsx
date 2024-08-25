@@ -8,8 +8,8 @@ interface Post {
     nickname: string;
     profileImage?: string | null;
   };
-  camEnabled: boolean;
-  room ?: number | null;
+  postCamEnabled: boolean;
+  room?: number | null;
   recruited: boolean;
 }
 
@@ -35,21 +35,19 @@ const RecruitPostList: React.FC<RecruitPostListProps> = ({ posts, onPostClick })
               <span className={`px-2 py-1 rounded-full ${post.type === 'FINDING_MEMBERS' ? 'bg-purple-200' : 'bg-blue-200'}`}>
                 {post.type === 'FINDING_MEMBERS' ? '멤버 찾기' : '룸 찾기'}
               </span>
-              {post.room && (
-                <div className="flex items-center space-x-1">
-                  <img
-                    src={`${process.env.PUBLIC_URL}/assets/images/${post.camEnabled ? 'cam-on-icon-blue.png' : 'cam-off-icon-blue.png'}`}
-                    alt={post.camEnabled ? '캠켜공' : '캠끄공'}
-                    className="h-5 w-5"
-                  />
-                  <span>{post.camEnabled ? '캠켜공' : '캠끄공'}</span>
-                </div>
-              )}
               <div className="flex items-center space-x-1">
-                <img 
+                <img
+                  src={`${process.env.PUBLIC_URL}/assets/images/${post.postCamEnabled ? 'cam-on-icon-blue.png' : 'cam-off-icon-blue.png'}`}
+                  alt={post.postCamEnabled ? '캠켜공' : '캠끄공'}
+                  className="h-5 w-5"
+                />
+                <span>{post.postCamEnabled ? '캠켜공' : '캠끄공'}</span>
+              </div>
+              <div className="flex items-center space-x-1">
+                <img
                   src={post.user.profileImage || `${process.env.PUBLIC_URL}/assets/images/real_ian.png`}
-                  alt={post.user.nickname} 
-                  className="h-5 w-5 rounded-full" 
+                  alt={post.user.nickname}
+                  className="h-5 w-5 rounded-full"
                 />
                 <span>{post.user.nickname}</span>
               </div>

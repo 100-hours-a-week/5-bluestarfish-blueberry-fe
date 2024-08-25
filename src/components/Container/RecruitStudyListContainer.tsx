@@ -13,8 +13,8 @@ interface Post {
     nickname: string;
     profileImage?: string | null;
   };
-  camEnabled: boolean;
-  room ?: number | null;
+  postCamEnabled: boolean;
+  room?: number | null;
   recruited: boolean;
 }
 
@@ -52,15 +52,13 @@ const StudyRecruitListContainer: React.FC = () => {
     try {
       setIsLoading(true);
 
-      // const recruited = selectedCategory === "모집 중";
-      // false로 돌리면 아무 데이터도 안 떠서 우선은 true로 설정함
-      const recruited = true;
+      const recruited = selectedCategory === "모집 중";
       const type =
         selectedType === "스터디 멤버 찾기"
           ? "FINDING_MEMBERS"
           : selectedType === "스터디 룸 찾기"
-          ? "FINDING_ROOMS"
-          : "";
+            ? "FINDING_ROOMS"
+            : "";
 
       const response = await axiosInstance.get<ApiResponse>(
         `${process.env.REACT_APP_API_URL}/api/v1/posts`,
@@ -93,9 +91,28 @@ const StudyRecruitListContainer: React.FC = () => {
     setPage(0); // 타입 변경 시 페이지 초기화
   };
 
-  const handlePostClick = (postId: number) => {
-    navigate(`/recruit/${postId}`);
+  const handlePostClick = async (postId: number) => {
+    try {
+      // 게시글 존재 여부를 확인하기 위해 서버에 GET 요청
+      const response = await axiosInstance.get(`${process.env.REACT_APP_API_URL}/api/v1/posts/${postId}`);
+      
+      // 게시글이 존재하면 상세 페이지로 이동
+      if (response.status === 200) {
+        navigate(`/recruit/${postId}`);
+      }
+    } catch (error: any) { // 여기서 'any'로 캐스팅
+      // 404 에러 처리: 게시글이 존재하지 않을 경우
+      if (error.response && error.response.status === 404) {
+        alert("해당 게시글을 찾을 수 없습니다.");
+      } else {
+        // 다른 에러 처리: 서버 에러 등
+        console.error("게시글 조회 중 오류가 발생했습니다:", error);
+        alert("서버 오류가 발생했습니다. 다시 시도해주세요.");
+      }
+    }
   };
+  
+
 
   const handleCreatePostClick = async () => {
     navigate("/recruit/create");

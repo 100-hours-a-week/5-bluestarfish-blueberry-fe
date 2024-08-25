@@ -21,7 +21,7 @@ interface StudyRoom {
   memberNumber: number;
   createdAt: string;
   deletedAt: string | null;
-  camEnabled: boolean;
+  postCamEnabled: boolean;
 }
 
 const RecruitStudyCreateContainer: React.FC = () => {
@@ -112,12 +112,17 @@ const RecruitStudyCreateContainer: React.FC = () => {
 
   const handleSubmit = async () => {
     if (isFormValid) {
+      // 카테고리에 따라 postCamEnabled 값을 설정
+      const postCamEnabled = 
+        (activeTab === 0 ? tab0SelectedCategory : tab1SelectedCategory) === "캠켜공";
+  
       let requestBody: any = {
         userId: 1,  // 고정된 userId, 실제로는 로그인한 사용자의 ID를 사용
         title: activeTab === 0 ? tab0Title : tab1Title,
         content: activeTab === 0 ? tab0Content : tab1Content,
         type: activeTab === 0 ? "FINDING_MEMBERS" : "FINDING_ROOMS",
         isRecruited: true,
+        postCamEnabled: postCamEnabled,  // 카메라 사용 여부를 추가
       };
   
       // activeTab이 0인 경우에만 roomId를 추가
@@ -130,7 +135,7 @@ const RecruitStudyCreateContainer: React.FC = () => {
           `${process.env.REACT_APP_API_URL}/api/v1/posts`,
           requestBody
         );
-
+  
         if (response.status === 201) {
           console.log("게시글 작성 성공:", response.data);
           handleShowToast();
@@ -143,6 +148,7 @@ const RecruitStudyCreateContainer: React.FC = () => {
       alert("모든 필드를 채워주세요.");
     }
   };
+  
 
   const handleShowToast = () => {
     setShowToast(true);
@@ -205,7 +211,7 @@ const RecruitStudyCreateContainer: React.FC = () => {
                     <StudyroomTN
                       id={room.id}
                       title={room.title}
-                      camEnabled={room.camEnabled}
+                      camEnabled={room.postCamEnabled}
                       currentUsers={room.memberNumber}
                       maxUsers={room.maxUsers}
                       thumbnail={room.thumbnail || DefaultThumbnail}
