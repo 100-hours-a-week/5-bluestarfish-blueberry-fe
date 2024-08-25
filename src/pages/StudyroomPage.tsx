@@ -1,12 +1,11 @@
-import React, { useState, useEffect, useRef } from "react";
-import { useParams } from "react-router-dom";
+import React, { useState } from "react";
+// import { useParams } from "react-router-dom";
 import StudyroomContainer from "../components/Container/StudyroomContainer";
 import Sidebar from "../components/rooms/Sidebar";
 
 const StudyroomPage: React.FC = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const { roomId } = useParams<{ roomId: string }>(); // URL에서 roomId를 가져옴
-  const myUserId = 1;
+  // const { roomId } = useParams<{ roomId: string }>(); // URL에서 roomId를 가져옴
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);

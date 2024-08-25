@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useCheckLogined } from "../utils/auth";
 import BasicHeader from "../components/common/BasicHeader";
 import LoginForm from "../components/users/LoginForm";
 
@@ -7,6 +8,10 @@ import LoginForm from "../components/users/LoginForm";
 type LoginPageProps = {};
 
 const LoginPage: React.FC<LoginPageProps> = () => {
+  const { checkLogined } = useCheckLogined();
+  // useEffect(() => {
+  //   checkLogined();
+  // }, [checkLogined]);
   return (
     // 페이지 전체를 flexbox로 구성하여 세로 방향으로 요소를 배치
     <div className="flex flex-col min-h-screen bg-white">

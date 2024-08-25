@@ -10,14 +10,14 @@ import ToastNotification from "../common/ToastNotification";
 import SubmitButton from "../common/SubmitButton";
 import axiosInstance from "../../utils/axiosInstance";
 
-import beDomain from "../../utils/constants";
-
 const RecruitStudyCreateContainer: React.FC = () => {
   // 탭 0 관련 상태
   const [tab0SelectedCategory, setTab0SelectedCategory] = useState<string>("");
   const [tab0Title, setTab0Title] = useState("");
   const [tab0Content, setTab0Content] = useState("");
-  const [tab0SelectedStudy, setTab0SelectedStudy] = useState<number | null>(null);
+  const [tab0SelectedStudy, setTab0SelectedStudy] = useState<number | null>(
+    null
+  );
 
   // 탭 1 관련 상태
   const [tab1SelectedCategory, setTab1SelectedCategory] = useState<string>("");
@@ -25,10 +25,14 @@ const RecruitStudyCreateContainer: React.FC = () => {
   const [tab1Content, setTab1Content] = useState("");
 
   // 공통 상태
-  const [categoryHelperText, setCategoryHelperText] = useState<string>("* 헬퍼텍스트");
-  const [titleHelperText, setTitleHelperText] = useState<string>("* 헬퍼텍스트");
-  const [contentHelperText, setContentHelperText] = useState<string>("* 헬퍼텍스트");
-  const [studyHelperText, setStudyHelperText] = useState<string>("* 헬퍼텍스트");
+  const [categoryHelperText, setCategoryHelperText] =
+    useState<string>("* 헬퍼텍스트");
+  const [titleHelperText, setTitleHelperText] =
+    useState<string>("* 헬퍼텍스트");
+  const [contentHelperText, setContentHelperText] =
+    useState<string>("* 헬퍼텍스트");
+  const [studyHelperText, setStudyHelperText] =
+    useState<string>("* 헬퍼텍스트");
   const [isFormValid, setIsFormValid] = useState<boolean>(false);
   const [showToast, setShowToast] = useState(false);
   const [activeTab, setActiveTab] = useState<number>(0); // 현재 활성화된 탭의 인덱스 상태
@@ -60,40 +64,51 @@ const RecruitStudyCreateContainer: React.FC = () => {
 
     setIsFormValid(
       categoryHelperText === "* 통과" &&
-      titleHelperText === "* 통과" &&
-      contentHelperText === "* 통과" &&
-      (activeTab === 0 ? studyHelperText === "* 통과" : true)
+        titleHelperText === "* 통과" &&
+        contentHelperText === "* 통과" &&
+        (activeTab === 0 ? studyHelperText === "* 통과" : true)
     );
-  }, [tab0SelectedCategory, tab0Title, tab0Content, tab0SelectedStudy, tab1SelectedCategory, tab1Title, tab1Content, activeTab]);
+  }, [
+    tab0SelectedCategory,
+    tab0Title,
+    tab0Content,
+    tab0SelectedStudy,
+    tab1SelectedCategory,
+    tab1Title,
+    tab1Content,
+    activeTab,
+  ]);
 
   const handleSubmit = async () => {
     if (isFormValid) {
       // 기본 requestBody 설정
-      // let requestBody: any = {
-      //   userId: 1,  // 고정된 userId, 실제로는 로그인한 사용자의 ID를 사용
-      //   title: activeTab === 0 ? tab0Title : tab1Title,
-      //   content: activeTab === 0 ? tab0Content : tab1Content,
-      //   postType: activeTab === 0 ? "FINDING_MEMBERS" : "FINDING_ROOMS",
-      //   isRecruited: false,
-      // };
-
       let requestBody: any = {
-        userId: 1,  // 고정된 userId, 실제로는 로그인한 사용자의 ID를 사용
+        userId: 1, // 고정된 userId, 실제로는 로그인한 사용자의 ID를 사용
         title: activeTab === 0 ? tab0Title : tab1Title,
         content: activeTab === 0 ? tab0Content : tab1Content,
         postType: activeTab === 0 ? "FINDING_MEMBERS" : "FINDING_ROOMS",
         isRecruited: false,
-        roomId: activeTab === 0 ? tab0SelectedStudy : 1,  // activeTab이 1인 경우 roomId를 0으로 설정
       };
+
+      // let requestBody: any = {
+      //   userId: 1,  // 고정된 userId, 실제로는 로그인한 사용자의 ID를 사용
+      //   title: activeTab === 0 ? tab0Title : tab1Title,
+      //   content: activeTab === 0 ? tab0Content : tab1Content,
+      //   type: activeTab === 0 ? "FINDING_MEMBERS" : "FINDING_ROOMS",
+      //   isRecruited: true,
+      // };
   
-      // 탭 0인 경우에만 roomId 추가
-      if (activeTab === 0 && tab0SelectedStudy !== null) {
-        requestBody.roomId = tab0SelectedStudy;
-      }
+      // // activeTab이 0인 경우에만 roomId를 추가
+      // if (activeTab === 0 && tab0SelectedStudy !== null) {
+      //   requestBody.roomId = tab0SelectedStudy;
+      // }
   
       try {
-        const response = await axiosInstance.post(`${beDomain}/api/v1/posts`, requestBody);
-  
+        const response = await axiosInstance.post(
+          `${process.env.REACT_APP_API_URL}/api/v1/posts`,
+          requestBody
+        );
+
         if (response.status === 201) {
           console.log("게시글 작성 성공:", response.data);
           handleShowToast();
@@ -106,7 +121,6 @@ const RecruitStudyCreateContainer: React.FC = () => {
       alert("모든 필드를 채워주세요.");
     }
   };
-  
 
   const handleShowToast = () => {
     setShowToast(true);
@@ -119,9 +133,13 @@ const RecruitStudyCreateContainer: React.FC = () => {
 
   const handleCategorySelect = (category: string) => {
     if (activeTab === 0) {
-      setTab0SelectedCategory(tab0SelectedCategory === category ? "" : category);
+      setTab0SelectedCategory(
+        tab0SelectedCategory === category ? "" : category
+      );
     } else {
-      setTab1SelectedCategory(tab1SelectedCategory === category ? "" : category);
+      setTab1SelectedCategory(
+        tab1SelectedCategory === category ? "" : category
+      );
     }
   };
 
@@ -174,7 +192,11 @@ const RecruitStudyCreateContainer: React.FC = () => {
                   </div>
                 ))}
               </div>
-              <p className={`text-${tab0SelectedStudy !== null ? "blue" : "red"}-500 text-xs italic mt-3`}>
+              <p
+                className={`text-${
+                  tab0SelectedStudy !== null ? "blue" : "red"
+                }-500 text-xs italic mt-3`}
+              >
                 {studyHelperText}
               </p>
             </div>
@@ -195,7 +217,11 @@ const RecruitStudyCreateContainer: React.FC = () => {
         )}
 
         {/* SubmitButton 컴포넌트 사용 */}
-        <SubmitButton isFormValid={isFormValid} handleClick={handleSubmit} text="게시글 등록" />
+        <SubmitButton
+          isFormValid={isFormValid}
+          handleClick={handleSubmit}
+          text="게시글 등록"
+        />
         {showToast && (
           <ToastNotification message="등록 완료!" onClose={handleCloseToast} />
         )}
