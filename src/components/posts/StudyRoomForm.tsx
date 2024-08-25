@@ -6,6 +6,7 @@ import addPhotoAnimation from "../../animations/add-photo.json";
 import SubmitButton from "../common/SubmitButton";
 import axiosInstance from "../../utils/axiosInstance";
 
+// StudyRoomForm 컴포넌트에 전달되는 props 타입 정의
 type StudyRoomFormProps = {
   studyRoomName: string;
   maxUsers: number | null;
@@ -26,6 +27,7 @@ type StudyRoomFormProps = {
   handleSubmit: () => void;
 };
 
+// StudyRoomForm 컴포넌트 정의
 const StudyRoomForm: React.FC<StudyRoomFormProps> = ({
   studyRoomName,
   maxUsers,
@@ -45,22 +47,29 @@ const StudyRoomForm: React.FC<StudyRoomFormProps> = ({
   handleDescriptionChange,
   handleSubmit,
 }) => {
+  // 모든 입력이 유효한지 확인하는 변수
   const isFormValid =
     studyRoomNameError === "통과" &&
     maxUsersError === "통과" &&
     (thumbnailError === "* 선택 사항" || thumbnailError === "통과") &&
     (passwordError === "* 선택 사항" || passwordError === "통과");
 
+  // 토스트 메시지 표시 여부를 관리하는 상태
   const [showToast, setShowToast] = useState(false);
+  // 페이지 이동을 위한 useNavigate 훅
   const navigate = useNavigate();
+  // 로딩 상태를 관리하는 상태
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  // 카메라 사용 여부를 관리하는 상태
   const [isCam, setIsCam] = useState<boolean>(true);
 
+  // 카테고리에 따라 카메라 사용 여부를 설정
   useEffect(() => {
     if (category !== "캠끄공") setIsCam(true);
     else setIsCam(false);
   }, [category]);
 
+  // 토스트 메시지 표시 함수
   const handleShowToast = () => {
     if (isFormValid) {
       handleSubmit();
@@ -68,37 +77,37 @@ const StudyRoomForm: React.FC<StudyRoomFormProps> = ({
     }
   };
 
+  // 스터디룸 생성 요청 함수
   const createStudyRooms = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault(); // 폼 제출 기본 동작 방지
     if (isLoading) return;
 
-    alert("asd");
-    const trimmeedTitle = studyRoomName.trim();
+    const trimmeedTitle = studyRoomName.trim(); // 스터디룸 이름 앞뒤 공백 제거
 
     try {
       setIsLoading(true);
-      const response = await axiosInstance.post(
-        `${process.env.REACT_APP_API_URL}/api/v1/rooms`,
-        {
-          title: trimmeedTitle,
-          maxUsers: maxUsers,
-          camEnabled: isCam,
-          thumbnail: thumbnail,
-          password: password,
-          description: description,
-        }
-      );
+      const response = await axiosInstance.post(`${beDomain}/api/v1/rooms`, {
+        title: trimmeedTitle,
+        maxUsers: maxUsers,
+        camEnabled: isCam,
+        thumbnail: thumbnail,
+        password: password,
+        description: description,
+      });
 
       if (response.status === 200) {
+        console.log("스터디룸 생성 성공");
       } else {
+        console.log("스터디룸 생성 실패");
       }
     } catch (error) {
       console.error(error);
     } finally {
-      setIsLoading(false); // 로딩 종료
+      setIsLoading(false); // 로딩 상태 해제
     }
   };
 
+  // 토스트 메시지 닫기 및 페이지 이동 함수
   const handleCloseToast = () => {
     setTimeout(() => {
       setShowToast(false);
