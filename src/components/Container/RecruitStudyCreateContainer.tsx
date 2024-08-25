@@ -82,26 +82,26 @@ const RecruitStudyCreateContainer: React.FC = () => {
   const handleSubmit = async () => {
     if (isFormValid) {
       // 기본 requestBody 설정
-      let requestBody: any = {
-        userId: 1, // 고정된 userId, 실제로는 로그인한 사용자의 ID를 사용
-        title: activeTab === 0 ? tab0Title : tab1Title,
-        content: activeTab === 0 ? tab0Content : tab1Content,
-        postType: activeTab === 0 ? "FINDING_MEMBERS" : "FINDING_ROOMS",
-        isRecruited: false,
-      };
-
       // let requestBody: any = {
-      //   userId: 1,  // 고정된 userId, 실제로는 로그인한 사용자의 ID를 사용
+      //   userId: 1, // 고정된 userId, 실제로는 로그인한 사용자의 ID를 사용
       //   title: activeTab === 0 ? tab0Title : tab1Title,
       //   content: activeTab === 0 ? tab0Content : tab1Content,
-      //   type: activeTab === 0 ? "FINDING_MEMBERS" : "FINDING_ROOMS",
-      //   isRecruited: true,
+      //   postType: activeTab === 0 ? "FINDING_MEMBERS" : "FINDING_ROOMS",
+      //   isRecruited: false,
       // };
+
+      let requestBody: any = {
+        userId: 1,  // 고정된 userId, 실제로는 로그인한 사용자의 ID를 사용
+        title: activeTab === 0 ? tab0Title : tab1Title,
+        content: activeTab === 0 ? tab0Content : tab1Content,
+        type: activeTab === 0 ? "FINDING_MEMBERS" : "FINDING_ROOMS",
+        isRecruited: true,
+      };
   
-      // // activeTab이 0인 경우에만 roomId를 추가
-      // if (activeTab === 0 && tab0SelectedStudy !== null) {
-      //   requestBody.roomId = tab0SelectedStudy;
-      // }
+      // activeTab이 0인 경우에만 roomId를 추가
+      if (activeTab === 0 && tab0SelectedStudy !== null) {
+        requestBody.roomId = tab0SelectedStudy;
+      }
   
       try {
         const response = await axiosInstance.post(
