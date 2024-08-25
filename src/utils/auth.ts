@@ -5,7 +5,6 @@ import { useLoginedUserStore } from "../store/store";
 // 사용자 정의 Hook으로 변경
 export const useSetUserInfo = () => {
   const { setUserId, setNickname, setProfileImage } = useLoginedUserStore();
-  const navigate = useNavigate();
 
   const setUserInfo = async () => {
     try {
@@ -18,7 +17,6 @@ export const useSetUserInfo = () => {
           setNickname(response.data.data.nickname),
           setProfileImage(response.data.data.profile_image),
         ]);
-        navigate(`/`);
       }
     } catch (error: any) {
       if (error.response) {

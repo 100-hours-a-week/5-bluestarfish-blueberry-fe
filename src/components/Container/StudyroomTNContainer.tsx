@@ -3,14 +3,19 @@ import StudyroomHeader from "../rooms/StudyroomHeader";
 import StudyroomMTN from "../rooms/StudyroomMTN";
 import StudyroomFooter from "../rooms/StudyroomFooter";
 import studyRooms from "../../data/studyRooms"; // 더미 데이터 임포트
+import axiosInstance from "../../utils/axiosInstance";
 
 interface StudyRoom {
   id: number;
   title: string;
-  camEnabled: boolean;
-  users: { id: number; nickname: string }[];
   maxUsers: number;
+  // password: string;
   thumbnail: string;
+  // description: string;
+  memberNumber: number;
+  // createdAt: string;
+  // deletedAt: string;
+  camEnabled: boolean;
 }
 
 interface StudyroomTNContainerProps {
@@ -28,6 +33,35 @@ const StudyroomTNContainer: React.FC<StudyroomTNContainerProps> = ({
   const observer = useRef<IntersectionObserver | null>(null);
 
   const roomsPerPage = isStudyRoomPage ? 15 : 10;
+
+  const fetchStudyRooms = async () => {
+    if (isLoading) return;
+    try {
+      setIsLoading(true);
+      const response = await axiosInstance.get(
+        `${process.env.REACT_APP_API_URL}/api/v1/rooms`
+      );
+      setStudyRoomsData(
+        Array.isArray(response.data.data.content)
+          ? response.data.data.content
+          : []
+      );
+    } catch (error) {
+      console.error("스터디룸 목록을 가져오는 중 오류 발생:", error);
+    } finally {
+      setIsLoading(false); // 로딩 종료
+    }
+  };
+
+  useEffect(() => {
+    fetchStudyRooms();
+  }, []);
+
+  useEffect(() => {
+    console.log(studyRoomsData.length);
+    console.log(filteredData.length);
+    console.log(displayedRooms);
+  }, [studyRoomsData, filteredData, displayedRooms]);
 
   useEffect(() => {
     const filterRooms = () => {
@@ -107,7 +141,7 @@ const StudyroomTNContainer: React.FC<StudyroomTNContainerProps> = ({
                 id={room.id}
                 title={room.title}
                 camEnabled={room.camEnabled}
-                currentUsers={room.users.length}
+                currentUsers={room.memberNumber}
                 maxUsers={room.maxUsers}
                 thumbnail={
                   room.thumbnail ||
@@ -144,16 +178,6 @@ export default StudyroomTNContainer;
 // import StudyroomFooter from "../rooms/StudyroomFooter";
 // import dummyStudyRooms from "../../data/studyRooms";
 // import { useNavigate, useParams } from "react-router-dom";
-// import axiosInstance from "../../utils/axiosInstance";
-
-// interface StudyRoom {
-//   id: number;
-//   title: string;
-//   camEnabled: boolean;
-//   users: { id: number; name: string }[];
-//   maxUsers: number;
-//   thumbnail: string;
-// }
 
 // const StudyroomTNContainer: React.FC = () => {
 //   const [studyRooms, setStudyRooms] = useState<StudyRoom[]>([]);
@@ -167,10 +191,6 @@ export default StudyroomTNContainer;
 //     { name: "캠켜공", icon: "camera-on.png" },
 //     { name: "캠끄공", icon: "camera-off.png" },
 //   ];
-
-//   useEffect(() => {
-//     fetchStudyRooms();
-//   }, []);
 
 //   useEffect(() => {
 //     setFilteredData(studyRooms);
@@ -206,25 +226,6 @@ export default StudyroomTNContainer;
 
 //   const handleCategoryClick = (category: string) => {
 //     setSelectedCategory(category);
-//   };
-
-//   const fetchStudyRooms = async () => {
-//     if (isLoading) return;
-//     try {
-//       setIsLoading(true);
-//       const response = await axiosInstance.get(
-//         `${process.env.REACT_APP_API_URL}/api/v1/rooms`
-//       );
-//       setStudyRooms(
-//         Array.isArray(response.data.data.content)
-//           ? response.data.data.content
-//           : []
-//       );
-//     } catch (error) {
-//       console.error("스터디룸 목록을 가져오는 중 오류 발생:", error);
-//     } finally {
-//       setIsLoading(false); // 로딩 종료
-//     }
 //   };
 
 //   const makeStudyroom = async () => {

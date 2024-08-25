@@ -5,11 +5,7 @@ const studyRooms = [
     maxUsers: 5,
     camEnabled: true,
     thumbnail: "/assets/images/study-thumbnail-1.png",
-    users: [
-      { id: 1, nickname: "Ian" },
-      { id: 3, nickname: "Andy" },
-      { id: 2, nickname: "Ariel" },
-    ],
+    memberNumber: 3,
   },
   {
     id: 2,
@@ -17,7 +13,7 @@ const studyRooms = [
     maxUsers: 5,
     camEnabled: false,
     thumbnail: "/assets/images/study-thumbnail-2.png",
-    users: [{ id: 1, nickname: "Ian" }],
+    memberNumber: 2,
   },
   {
     id: 3,
@@ -25,10 +21,7 @@ const studyRooms = [
     maxUsers: 5,
     camEnabled: true,
     thumbnail: "/assets/images/study-thumbnail-3.png",
-    users: [
-      { id: 1, nickname: "Ian" },
-      { id: 2, nickname: "Ariel" },
-    ],
+    memberNumber: 1,
   },
   {
     id: 4,
@@ -36,12 +29,7 @@ const studyRooms = [
     maxUsers: 5,
     camEnabled: true,
     thumbnail: "/assets/images/study-thumbnail-4.png",
-    users: [
-      { id: 1, nickname: "Ian" },
-      { id: 2, nickname: "Ariel" },
-      { id: 4, nickname: "Kanuda" },
-      { id: 3, nickname: "Andy" },
-    ],
+    memberNumber: 1,
   },
   {
     id: 5,
@@ -49,10 +37,7 @@ const studyRooms = [
     maxUsers: 3,
     camEnabled: false,
     thumbnail: "/assets/images/study-thumbnail-5.png",
-    users: [
-      { id: 4, nickname: "Kanuda" },
-      { id: 5, nickname: "Hailey" },
-    ],
+    memberNumber: 4,
   },
   {
     id: 6,
@@ -60,27 +45,27 @@ const studyRooms = [
     maxUsers: 3,
     camEnabled: false,
     thumbnail: "/assets/images/study-thumbnail-6.png",
-    users: [{ id: 4, nickname: "Kanuda" }],
+    memberNumber: 1,
   },
-  {
-    id: 7,
-    title: "정처기 뿌시기",
-    maxUsers: 5,
-    camEnabled: true,
-    thumbnail: "/assets/images/study-thumbnail-1.png",
-    users: [
-      { id: 1, nickname: "Ian" },
-      { id: 3, nickname: "Andy" },
-      { id: 2, nickname: "Ariel" },
-    ],
-  },
+  // {
+  //   id: 7,
+  //   title: "정처기 뿌시기",
+  //   maxUsers: 5,
+  //   camEnabled: true,
+  //   thumbnail: "/assets/images/study-thumbnail-1.png",
+  //   users: [
+  //     { id: 1, nickname: "Ian" },
+  //     { id: 3, nickname: "Andy" },
+  //     { id: 2, nickname: "Ariel" },
+  //   ],
+  // },
   {
     id: 8,
     title: "공시준비생",
     maxUsers: 5,
     camEnabled: false,
     thumbnail: "/assets/images/study-thumbnail-2.png",
-    users: [{ id: 1, nickname: "Ian" }],
+    memberNumber: 1,
   },
   {
     id: 9,
@@ -88,10 +73,7 @@ const studyRooms = [
     maxUsers: 5,
     camEnabled: true,
     thumbnail: "/assets/images/study-thumbnail-3.png",
-    users: [
-      { id: 1, nickname: "Ian" },
-      { id: 2, nickname: "Ariel" },
-    ],
+    memberNumber: 1,
   },
   {
     id: 10,
@@ -99,12 +81,7 @@ const studyRooms = [
     maxUsers: 5,
     camEnabled: true,
     thumbnail: "/assets/images/study-thumbnail-4.png",
-    users: [
-      { id: 1, nickname: "Ian" },
-      { id: 2, nickname: "Ariel" },
-      { id: 4, nickname: "Kanuda" },
-      { id: 3, nickname: "Andy" },
-    ],
+    memberNumber: 1,
   },
   {
     id: 11,
@@ -112,10 +89,7 @@ const studyRooms = [
     maxUsers: 3,
     camEnabled: false,
     thumbnail: "/assets/images/study-thumbnail-5.png",
-    users: [
-      { id: 4, nickname: "Kanuda" },
-      { id: 5, nickname: "Hailey" },
-    ],
+    memberNumber: 1,
   },
   {
     id: 12,
@@ -123,7 +97,7 @@ const studyRooms = [
     maxUsers: 3,
     camEnabled: false,
     thumbnail: "/assets/images/study-thumbnail-6.png",
-    users: [{ id: 4, nickname: "Kanuda" }],
+    memberNumber: 1,
   },
   {
     id: 13,
@@ -131,11 +105,7 @@ const studyRooms = [
     maxUsers: 5,
     camEnabled: true,
     thumbnail: "/assets/images/study-thumbnail-1.png",
-    users: [
-      { id: 1, nickname: "Ian" },
-      { id: 3, nickname: "Andy" },
-      { id: 2, nickname: "Ariel" },
-    ],
+    memberNumber: 1,
   },
   {
     id: 14,
@@ -143,7 +113,7 @@ const studyRooms = [
     maxUsers: 5,
     camEnabled: false,
     thumbnail: "/assets/images/study-thumbnail-2.png",
-    users: [{ id: 1, nickname: "Ian" }],
+    memberNumber: 1,
   },
   {
     id: 15,
@@ -151,10 +121,7 @@ const studyRooms = [
     maxUsers: 5,
     camEnabled: true,
     thumbnail: "/assets/images/study-thumbnail-3.png",
-    users: [
-      { id: 1, nickname: "Ian" },
-      { id: 2, nickname: "Ariel" },
-    ],
+    memberNumber: 1,
   },
   {
     id: 16,
@@ -162,12 +129,7 @@ const studyRooms = [
     maxUsers: 5,
     camEnabled: true,
     thumbnail: "/assets/images/study-thumbnail-4.png",
-    users: [
-      { id: 1, nickname: "Ian" },
-      { id: 2, nickname: "Ariel" },
-      { id: 4, nickname: "Kanuda" },
-      { id: 3, nickname: "Andy" },
-    ],
+    memberNumber: 1,
   },
   {
     id: 17,
@@ -175,10 +137,7 @@ const studyRooms = [
     maxUsers: 3,
     camEnabled: false,
     thumbnail: "/assets/images/study-thumbnail-5.png",
-    users: [
-      { id: 4, nickname: "Kanuda" },
-      { id: 5, nickname: "Hailey" },
-    ],
+    memberNumber: 1,
   },
   {
     id: 18,
@@ -186,7 +145,7 @@ const studyRooms = [
     maxUsers: 3,
     camEnabled: false,
     thumbnail: "/assets/images/study-thumbnail-6.png",
-    users: [{ id: 4, nickname: "Kanuda" }],
+    memberNumber: 1,
   },
 ];
 

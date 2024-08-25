@@ -102,7 +102,7 @@ const RecruitStudyCreateContainer: React.FC = () => {
       if (activeTab === 0 && tab0SelectedStudy !== null) {
         requestBody.roomId = tab0SelectedStudy;
       }
-  
+        
       try {
         const response = await axiosInstance.post(
           `${process.env.REACT_APP_API_URL}/api/v1/posts`,
@@ -184,7 +184,7 @@ const RecruitStudyCreateContainer: React.FC = () => {
                       id={room.id}
                       title={room.title}
                       camEnabled={room.camEnabled}
-                      currentUsers={room.users.length}
+                      currentUsers={room.memberNumber}
                       maxUsers={room.maxUsers}
                       thumbnail={room.thumbnail}
                       isSelected={tab0SelectedStudy === room.id}
