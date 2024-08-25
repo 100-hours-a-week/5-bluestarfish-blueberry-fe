@@ -8,14 +8,13 @@ import RecruitPostList from "../posts/RecruitPostList";
 interface Post {
   id: number;
   title: string;
-  postType: string;
+  type: string;
   user: {
     nickname: string;
     profileImage?: string | null;
   };
-  room?: {
-    camEnabled: boolean;
-  } | null; // room이 null일 수 있으므로 optional로 처리
+  camEnabled: boolean;
+  room ?: number | null;
   recruited: boolean;
 }
 
@@ -32,6 +31,7 @@ const StudyRecruitListContainer: React.FC = () => {
   const [selectedType, setSelectedType] = useState("");
   const [posts, setPosts] = useState<Array<Post>>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [page, setPage] = useState(0); // 페이지 상태 추가
   const navigate = useNavigate();
 
   const categories = [
@@ -46,12 +46,15 @@ const StudyRecruitListContainer: React.FC = () => {
 
   useEffect(() => {
     fetchPosts();
-  }, [selectedCategory, selectedType]);
+  }, [selectedCategory, selectedType, page]);
 
   const fetchPosts = async () => {
     try {
       setIsLoading(true);
-      const recruited = selectedCategory === "모집 중";
+
+      // const recruited = selectedCategory === "모집 중";
+      // false로 돌리면 아무 데이터도 안 떠서 우선은 true로 설정함
+      const recruited = true;
       const type =
         selectedType === "스터디 멤버 찾기"
           ? "FINDING_MEMBERS"
@@ -63,7 +66,7 @@ const StudyRecruitListContainer: React.FC = () => {
         `${process.env.REACT_APP_API_URL}/api/v1/posts`,
         {
           params: {
-            page: 0,
+            page,
             type,
             recruited,
           },
@@ -82,10 +85,12 @@ const StudyRecruitListContainer: React.FC = () => {
 
   const handleCategoryClick = (category: string) => {
     setSelectedCategory(category);
+    setPage(0); // 카테고리 변경 시 페이지 초기화
   };
 
   const handleTypeClick = (type: string) => {
     setSelectedType(selectedType === type ? "" : type);
+    setPage(0); // 타입 변경 시 페이지 초기화
   };
 
   const handlePostClick = (postId: number) => {
@@ -95,7 +100,6 @@ const StudyRecruitListContainer: React.FC = () => {
   const handleCreatePostClick = async () => {
     navigate("/recruit/create");
   };
-  
 
   return (
     <div className="flex flex-col items-center w-full bg-white mb-10">
