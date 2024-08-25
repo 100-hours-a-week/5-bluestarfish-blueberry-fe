@@ -46,7 +46,7 @@ const ChatContainer: React.FC<ChatContainerProps> = () => {
 
   useEffect(() => {
     getPreviousMessages();
-    const socket = new SockJS("http://localhost:8080/ws-chat");
+    const socket = new SockJS(`${process.env.REACT_APP_SOCKET_URL}`);
     const client = new Client({
       webSocketFactory: () => socket as WebSocket,
       onConnect: () => {
