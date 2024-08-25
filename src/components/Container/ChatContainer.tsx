@@ -23,7 +23,7 @@ const ChatContainer: React.FC<ChatContainerProps> = () => {
   const [content, setContent] = useState<string>("");
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const clientRef = useRef<Client | null>(null);
-  const { userId } = useLoginedUserStore();
+  const { userId, nickname } = useLoginedUserStore();
 
   const getPreviousMessages = async () => {
     try {
@@ -41,7 +41,7 @@ const ChatContainer: React.FC<ChatContainerProps> = () => {
   };
 
   useEffect(() => {
-    console.log(messages);
+    console.log(messages, userId);
   }, [messages]);
 
   useEffect(() => {
@@ -83,6 +83,8 @@ const ChatContainer: React.FC<ChatContainerProps> = () => {
         body: JSON.stringify({
           message: content, // 실제 입력된 content를 message로 변경
           senderId: userId, // 실제 senderId를 함께 보냅니다.
+          senderNickname: nickname,
+          senderProfileImage: "",
         }),
       });
     }
@@ -100,11 +102,10 @@ const ChatContainer: React.FC<ChatContainerProps> = () => {
   return (
     <div className="m-2 flex flex-col h-full">
       <div className="grow overflow-y-auto h-[400px] p-2">
-        // 높이 수정 로직 작성하기
         {Array.isArray(messages) &&
           messages.map((msg, index) =>
-            msg.senderId === 1 ? (
-              <ChatStartMessage
+            msg.senderId === userId ? (
+              <ChatEndMessage
                 key={index} // 배열의 각 항목에 고유한 key 값 설정
                 senderNickname={msg.senderNickname}
                 createdAt={msg.createdAt}
@@ -112,7 +113,7 @@ const ChatContainer: React.FC<ChatContainerProps> = () => {
                 senderProfileImage=""
               />
             ) : (
-              <ChatEndMessage
+              <ChatStartMessage
                 key={index} // 배열의 각 항목에 고유한 key 값 설정
                 senderNickname={msg.senderNickname}
                 createdAt={msg.createdAt}
