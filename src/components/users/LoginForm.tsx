@@ -50,48 +50,11 @@ const LoginForm: React.FC = () => {
     }
   };
 
-  // 로그인 후 게시물 목록 페이지로 리다이렉트하는 함수
-  const redirectToPostListPage = (): void => {
-    window.location.href = "/"; // 루트 페이지로 리다이렉트
-  };
-
   const navigate = useNavigate();
 
   // 임시 회원가입 함수
   const signup = () => {
     navigate("/signup");
-  };
-
-  const setUserInfo = async () => {
-    try {
-      const response = await axiosInstance.get(
-        `${process.env.REACT_APP_API_URL}/api/v1/users/whoami`
-      );
-      if (response.status === 200) {
-        console.log(response.data.data.id);
-        await Promise.all([
-          setUserId(response.data.data.id),
-          setNickname(response.data.data.nickname),
-          setProfileImage(response.data.data.profile_image),
-        ]);
-        console.log("123");
-        console.log(userId, nickname, profileImage);
-        // redirectToPostListPage();
-        navigate(`/`);
-      }
-    } catch (error: any) {
-      if (error.response) {
-        if (error.response.status === 404) {
-          console.error("404: ", "Not found");
-        }
-      } else {
-        console.error(
-          "로그인 유저 정보를 받아오는 중 오류 발생:",
-          error.message
-        );
-      }
-      console.error(error);
-    }
   };
 
   // Axios로 로그인 요청 보내는 함수
@@ -122,8 +85,6 @@ const LoginForm: React.FC = () => {
 
       if (response.status === 200) {
         navigate(`/`);
-        await setUserInfo();
-        console.log(userId, nickname, profileImage);
       } else {
         setHelperText("* 이메일 또는 비밀번호를 다시 확인해주세요.");
         setHelperTextColor("text-red-500");

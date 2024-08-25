@@ -5,6 +5,7 @@ import ToastNotification from "../common/ToastNotification";
 import addPhotoAnimation from "../../animations/add-photo.json";
 import SubmitButton from "../common/SubmitButton";
 import axiosInstance from "../../utils/axiosInstance";
+import { useLoginedUserStore } from "../../store/store";
 
 // StudyRoomForm 컴포넌트에 전달되는 props 타입 정의
 type StudyRoomFormProps = {
@@ -48,6 +49,7 @@ const StudyRoomForm: React.FC<StudyRoomFormProps> = ({
   handleSubmit,
 }) => {
   // 모든 입력이 유효한지 확인하는 변수
+  const {userId} = useLoginedUserStore();
   const isFormValid =
     studyRoomNameError === "통과" &&
     maxUsersError === "통과" &&
@@ -89,6 +91,7 @@ const StudyRoomForm: React.FC<StudyRoomFormProps> = ({
       const response = await axiosInstance.post(
         `${process.env.REACT_APP_API_URL}/api/v1/rooms`,
         {
+          userId: userId ,
           title: trimmeedTitle,
           maxUsers: maxUsers,
           camEnabled: isCam,

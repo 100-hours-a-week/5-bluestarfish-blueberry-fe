@@ -153,7 +153,7 @@ const RecruitStudyDetailContainer: React.FC = () => {
                 id: 1,
                 title: studyRoom.title,
                 camEnabled: studyRoom.camEnabled,
-                currentUsers: studyRoom.users.length,
+                currentUsers: studyRoom.memberNumber,
                 maxUsers: studyRoom.maxUsers,
                 thumbnail: studyRoom.thumbnail,
               }
@@ -174,7 +174,6 @@ const RecruitStudyDetailContainer: React.FC = () => {
       {showDeleteModal && (
         <DeletePostModal
           onConfirm={handleDeletePost} // 게시글 삭제
-
           onCancel={() => setShowDeleteModal(false)} // 모달 닫기
         />
       )}
