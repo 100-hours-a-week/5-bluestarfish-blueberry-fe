@@ -3,14 +3,13 @@ import React from 'react';
 interface Post {
   id: number;
   title: string;
-  postType: string;
+  type: string;
   user: {
     nickname: string;
     profileImage?: string | null;
   };
-  room?: {
-    camEnabled: boolean;
-  } | null; // room이 null일 수 있으므로 optional로 처리
+  postCamEnabled: boolean;
+  room?: number | null;
   recruited: boolean;
 }
 
@@ -33,24 +32,22 @@ const RecruitPostList: React.FC<RecruitPostListProps> = ({ posts, onPostClick })
               {post.title}
             </h3>
             <div className="flex items-center space-x-2 text-sm text-gray-600 mt-2">
-              <span className={`px-2 py-1 rounded-full ${post.postType === 'FINDING_MEMBERS' ? 'bg-purple-200' : 'bg-blue-200'}`}>
-                {post.postType === 'FINDING_MEMBERS' ? '멤버 찾기' : '룸 찾기'}
+              <span className={`px-2 py-1 rounded-full ${post.type === 'FINDING_MEMBERS' ? 'bg-purple-200' : 'bg-blue-200'}`}>
+                {post.type === 'FINDING_MEMBERS' ? '멤버 찾기' : '룸 찾기'}
               </span>
-              {post.room && (
-                <div className="flex items-center space-x-1">
-                  <img
-                    src={`${process.env.PUBLIC_URL}/assets/images/${post.room.camEnabled ? 'cam-on-icon-blue.png' : 'cam-off-icon-blue.png'}`}
-                    alt={post.room.camEnabled ? '캠켜공' : '캠끄공'}
-                    className="h-5 w-5"
-                  />
-                  <span>{post.room.camEnabled ? '캠켜공' : '캠끄공'}</span>
-                </div>
-              )}
               <div className="flex items-center space-x-1">
-                <img 
+                <img
+                  src={`${process.env.PUBLIC_URL}/assets/images/${post.postCamEnabled ? 'cam-on-icon-blue.png' : 'cam-off-icon-blue.png'}`}
+                  alt={post.postCamEnabled ? '캠켜공' : '캠끄공'}
+                  className="h-5 w-5"
+                />
+                <span>{post.postCamEnabled ? '캠켜공' : '캠끄공'}</span>
+              </div>
+              <div className="flex items-center space-x-1">
+                <img
                   src={post.user.profileImage || `${process.env.PUBLIC_URL}/assets/images/real_ian.png`}
-                  alt={post.user.nickname} 
-                  className="h-5 w-5 rounded-full" 
+                  alt={post.user.nickname}
+                  className="h-5 w-5 rounded-full"
                 />
                 <span>{post.user.nickname}</span>
               </div>
