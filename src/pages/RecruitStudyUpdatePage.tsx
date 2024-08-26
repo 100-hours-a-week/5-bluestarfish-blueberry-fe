@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 // import { useParams, useNavigate } from "react-router-dom";
 import BasicHeader from "../components/common/BasicHeader";
 import Footer from "../components/common/Footer";
-import RecruitStudyUpdateContainer from "../components/Container/RecruitStudyUpdateContainer";
+import RecruitStudyUpdateContainer from "../components/Container/RecruitStudyUpdateContainer"
 import { useSetUserInfo } from "../utils/auth";
 
 const RecruitStudyCreatePage: React.FC = () => {

@@ -39,10 +39,10 @@ const RecruitStudyDetailContainer: React.FC = () => {
       try {
         const response = await axiosInstance.get(`${process.env.REACT_APP_API_URL}/api/v1/posts/${studyId}`);
         const studyData = response.data.data;
-
+  
         setStudy(studyData);
         setIsRecruited(studyData.recruited || false);
-
+  
         const sortedComments =
           studyData.comments
             ?.map((comment: any) => ({
@@ -53,15 +53,15 @@ const RecruitStudyDetailContainer: React.FC = () => {
               profileImage: comment.user.profileImage,
             }))
             .sort((a: any, b: any) => b.createdAt - a.createdAt) || [];
-
+  
         setComments(sortedComments);
-
+  
         // 스터디 룸 정보 설정
         if (studyData.room) {
           setStudyRoom({
             id: studyData.room.id,
             title: studyData.room.title,
-            postCamEnabled: studyData.room.postCamEnabled,
+            postCamEnabled: studyData.room.camEnabled,
             currentUsers: studyData.room.currentUsers,
             maxUsers: studyData.room.maxUsers,
             thumbnail: studyData.room.thumbnail,
@@ -73,9 +73,10 @@ const RecruitStudyDetailContainer: React.FC = () => {
         navigate("/recruit/list");
       }
     };
-
+  
     fetchStudyDetail();
   }, [studyId, navigate]);
+  
 
   // 댓글을 제출할 때 호출되는 함수
   const handleCommentSubmit = (comment: string) => {
