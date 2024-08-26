@@ -44,6 +44,7 @@ const StudyroomContainer: React.FC = () => {
   const { users, setUsers } = useUserStore();
 
   useEffect(() => {
+    console.log(`${process.env.REACT_APP_SOCKET_URL}`);
     fetchStudyRoom();
   }, []);
 
