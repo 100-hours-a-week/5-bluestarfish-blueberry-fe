@@ -52,6 +52,44 @@ const StudyroomContainer: React.FC = () => {
     console.log(users);
   }, [users]);
 
+  const exitStudyRoom = async () => {
+    if (isLoading) return;
+    try {
+      setIsLoading(true);
+      const response = await axiosInstance.post(
+        `${process.env.REACT_APP_API_URL}/api/v1/rooms/${roomId}/users/${userId}`,
+        {
+          host: false,
+          active: false,
+          camEnabled: camEnabled,
+          micEnabled: micEnabled,
+          speakerEnabled: speakerEnabled,
+          goalTime: "14:30:30",
+          dayTime: "15:30:30",
+        }
+      );
+      if (response.status === 204) {
+        console.log("204 No Content");
+        navigate(`/studyroom/${roomId}`);
+      }
+    } catch (error: any) {
+      if (error.response) {
+        if (error.response.status === 404) {
+          console.error("404: ", "Not Found");
+        } else {
+          console.error(
+            `오류 발생 (${error.response.status}):`,
+            error.response.data.message || "서버 오류가 발생했습니다."
+          );
+        }
+      } else {
+        console.error("스터디룸 퇴장 중 오류 발생:", error.message);
+      }
+    } finally {
+      setIsLoading(false); // 로딩 종료
+    }
+  };
+
   const fetchStudyRoom = async () => {
     if (isLoading) return;
     try {
@@ -84,12 +122,12 @@ const StudyroomContainer: React.FC = () => {
     }
   };
   useEffect(() => {
-    const socket = new SockJS("http://localhost:8080/ws-study");
+    const socket = new SockJS(`${process.env.REACT_APP_SOCKET_STUDY_URL}`);
     const client = new Client({
       webSocketFactory: () => socket as WebSocket,
       onConnect: () => {
         if (!client || !roomId) return;
-        client.subscribe(`/rooms/${roomId}/management`, (message: IMessage) => {
+        client.subscribe(`/rooms/${roomId}`, (message: IMessage) => {
           const body = JSON.parse(message.body);
           const users: User[] = body.map(
             (user: any): User => ({
@@ -104,6 +142,22 @@ const StudyroomContainer: React.FC = () => {
           // 상태 업데이트
           setUsers(users);
         });
+
+        // client.subscribe(`/rooms/${roomId}`, (message: IMessage) => {
+        //   const body = JSON.parse(message.body);
+        //   const users: User[] = body.map(
+        //     (user: any): User => ({
+        //       id: user.id,
+        //       nickname: user.nickname,
+        //       profileImage: user.profileImage,
+        //       camEnabled: user.camEnabled,
+        //       micEnabled: user.micEnabled,
+        //       speakerEnabled: user.speakerEnabled,
+        //     })
+        //   );
+        //   // 상태 업데이트
+        //   setUsers(users);
+        // });
       },
       onStompError: (error) => {
         console.error("Error: ", error);
@@ -169,8 +223,9 @@ const StudyroomContainer: React.FC = () => {
     });
   };
 
-  const handleExitButton = () => {
-    navigate("/");
+  const handleExitButton = async () => {
+    await exitStudyRoom();
+    navigate(`/wait/${roomId}`);
   };
 
   return (
