@@ -157,7 +157,7 @@ const SignupForm: React.FC = () => {
   const sendNickname = async (trimmedNickname: string) => {
     try {
       const response = await axiosInstance.get(
-        `${process.env.REACT_APP_API_URL}/api/v1/users/nickname/nickname=${trimmedNickname}`
+        `${process.env.REACT_APP_API_URL}/api/v1/users/nickname?nickname=${trimmedNickname}`
       );
 
       if (response.status === 200) {
