@@ -44,14 +44,8 @@ const StudyroomContainer: React.FC = () => {
   const { users, setUsers } = useUserStore();
 
   useEffect(() => {
-    console.log(`${process.env.REACT_APP_SOCKET_URL}`);
     fetchStudyRoom();
   }, []);
-
-  useEffect(() => {
-    console.log(studyRoom);
-    console.log(users);
-  }, [users]);
 
   const exitStudyRoom = async () => {
     if (isLoading) return;
@@ -128,8 +122,31 @@ const StudyroomContainer: React.FC = () => {
       webSocketFactory: () => socket as WebSocket,
       onConnect: () => {
         if (!client || !roomId) return;
-        client.subscribe(`/rooms/${roomId}`, (message: IMessage) => {
+
+        client.subscribe(`/rooms/${roomId}/management`, (message: IMessage) => {
           const body = JSON.parse(message.body);
+          console.log(message.body);
+          const users: User[] = body.map(
+            (user: any): User => ({
+              id: user.id,
+              nickname: user.nickname,
+              profileImage: user.profileImage,
+              camEnabled: user.camEnabled,
+              micEnabled: user.micEnabled,
+              speakerEnabled: user.speakerEnabled,
+            })
+          );
+          // 상태 업데이트
+          setUsers(users);
+        });
+
+        client.publish({
+          destination: `/rooms/${roomId}/member`,
+        });
+
+        client.subscribe(`/rooms/${roomId}/management`, (message: IMessage) => {
+          const body = JSON.parse(message.body);
+          console.log(message.body);
           const users: User[] = body.map(
             (user: any): User => ({
               id: user.id,

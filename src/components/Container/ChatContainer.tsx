@@ -10,6 +10,8 @@ import { useLoginedUserStore } from "../../store/store";
 type ChatContainerProps = {};
 
 interface Message {
+  id: string;
+  roomId: string;
   message: string;
   senderId: number;
   senderNickname: string;
@@ -52,7 +54,9 @@ const ChatContainer: React.FC<ChatContainerProps> = () => {
       onConnect: () => {
         if (!client || !roomId) return;
         client.subscribe(`/rooms/${roomId}/chats`, (message: IMessage) => {
-          const body: Message = JSON.parse(message.body);
+          console.log("여기: ", message);
+          const body: any = JSON.parse(message.body);
+          console.log("소켓을 통한 메시지: ", body);
           setMessages((prevMessages) => [...prevMessages, body]);
         });
       },
