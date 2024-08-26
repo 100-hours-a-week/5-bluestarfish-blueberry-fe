@@ -63,12 +63,12 @@ const RecruitStudyUpdateContainer: React.FC = () => {
           setTab0Title(postData.title);
           setTab0Content(postData.content);
           setTab0SelectedStudy(postData.room?.id || null);
-          setTab0SelectedCategory(postData.isCamOn ? "캠켜공" : "캠끄공");
+          setTab0SelectedCategory(postData.postCamEnabled ? "캠켜공" : "캠끄공");
         } else if (postData.type === "FINDING_ROOMS") {
           setActiveTab(1);
           setTab1Title(postData.title);
           setTab1Content(postData.content);
-          setTab1SelectedCategory(postData.isCamOn ? "캠켜공" : "캠끄공");
+          setTab1SelectedCategory(postData.postCamEnabled ? "캠켜공" : "캠끄공");
         }
       } catch (error) {
         console.error("게시글을 불러오지 못했습니다:", error);
@@ -138,6 +138,7 @@ const RecruitStudyUpdateContainer: React.FC = () => {
         content: activeTab === 0 ? tab0Content : tab1Content,
         type: activeTab === 0 ? "FINDING_MEMBERS" : "FINDING_ROOMS",
         isRecruited: true, // 현재 isRecruited 값을 그대로 넘겨줌
+        postCamEnabled: activeTab === 0 ? tab0SelectedCategory === "캠켜공" : tab1SelectedCategory === "캠켜공", // 캠 여부 설정
       };
   
       try {

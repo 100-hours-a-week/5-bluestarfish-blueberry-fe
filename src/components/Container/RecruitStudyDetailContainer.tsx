@@ -6,6 +6,7 @@ import StudyRoomLink from "../StudyDetail/StudyRoomLink"; // 스터디 룸 링�
 import CommentSection from "../StudyDetail/CommentSection"; // 댓글 섹션 컴포넌트 import
 import DeletePostModal from "../common/DeletePostModal"; // 모달 컴포넌트 import
 import axiosInstance from "../../utils/axiosInstance"; // Axios 인스턴스 import
+import ToastNotification from "../common/ToastNotification";
 
 const RecruitStudyDetailContainer: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -27,7 +28,8 @@ const RecruitStudyDetailContainer: React.FC = () => {
   const [isRecruited, setIsRecruited] = useState(false);
   // 삭제 모달 표시 여부 상태 관리
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-
+  // ToastNotification 표시 여부 상태 관리
+  const [showToast, setShowToast] = useState(false);
   // 스터디룸 정보 상태 관리
   const [studyRoom, setStudyRoom] = useState<any | null>(null);
 
@@ -76,7 +78,11 @@ const RecruitStudyDetailContainer: React.FC = () => {
   
     fetchStudyDetail();
   }, [studyId, navigate]);
-  
+
+  // ToastNotification을 닫는 함수
+  const handleCloseToast = () => {
+    setShowToast(false);
+  };
 
   // 댓글을 제출할 때 호출되는 함수
   const handleCommentSubmit = (comment: string) => {
@@ -150,9 +156,9 @@ const RecruitStudyDetailContainer: React.FC = () => {
         
         return updatedStudy;
       });
-    
-      alert("모집 완료로 변경되었습니다.");
-      // window.location.reload(); // 화면 새로고침
+
+      // ToastNotification을 표시
+      setShowToast(true);
     } catch (error: any) {
       console.error("모집 상태 변경 실패:", error);
       alert("모집 상태 변경에 실패했습니다. 다시 시도해 주세요.");
@@ -208,6 +214,11 @@ const RecruitStudyDetailContainer: React.FC = () => {
           onConfirm={handleDeletePost}
           onCancel={() => setShowDeleteModal(false)}
         />
+      )}
+
+      {/* 변경 완료! 토스트 알림 */}
+      {showToast && (
+        <ToastNotification message="변경 완료!" onClose={handleCloseToast} />
       )}
     </div>
   );
