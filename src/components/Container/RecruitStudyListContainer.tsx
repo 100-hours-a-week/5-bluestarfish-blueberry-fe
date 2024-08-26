@@ -47,6 +47,7 @@ const StudyRecruitListContainer: React.FC = () => {
   useEffect(() => {
     fetchPosts();
   }, [selectedCategory, selectedType, page]);
+  // fetchPosts() 두 번 호출
 
   const fetchPosts = async () => {
     try {
