@@ -143,22 +143,6 @@ const StudyroomContainer: React.FC = () => {
           // 상태 업데이트
           setUsers(users);
         });
-
-        // client.subscribe(`/rooms/${roomId}`, (message: IMessage) => {
-        //   const body = JSON.parse(message.body);
-        //   const users: User[] = body.map(
-        //     (user: any): User => ({
-        //       id: user.id,
-        //       nickname: user.nickname,
-        //       profileImage: user.profileImage,
-        //       camEnabled: user.camEnabled,
-        //       micEnabled: user.micEnabled,
-        //       speakerEnabled: user.speakerEnabled,
-        //     })
-        //   );
-        //   // 상태 업데이트
-        //   setUsers(users);
-        // });
       },
       onStompError: (error) => {
         console.error("Error: ", error);
@@ -174,10 +158,6 @@ const StudyroomContainer: React.FC = () => {
       }
     };
   }, []);
-
-  useEffect(() => {
-    console.log(users);
-  }, [users]);
 
   const sendRoomControlUpdate = (update: User) => {
     if (clientRef.current && clientRef.current.connected) {
