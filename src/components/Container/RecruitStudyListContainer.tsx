@@ -47,6 +47,7 @@ const StudyRecruitListContainer: React.FC = () => {
   useEffect(() => {
     fetchPosts();
   }, [selectedCategory, selectedType]);
+  // fetchPosts() 두 번 호출
 
   const fetchPosts = async () => {
     try {
@@ -95,7 +96,6 @@ const StudyRecruitListContainer: React.FC = () => {
   const handleCreatePostClick = async () => {
     navigate("/recruit/create");
   };
-  
 
   return (
     <div className="flex flex-col items-center w-full bg-white mb-10">
