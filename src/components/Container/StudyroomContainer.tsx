@@ -40,7 +40,6 @@ const StudyroomContainer: React.FC = () => {
     toggleSpeaker,
   } = useDeviceStore();
   const { userId, nickname, profileImage } = useLoginedUserStore();
-
   const { users, setUsers } = useUserStore();
 
   useEffect(() => {
