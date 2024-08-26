@@ -2,15 +2,32 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../global.css";
 import StudyroomTN from "../rooms/StudyroomTN";
-import studyRooms from "../../data/studyRooms";
 import RecruitStudyForm from "../posts/RecruitStudyForm";
 import { validateStudyFormInputs } from "../../utils/validation";
 import TabBar from "../posts/TabBar";
 import ToastNotification from "../common/ToastNotification";
 import SubmitButton from "../common/SubmitButton";
 import axiosInstance from "../../utils/axiosInstance";
+import DefaultThumbnail from "../../images/study-thumbnail-3.png"
+
+// 스터디룸 객체의 타입을 정의
+interface StudyRoom {
+  id: number;
+  title: string;
+  maxUsers: number;
+  password: string;
+  thumbnail: string | null;
+  description: string;
+  memberNumber: number;
+  createdAt: string;
+  deletedAt: string | null;
+  postCamEnabled: boolean;
+}
 
 const RecruitStudyCreateContainer: React.FC = () => {
+  // 스터디룸 상태 추가
+  const [studyRooms, setStudyRooms] = useState<StudyRoom[]>([]);
+
   // 탭 0 관련 상태
   const [tab0SelectedCategory, setTab0SelectedCategory] = useState<string>("");
   const [tab0Title, setTab0Title] = useState("");
@@ -42,6 +59,20 @@ const RecruitStudyCreateContainer: React.FC = () => {
     { name: "캠켜공", icon: "cam-on-icon.png" },
     { name: "캠끄공", icon: "cam-off-icon.png" },
   ];
+
+  // 스터디룸 데이터를 가져오는 useEffect 추가
+  useEffect(() => {
+    const fetchStudyRooms = async () => {
+      try {
+        const response = await axiosInstance.get(`${process.env.REACT_APP_API_URL}/api/v1/rooms`);
+        setStudyRooms(response.data.data.content);
+      } catch (error) {
+        console.error("스터디룸 데이터를 불러오는데 실패했습니다:", error);
+      }
+    };
+
+    fetchStudyRooms();
+  }, []);
 
   useEffect(() => {
     // 유효성 검사 함수 호출
@@ -81,21 +112,17 @@ const RecruitStudyCreateContainer: React.FC = () => {
 
   const handleSubmit = async () => {
     if (isFormValid) {
-      // 기본 requestBody 설정
-      // let requestBody: any = {
-      //   userId: 1, // 고정된 userId, 실제로는 로그인한 사용자의 ID를 사용
-      //   title: activeTab === 0 ? tab0Title : tab1Title,
-      //   content: activeTab === 0 ? tab0Content : tab1Content,
-      //   postType: activeTab === 0 ? "FINDING_MEMBERS" : "FINDING_ROOMS",
-      //   isRecruited: false,
-      // };
-
+      // 카테고리에 따라 postCamEnabled 값을 설정
+      const postCamEnabled = 
+        (activeTab === 0 ? tab0SelectedCategory : tab1SelectedCategory) === "캠켜공";
+  
       let requestBody: any = {
         userId: 1,  // 고정된 userId, 실제로는 로그인한 사용자의 ID를 사용
         title: activeTab === 0 ? tab0Title : tab1Title,
         content: activeTab === 0 ? tab0Content : tab1Content,
         type: activeTab === 0 ? "FINDING_MEMBERS" : "FINDING_ROOMS",
         isRecruited: true,
+        postCamEnabled: postCamEnabled,  // 카메라 사용 여부를 추가
       };
   
       // activeTab이 0인 경우에만 roomId를 추가
@@ -108,7 +135,7 @@ const RecruitStudyCreateContainer: React.FC = () => {
           `${process.env.REACT_APP_API_URL}/api/v1/posts`,
           requestBody
         );
-
+  
         if (response.status === 201) {
           console.log("게시글 작성 성공:", response.data);
           handleShowToast();
@@ -121,6 +148,7 @@ const RecruitStudyCreateContainer: React.FC = () => {
       alert("모든 필드를 채워주세요.");
     }
   };
+  
 
   const handleShowToast = () => {
     setShowToast(true);
@@ -183,10 +211,10 @@ const RecruitStudyCreateContainer: React.FC = () => {
                     <StudyroomTN
                       id={room.id}
                       title={room.title}
-                      camEnabled={room.camEnabled}
+                      camEnabled={room.postCamEnabled}
                       currentUsers={room.memberNumber}
                       maxUsers={room.maxUsers}
-                      thumbnail={room.thumbnail}
+                      thumbnail={room.thumbnail || DefaultThumbnail}
                       isSelected={tab0SelectedStudy === room.id}
                     />
                   </div>
@@ -216,11 +244,10 @@ const RecruitStudyCreateContainer: React.FC = () => {
           />
         )}
 
-        {/* SubmitButton 컴포넌트 사용 */}
         <SubmitButton
           isFormValid={isFormValid}
           handleClick={handleSubmit}
-          text="게시글 등록"
+          text="게시글 등록" 
         />
         {showToast && (
           <ToastNotification message="등록 완료!" onClose={handleCloseToast} />

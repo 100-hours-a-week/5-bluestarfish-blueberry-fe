@@ -10,20 +10,24 @@ const StudyHeader: React.FC<{
 }> = ({ study, isRecruited, isAuthor, onCompleteRecruitment, onEditPost, onDeletePost }) => {
   // 작성일을 포맷팅하여 'YYYY.MM.DD' 형식의 날짜 문자열로 변환
   const formattedDate = study?.createdAt
-    ? new Date(study.createdAt * 1000).toLocaleDateString('ko-KR', {
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-      })
+    ? new Date(study.createdAt).toLocaleDateString('ko-KR', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    })
     : '';
 
   // 작성 시간을 포맷팅하여 'HH:MM' 형식의 시간 문자열로 변환
   const formattedTime = study?.createdAt
-    ? new Date(study.createdAt * 1000).toLocaleTimeString('ko-KR', {
-        hour: '2-digit',
-        minute: '2-digit',
-      })
+    ? new Date(study.createdAt).toLocaleTimeString('ko-KR', {
+      hour: '2-digit',
+      minute: '2-digit',
+    })
     : '';
+
+    console.log("study.createdAt:", study.createdAt);
+
+
 
   return (
     <>
@@ -45,15 +49,15 @@ const StudyHeader: React.FC<{
           </span>
           <div className="flex items-center space-x-1">
             <img
-              src={`${process.env.PUBLIC_URL}/assets/images/${study.isCamOn ? 'cam-on-icon-blue.png' : 'cam-off-icon-blue.png'}`}
-              alt={study.isCamOn ? '캠켜공' : '캠끄공'}
+              src={`${process.env.PUBLIC_URL}/assets/images/${study.postCamEnabled ? 'cam-on-icon-blue.png' : 'cam-off-icon-blue.png'}`}
+              alt={study.postCamEnabled ? '캠켜공' : '캠끄공'}
               className="h-5 w-5"
             />
             {/* 캠 상태에 따라 '캠켜공' 또는 '캠끄공'을 표시 */}
-            <span>{study.isCamOn ? '캠켜공' : '캠끄공'}</span>
+            <span>{study.postCamEnabled ? '캠켜공' : '캠끄공'}</span>
           </div>
           <div className="flex items-center space-x-1">
-            <img src={study.user.profileImage} alt={study.user.nickname} className="h-5 w-5 rounded-full" />
+            <img src={study.user.profileImage || `${process.env.PUBLIC_URL}/assets/images/real_ian.png`} alt={study.user.nickname} className="h-5 w-5 rounded-full" />
             {/* 작성자의 프로필 이미지와 닉네임을 표시 */}
             <span>{study.user.nickname}</span>
           </div>
