@@ -39,10 +39,10 @@ const RecruitStudyDetailContainer: React.FC = () => {
       try {
         const response = await axiosInstance.get(`${process.env.REACT_APP_API_URL}/api/v1/posts/${studyId}`);
         const studyData = response.data.data;
-
+  
         setStudy(studyData);
         setIsRecruited(studyData.recruited || false);
-
+  
         const sortedComments =
           studyData.comments
             ?.map((comment: any) => ({
@@ -53,15 +53,15 @@ const RecruitStudyDetailContainer: React.FC = () => {
               profileImage: comment.user.profileImage,
             }))
             .sort((a: any, b: any) => b.createdAt - a.createdAt) || [];
-
+  
         setComments(sortedComments);
-
+  
         // 스터디 룸 정보 설정
         if (studyData.room) {
           setStudyRoom({
             id: studyData.room.id,
             title: studyData.room.title,
-            postCamEnabled: studyData.room.postCamEnabled,
+            postCamEnabled: studyData.room.camEnabled,
             currentUsers: studyData.room.currentUsers,
             maxUsers: studyData.room.maxUsers,
             thumbnail: studyData.room.thumbnail,
@@ -73,9 +73,10 @@ const RecruitStudyDetailContainer: React.FC = () => {
         navigate("/recruit/list");
       }
     };
-
+  
     fetchStudyDetail();
   }, [studyId, navigate]);
+  
 
   // 댓글을 제출할 때 호출되는 함수
   const handleCommentSubmit = (comment: string) => {
@@ -124,31 +125,40 @@ const RecruitStudyDetailContainer: React.FC = () => {
     try {
       // 변경 전의 recruited 상태를 콘솔에 출력
       console.log("Before update:", { recruited: study.recruited });
+    
+      // 서버에 PATCH 요청을 보내어 isRecruited 상태만 false로 업데이트
+      const requestBody = {
+        userId: study.user.id,          // 기존 userId 유지
+        roomId: study.room?.id,         // roomId가 있을 경우 포함
+        title: study.title,             // 기존 제목 유지
+        content: study.content,         // 기존 내용 유지
+        type: study.type,               // 기존 유형 유지
+        isRecruited: false,             // 모집 완료 상태로 변경
+      };
   
-      // 서버에 PATCH 요청을 보내어 recruited 상태를 false로 업데이트
-      await axiosInstance.patch(`${process.env.REACT_APP_API_URL}/api/v1/posts/${studyId}`, {
-        isRecruited: false,
-      });
-  
+      await axiosInstance.patch(`${process.env.REACT_APP_API_URL}/api/v1/posts/${studyId}`, requestBody);
+    
       // 요청이 성공하면 클라이언트의 상태를 업데이트
       setIsRecruited(false);
-  
-      // 필요에 따라 study 객체도 업데이트
-      // setStudy((prevStudy: any) => {
-      //   const updatedStudy = { ...prevStudy, recruited: false };
+    
+      // study 객체의 다른 필드를 유지하면서 isRecruited 필드만 업데이트
+      setStudy((prevStudy: any) => {
+        const updatedStudy = { ...prevStudy, recruited: false };
         
-      //   // 변경 후의 recruited 상태를 콘솔에 출력
-      //   console.log("After update:", { recruited: updatedStudy.recruited });
+        // 변경 후의 recruited 상태를 콘솔에 출력
+        console.log("After update:", { recruited: updatedStudy.recruited });
         
-      //   return updatedStudy;
-      // });
-  
+        return updatedStudy;
+      });
+    
       alert("모집 완료로 변경되었습니다.");
-    } catch (error) {
+      // window.location.reload(); // 화면 새로고침
+    } catch (error: any) {
       console.error("모집 상태 변경 실패:", error);
       alert("모집 상태 변경에 실패했습니다. 다시 시도해 주세요.");
     }
   };
+  
   
 
 
