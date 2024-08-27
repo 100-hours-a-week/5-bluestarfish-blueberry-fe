@@ -42,5 +42,5 @@ jobs:
             sudo docker pull ${{ secrets.DOCKER_REPO }}:latest
             sudo docker stop my_custom_name || true
             sudo docker rm my_custom_name || true
-            sudo docker run --name my_custom_name -d -p 3000:3000 ${{ secrets.DOCKER_REPO }}:latest
+            sudo docker run --name my_custom_name -d -p 80:80 ${{ secrets.DOCKER_REPO }}:latest
             sudo docker image prune -f
