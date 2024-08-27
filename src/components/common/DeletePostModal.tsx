@@ -1,11 +1,18 @@
 import React from 'react';
 
 type DeletePostModalProps = {
+  title: string;
+  description: string;
   onConfirm: () => void;
   onCancel: () => void;
 };
 
-const DeletePostModal: React.FC<DeletePostModalProps> = ({ onConfirm, onCancel }) => {
+const DeletePostModal: React.FC<DeletePostModalProps> = ({
+  title,
+  description,
+  onConfirm,
+  onCancel,
+}) => {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
       <div className="group select-none w-[300px] flex flex-col p-6 relative items-center justify-center bg-gray-800 border border-gray-800 shadow-lg rounded-2xl w-[27%]">
@@ -22,9 +29,9 @@ const DeletePostModal: React.FC<DeletePostModalProps> = ({ onConfirm, onCancel }
               fillRule="evenodd"
             ></path>
           </svg>
-          <h2 className="text-xl font-bold py-4 text-gray-200">게시글을 삭제하시겠습니까?</h2>
+          <h2 className="text-xl font-bold py-4 text-gray-200">{title}</h2>
           <p className="font-bold text-sm text-gray-500 px-2">
-            삭제된 게시글은 복구할 수 없습니다.
+            {description}
           </p>
         </div>
         <div className="p-2 mt-2 text-center space-x-5 md:block">
@@ -32,13 +39,13 @@ const DeletePostModal: React.FC<DeletePostModalProps> = ({ onConfirm, onCancel }
             className="mb-2 md:mb-0 bg-gray-700 px-5 py-2 text-sm shadow-sm font-medium tracking-wider border-2 border-gray-600 hover:border-gray-700 text-gray-300 rounded-full hover:shadow-lg hover:bg-gray-800 transition ease-in duration-300"
             onClick={onCancel}
           >
-            취소
+            삭제
           </button>
           <button
             className="bg-red-500 hover:bg-transparent px-5 ml-4 py-2 text-sm shadow-sm hover:shadow-lg font-medium tracking-wider border-2 border-red-500 hover:border-red-500 text-white hover:text-red-500 rounded-full transition ease-in duration-300"
             onClick={onConfirm}
           >
-            삭제
+            취소
           </button>
         </div>
       </div>

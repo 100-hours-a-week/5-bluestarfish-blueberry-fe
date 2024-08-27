@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
+import axiosInstance from '../../utils/axiosInstance';
+import DeletePostModal from '../common/DeletePostModal';
 
 // Comment 인터페이스: 각 댓글의 구조를 정의
 interface Comment {
   id: number;
   text: string;
   author: string;
+  userId: number; // 댓글 작성자의 ID 추가
   createdAt: number;
   profileImage: string;
 }
@@ -14,11 +17,15 @@ interface CommentSectionProps {
   comments: Comment[]; // 댓글 배열
   isRecruited: boolean; // 모집 중인지 여부
   onSubmitComment: (comment: string) => void; // 댓글 제출 함수
+  currentUser: any; // 현재 로그인된 사용자 정보
+  postId: number; // 게시글 ID
 }
 
-const CommentSection: React.FC<CommentSectionProps> = ({ comments, isRecruited, onSubmitComment }) => {
+const CommentSection: React.FC<CommentSectionProps> = ({ comments, isRecruited, onSubmitComment, currentUser, postId }) => {
   const [comment, setComment] = useState(''); // 입력된 댓글 텍스트 상태
   const [visibleComments, setVisibleComments] = useState<number>(10); // 현재 화면에 보이는 댓글 수
+  const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false); // 삭제 모달 표시 여부
+  const [selectedCommentId, setSelectedCommentId] = useState<number | null>(null); // 삭제할 댓글 ID
 
   // 댓글 입력 시 호출되는 함수
   const handleCommentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -33,6 +40,31 @@ const CommentSection: React.FC<CommentSectionProps> = ({ comments, isRecruited, 
     if (comment.trim()) { // 댓글이 공백이 아닌 경우에만 제출
       onSubmitComment(comment); // 상위 컴포넌트에 댓글을 전달
       setComment(''); // 댓글 입력란 초기화
+    }
+  };
+
+  // 삭제 버튼 클릭 시 호출되는 함수
+  const handleDeleteClick = (commentId: number) => {
+    setSelectedCommentId(commentId);
+    setShowDeleteModal(true);
+  };
+
+  // 댓글 삭제를 확정하는 함수 (모달에서 확인 버튼 클릭 시)
+  const handleDeleteConfirm = async () => {
+    if (selectedCommentId !== null) {
+      try {
+        await axiosInstance.delete(
+          `${process.env.REACT_APP_API_URL}/api/v1/posts/comments/${postId}/${selectedCommentId}`
+        );
+        console.log(`댓글 ID ${selectedCommentId}가 삭제되었습니다.`);
+        window.location.reload();
+      } catch (error) {
+        console.error("댓글 삭제 실패:", error);
+        alert("댓글 삭제에 실패했습니다.");
+      } finally {
+        setShowDeleteModal(false);
+        setSelectedCommentId(null);
+      }
     }
   };
 
@@ -97,14 +129,32 @@ const CommentSection: React.FC<CommentSectionProps> = ({ comments, isRecruited, 
                   </div>
                 </div>
               </div>
-              {/* 댓글 삭제 버튼 (기능 구현은 되어있지 않음) */}
-              <button className="text-red-500 hover:text-red-700">삭제</button>
+              {/* 댓글 삭제 버튼 */}
+              {currentUser?.id === comment.userId && (
+                <button 
+                  className="text-red-500 hover:text-red-700"
+                  onClick={() => handleDeleteClick(comment.id)}
+                >
+                  삭제
+                </button>
+              )}
             </div>
             {/* 댓글 내용 */}
             <div className="text-sm text-gray-800">{comment.text}</div>
           </div>
         ))}
       </div>
+
+      {/* 삭제 확인 모달 */}
+      {showDeleteModal && (
+        <DeletePostModal
+        title="댓글을 삭제하시겠습니까?"
+        description="삭제된 댓글은 복구할 수 없습니다."
+        onConfirm={handleDeleteConfirm}
+        onCancel={() => setShowDeleteModal(false)}
+      />
+      
+      )}
     </div>
   );
 };

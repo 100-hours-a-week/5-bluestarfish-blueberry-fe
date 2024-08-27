@@ -53,9 +53,10 @@ const RecruitStudyDetailContainer: React.FC = () => {
           id: comment.id,
           text: comment.content,
           author: comment.user.nickname,
+          userId: comment.user.id, // 추가: 댓글 작성자의 ID
           createdAt: new Date(comment.createdAt).getTime(),
           // profileImage: comment.user.profileImage,
-          profileImage: `${process.env.PUBLIC_URL}/assets/images/real_ian.png`
+          profileImage: `${process.env.PUBLIC_URL}/assets/images/real_ian.png`,
         }));
 
         setComments(formattedComments);
@@ -239,13 +240,18 @@ const RecruitStudyDetailContainer: React.FC = () => {
         comments={comments}
         isRecruited={isRecruited}
         onSubmitComment={handleCommentSubmit}
+        currentUser={currentUser} // 현재 사용자 정보 전달
+        postId={studyId}
       />
 
       {showDeleteModal && (
         <DeletePostModal
+          title="게시글을 삭제하시겠습니까?"
+          description="삭제된 게시글은 복구할 수 없습니다."
           onConfirm={handleDeletePost}
           onCancel={() => setShowDeleteModal(false)}
         />
+
       )}
 
       {showToast && (
