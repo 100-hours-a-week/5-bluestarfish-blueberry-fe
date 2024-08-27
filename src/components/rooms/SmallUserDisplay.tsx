@@ -14,14 +14,16 @@ interface SmallUserDisplayProps {
 const SmallUserDisplay: React.FC<SmallUserDisplayProps> = ({ userStatus }) => {
   return (
     <div
-      className="w-[400px] h-[230px] bg-cover rounded-[20px] shadow-lg"
-      style={{ backgroundImage: `url(${userStatus.profileImage})` }}
+      className="w-[400px] h-[230px] bg-white bg-cover rounded-[20px] shadow-lg"
+      style={{
+        backgroundImage: `url(${process.env.PUBLIC_URL}/assets/images/user-display-default.png})`,
+      }}
     >
       <div className="top-0 left-0 w-full h-full flex items-end justify-between p-3">
         <p className="text-[16px]">{userStatus.nickname}</p>
         <button>
           <img
-            src={`${process.env.PUBLIC_URL}/assets/images/speaker-off.png`}
+            src={`${process.env.PUBLIC_URL}/assets/images/reset.png`}
             alt="speaker"
             className="h-[23px]"
           />
