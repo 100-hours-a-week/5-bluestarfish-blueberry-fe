@@ -40,17 +40,11 @@ const StudyroomContainer: React.FC = () => {
     toggleSpeaker,
   } = useDeviceStore();
   const { userId, nickname, profileImage } = useLoginedUserStore();
-
   const { users, setUsers } = useUserStore();
 
   useEffect(() => {
     fetchStudyRoom();
   }, []);
-
-  useEffect(() => {
-    console.log(studyRoom);
-    console.log(users);
-  }, [users]);
 
   const exitStudyRoom = async () => {
     if (isLoading) return;
@@ -127,8 +121,10 @@ const StudyroomContainer: React.FC = () => {
       webSocketFactory: () => socket as WebSocket,
       onConnect: () => {
         if (!client || !roomId) return;
-        client.subscribe(`/rooms/${roomId}`, (message: IMessage) => {
+
+        client.subscribe(`/rooms/${roomId}/management`, (message: IMessage) => {
           const body = JSON.parse(message.body);
+          console.log(message.body);
           const users: User[] = body.map(
             (user: any): User => ({
               id: user.id,
@@ -143,21 +139,26 @@ const StudyroomContainer: React.FC = () => {
           setUsers(users);
         });
 
-        // client.subscribe(`/rooms/${roomId}`, (message: IMessage) => {
-        //   const body = JSON.parse(message.body);
-        //   const users: User[] = body.map(
-        //     (user: any): User => ({
-        //       id: user.id,
-        //       nickname: user.nickname,
-        //       profileImage: user.profileImage,
-        //       camEnabled: user.camEnabled,
-        //       micEnabled: user.micEnabled,
-        //       speakerEnabled: user.speakerEnabled,
-        //     })
-        //   );
-        //   // 상태 업데이트
-        //   setUsers(users);
-        // });
+        client.publish({
+          destination: `/rooms/${roomId}/member`,
+        });
+
+        client.subscribe(`/rooms/${roomId}/management`, (message: IMessage) => {
+          const body = JSON.parse(message.body);
+          console.log(message.body);
+          const users: User[] = body.map(
+            (user: any): User => ({
+              id: user.id,
+              nickname: user.nickname,
+              profileImage: user.profileImage,
+              camEnabled: user.camEnabled,
+              micEnabled: user.micEnabled,
+              speakerEnabled: user.speakerEnabled,
+            })
+          );
+          // 상태 업데이트
+          setUsers(users);
+        });
       },
       onStompError: (error) => {
         console.error("Error: ", error);
@@ -173,10 +174,6 @@ const StudyroomContainer: React.FC = () => {
       }
     };
   }, []);
-
-  useEffect(() => {
-    console.log(users);
-  }, [users]);
 
   const sendRoomControlUpdate = (update: User) => {
     if (clientRef.current && clientRef.current.connected) {

@@ -10,6 +10,8 @@ import { useLoginedUserStore } from "../../store/store";
 type ChatContainerProps = {};
 
 interface Message {
+  id: string;
+  roomId: string;
   message: string;
   senderId: number;
   senderNickname: string;
@@ -39,11 +41,6 @@ const ChatContainer: React.FC<ChatContainerProps> = () => {
       console.error("채팅 데이터를 가져오는 중 오류 발생:", error);
     }
   };
-
-  useEffect(() => {
-    console.log(messages, userId);
-  }, [messages]);
-
   useEffect(() => {
     getPreviousMessages();
     const socket = new SockJS(`${process.env.REACT_APP_SOCKET_URL}`);
@@ -52,7 +49,7 @@ const ChatContainer: React.FC<ChatContainerProps> = () => {
       onConnect: () => {
         if (!client || !roomId) return;
         client.subscribe(`/rooms/${roomId}/chats`, (message: IMessage) => {
-          const body: Message = JSON.parse(message.body);
+          const body: any = JSON.parse(message.body);
           setMessages((prevMessages) => [...prevMessages, body]);
         });
       },
@@ -87,8 +84,13 @@ const ChatContainer: React.FC<ChatContainerProps> = () => {
           senderProfileImage: "",
         }),
       });
+      setContent("");
     }
-    setContent("");
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault(); // 기본 동작을 막음
+    sendMessage();
   };
 
   useEffect(() => {
@@ -123,7 +125,10 @@ const ChatContainer: React.FC<ChatContainerProps> = () => {
             )
           )}
         <div ref={messagesEndRef}></div>
-        <div className="flex flex-row gap-1 fixed bottom-3 right-3">
+        <form
+          className="flex flex-row gap-1 fixed bottom-3 right-3"
+          onSubmit={handleSubmit}
+        >
           <input
             placeholder="채팅을 입력해주세요."
             className="w-[300px] border-2 rounded-[10px] text-black p-1"
@@ -131,8 +136,8 @@ const ChatContainer: React.FC<ChatContainerProps> = () => {
             onChange={(e) => setContent(e.target.value)}
           ></input>
           <button
+            type="submit"
             className="flex flex-rowflex items-center justify-center bg-[#4659aa] gap-2 w-[65px] h-[35px] rounded-[15px]"
-            onClick={sendMessage}
           >
             <img
               src={`${process.env.PUBLIC_URL}/assets/images/paper-plane.png`}
@@ -140,7 +145,7 @@ const ChatContainer: React.FC<ChatContainerProps> = () => {
               className="h-[20px]"
             />
           </button>
-        </div>
+        </form>
       </div>
     </div>
   );

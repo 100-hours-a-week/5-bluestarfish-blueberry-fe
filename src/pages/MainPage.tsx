@@ -8,11 +8,11 @@ type MainPageProps = {};
 
 const MainPage: React.FC<MainPageProps> = () => {
   const { setUserInfo } = useSetUserInfo();
-  useEffect(()=> {
+  useEffect(() => {
     setUserInfo();
-  },[])
+  }, []);
   return (
-    <div className="flex flex-col min-h-screen bg-white">
+    <div className="flex flex-col min-h-screen min-w-[780px] bg-white">
       <Header />
       <MainPageContainer />
       <Footer />

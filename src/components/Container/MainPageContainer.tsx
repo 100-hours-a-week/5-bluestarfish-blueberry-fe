@@ -29,7 +29,7 @@ const MainPageContainer: React.FC = () => {
   return (
     <div className="flex flex-col mt-[80px] items-center w-full bg-white">
       <Carousel />
-      <div className="w-full]">
+      <div className="">
         <RankingSlider />
         <StudyroomTNContainer />
       </div>
