@@ -1,3 +1,4 @@
+import React from "react";
 import Header from "../components/common/Header";
 import MainPageContainer from "../components/Container/MainPageContainer";
 import Footer from "../components/common/Footer";
