@@ -26,7 +26,7 @@ interface StudyRoom {
 }
 
 const StudyroomContainer: React.FC = () => {
-  const [studyRoom, setStudyRoom] = useState<StudyRoom>();
+  const [studyRoom, setStudyRoom] = useState<StudyRoom>(); // 추후에 설정값 반영하기
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { roomId } = useParams<{ roomId: string }>();
   const clientRef = useRef<Client | null>(null);
@@ -45,6 +45,17 @@ const StudyroomContainer: React.FC = () => {
   useEffect(() => {
     fetchStudyRoom();
   }, []);
+
+  useEffect(() => {
+    sendRoomControlUpdate({
+      id: userId,
+      nickname: nickname,
+      profileImage: profileImage,
+      camEnabled: camEnabled,
+      micEnabled: micEnabled,
+      speakerEnabled: speakerEnabled,
+    });
+  }, [camEnabled, micEnabled, speakerEnabled]);
 
   const exitStudyRoom = async () => {
     if (isLoading) return;
@@ -115,6 +126,29 @@ const StudyroomContainer: React.FC = () => {
       setIsLoading(false); // 로딩 종료
     }
   };
+
+  // const handleUserUpdate = (newUserData: User) => {
+  //   setUsers((prevUsers: User[]): => {
+  //     // 해당 사용자가 이미 존재하는지 확인
+  //     const existingUserIndex = prevUsers.findIndex(
+  //       (user) => user.id === newUserData.id
+  //     );
+
+  //     if (existingUserIndex !== -1) {
+  //       // 해당 사용자가 존재하면 업데이트
+  //       const updatedUsers = [...prevUsers];
+  //       updatedUsers[existingUserIndex] = {
+  //         ...prevUsers[existingUserIndex],
+  //         ...newUserData,
+  //       };
+  //       return updatedUsers;
+  //     } else {
+  //       // 존재하지 않으면 새 사용자 추가
+  //       return [...prevUsers, newUserData];
+  //     }
+  //   });
+  // };
+
   useEffect(() => {
     const socket = new SockJS(`${process.env.REACT_APP_SOCKET_STUDY_URL}`);
     const client = new Client({
@@ -125,40 +159,47 @@ const StudyroomContainer: React.FC = () => {
         client.subscribe(`/rooms/${roomId}/management`, (message: IMessage) => {
           const body = JSON.parse(message.body);
           console.log(message.body);
-          const users: User[] = body.map(
-            (user: any): User => ({
-              id: user.id,
-              nickname: user.nickname,
-              profileImage: user.profileImage,
-              camEnabled: user.camEnabled,
-              micEnabled: user.micEnabled,
-              speakerEnabled: user.speakerEnabled,
-            })
-          );
-          // 상태 업데이트
-          setUsers(users);
+          // setUser(message.body);
+        });
+        client.subscribe(`/rooms/${roomId}/member`, (message: IMessage) => {
+          const body = JSON.parse(message.body);
+          console.log(message.body);
+          // addUser(message.body);
         });
 
         client.publish({
           destination: `/rooms/${roomId}/member`,
+          body: JSON.stringify({
+            id: userId,
+            nickname: nickname,
+            profileImage: "",
+            camEnabled: camEnabled,
+            micEnabled: micEnabled,
+            speakerEnabled: speakerEnabled,
+          }),
         });
+        // const user: User = {
+        //   id: body.id,
+        //   nickname: body.nickname,
+        //   profileImage: body.profileImage || "", // 데이터가 없으면 기본값
+        //   camEnabled: body.camEnabled,
+        //   micEnabled: body.micEnabled,
+        //   speakerEnabled: body.speakerEnabled,
+        // };
+        // handleUserUpdate(user);
 
-        client.subscribe(`/rooms/${roomId}/management`, (message: IMessage) => {
-          const body = JSON.parse(message.body);
-          console.log(message.body);
-          const users: User[] = body.map(
-            (user: any): User => ({
-              id: user.id,
-              nickname: user.nickname,
-              profileImage: user.profileImage,
-              camEnabled: user.camEnabled,
-              micEnabled: user.micEnabled,
-              speakerEnabled: user.speakerEnabled,
-            })
-          );
-          // 상태 업데이트
-          setUsers(users);
-        });
+        // const users: User[] = body.filter(
+        //   (user: any): User => ({
+        //     id: user.id,
+        //     nickname: user.nickname,
+        //     profileImage: user.profileImage,
+        //     camEnabled: user.camEnabled,
+        //     micEnabled: user.micEnabled,
+        //     speakerEnabled: user.speakerEnabled,
+        //   })
+        // );
+        // // 상태 업데이트
+        // setUsers(users);
       },
       onStompError: (error) => {
         console.error("Error: ", error);
@@ -186,38 +227,14 @@ const StudyroomContainer: React.FC = () => {
 
   const clickCamIcon = () => {
     toggleCam();
-    sendRoomControlUpdate({
-      id: userId,
-      nickname: nickname,
-      profileImage: profileImage,
-      camEnabled: camEnabled,
-      micEnabled,
-      speakerEnabled,
-    });
   };
 
   const clickMicIcon = () => {
     toggleMic();
-    sendRoomControlUpdate({
-      id: userId,
-      nickname: nickname,
-      profileImage: profileImage,
-      camEnabled,
-      micEnabled: micEnabled,
-      speakerEnabled,
-    });
   };
 
   const clickSpeakerIcon = () => {
     toggleSpeaker();
-    sendRoomControlUpdate({
-      id: userId,
-      nickname: nickname,
-      profileImage: profileImage,
-      camEnabled,
-      micEnabled,
-      speakerEnabled: speakerEnabled,
-    });
   };
 
   const handleExitButton = async () => {
