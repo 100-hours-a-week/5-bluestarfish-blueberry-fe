@@ -8,7 +8,7 @@
 # CMD ["npm", "start"]
 
 
-FROM node:14 AS build
+FROM node:16 AS build
 WORKDIR /react-to-do/frontend
 COPY package.json package-lock.json ./
 RUN npm install 
