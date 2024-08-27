@@ -26,7 +26,7 @@ interface StudyRoom {
 }
 
 const StudyroomContainer: React.FC = () => {
-  const [studyRoom, setStudyRoom] = useState<StudyRoom>();
+  const [studyRoom, setStudyRoom] = useState<StudyRoom>(); // 추후에 설정값 반영하기
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { roomId } = useParams<{ roomId: string }>();
   const clientRef = useRef<Client | null>(null);
@@ -40,11 +40,26 @@ const StudyroomContainer: React.FC = () => {
     toggleSpeaker,
   } = useDeviceStore();
   const { userId, nickname, profileImage } = useLoginedUserStore();
-  const { users, setUsers } = useUserStore();
+  const { users, addUser, updateUser, setUsers } = useUserStore();
 
   useEffect(() => {
     fetchStudyRoom();
   }, []);
+
+  useEffect(() => {
+    console.log(users);
+  }, [users]);
+
+  useEffect(() => {
+    sendRoomControlUpdate({
+      id: userId,
+      nickname: nickname,
+      profileImage: profileImage,
+      camEnabled: camEnabled,
+      micEnabled: micEnabled,
+      speakerEnabled: speakerEnabled,
+    });
+  }, [camEnabled, micEnabled, speakerEnabled]);
 
   const exitStudyRoom = async () => {
     if (isLoading) return;
@@ -92,8 +107,20 @@ const StudyroomContainer: React.FC = () => {
         `${process.env.REACT_APP_API_URL}/api/v1/rooms/${roomId}`
       );
       if (response.status === 200) {
-        setStudyRoom(response.data);
-        setUsers(response.data.data.maxUsers);
+        setStudyRoom(response.data); // userRooms 배열을 User 인터페이스에 맞게 변환
+
+        const usersArray = response.data.data.userRooms.map(
+          (userRoom: any) => ({
+            id: userRoom.userId,
+            nickname: userRoom.nickname,
+            profileImage: userRoom.profileImage || "", // null인 경우 빈 문자열로 대체
+            camEnabled: userRoom.camEnabled,
+            micEnabled: userRoom.micEnabled,
+            speakerEnabled: userRoom.speakerEnabled,
+          })
+        );
+
+        setUsers(usersArray); // 변환된 배열을 users로 설정
       }
     } catch (error: any) {
       if (error.response) {
@@ -115,6 +142,7 @@ const StudyroomContainer: React.FC = () => {
       setIsLoading(false); // 로딩 종료
     }
   };
+
   useEffect(() => {
     const socket = new SockJS(`${process.env.REACT_APP_SOCKET_STUDY_URL}`);
     const client = new Client({
@@ -124,40 +152,36 @@ const StudyroomContainer: React.FC = () => {
 
         client.subscribe(`/rooms/${roomId}/management`, (message: IMessage) => {
           const body = JSON.parse(message.body);
-          console.log(message.body);
-          const users: User[] = body.map(
-            (user: any): User => ({
-              id: user.id,
-              nickname: user.nickname,
-              profileImage: user.profileImage,
-              camEnabled: user.camEnabled,
-              micEnabled: user.micEnabled,
-              speakerEnabled: user.speakerEnabled,
-            })
-          );
-          // 상태 업데이트
-          setUsers(users);
+          body.id &&
+            updateUser(body.id, {
+              camEnabled: body.camEnabled,
+              micEnabled: body.micEnabled,
+              speakerEnabled: body.speakerEnabled,
+            });
+        });
+        client.subscribe(`/rooms/${roomId}/member`, (message: IMessage) => {
+          const body = JSON.parse(message.body);
+          body.id &&
+            addUser({
+              id: body.id,
+              nickname: body.nickname,
+              profileImage: body.profileImage || "",
+              camEnabled: body.camEnabled,
+              micEnabled: body.micEnabled,
+              speakerEnabled: body.speakerEnabled,
+            });
         });
 
         client.publish({
           destination: `/rooms/${roomId}/member`,
-        });
-
-        client.subscribe(`/rooms/${roomId}/management`, (message: IMessage) => {
-          const body = JSON.parse(message.body);
-          console.log(message.body);
-          const users: User[] = body.map(
-            (user: any): User => ({
-              id: user.id,
-              nickname: user.nickname,
-              profileImage: user.profileImage,
-              camEnabled: user.camEnabled,
-              micEnabled: user.micEnabled,
-              speakerEnabled: user.speakerEnabled,
-            })
-          );
-          // 상태 업데이트
-          setUsers(users);
+          body: JSON.stringify({
+            id: userId,
+            nickname: nickname,
+            profileImage: "",
+            camEnabled: camEnabled,
+            micEnabled: micEnabled,
+            speakerEnabled: speakerEnabled,
+          }),
         });
       },
       onStompError: (error) => {
@@ -179,45 +203,21 @@ const StudyroomContainer: React.FC = () => {
     if (clientRef.current && clientRef.current.connected) {
       clientRef.current.publish({
         destination: `/rooms/${roomId}/management`,
-        body: JSON.stringify({ update }),
+        body: JSON.stringify(update),
       });
     }
   };
 
   const clickCamIcon = () => {
     toggleCam();
-    sendRoomControlUpdate({
-      id: userId,
-      nickname: nickname,
-      profileImage: profileImage,
-      camEnabled: camEnabled,
-      micEnabled,
-      speakerEnabled,
-    });
   };
 
   const clickMicIcon = () => {
     toggleMic();
-    sendRoomControlUpdate({
-      id: userId,
-      nickname: nickname,
-      profileImage: profileImage,
-      camEnabled,
-      micEnabled: micEnabled,
-      speakerEnabled,
-    });
   };
 
   const clickSpeakerIcon = () => {
     toggleSpeaker();
-    sendRoomControlUpdate({
-      id: userId,
-      nickname: nickname,
-      profileImage: profileImage,
-      camEnabled,
-      micEnabled,
-      speakerEnabled: speakerEnabled,
-    });
   };
 
   const handleExitButton = async () => {
@@ -230,9 +230,10 @@ const StudyroomContainer: React.FC = () => {
       <div className="my-12  flex flex-wrap gap-8 justify-center">
         {Array.isArray(users) &&
           users
-            .filter((user) => user.id !== userId) // nowUserId와 다른 userStatus만 필터링
-            .map((user) => (
+            // .filter((user) => user.id !== userId) // nowUserId와 다른 userStatus만 필터링
+            .map((user, index) => (
               <SmallUserDisplay
+                key={index}
                 userStatus={user} // 필터링된 userStatus 전달
               />
             ))}
