@@ -142,7 +142,7 @@ const StudyroomContainer: React.FC = () => {
       );
       if (response.status === 204) {
         console.log("204 No Content");
-        navigate(`/studyroom/${roomId}`);
+        navigate(`/wait/${roomId}`);
       }
     } catch (error: any) {
       if (error.response) {
@@ -292,7 +292,6 @@ const StudyroomContainer: React.FC = () => {
   const handleExitButton = async () => {
     leaveRoom();
     await exitStudyRoom();
-    navigate(`/wait/${roomId}`);
   };
 
   // WebRTC functions
