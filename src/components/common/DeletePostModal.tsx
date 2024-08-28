@@ -1,11 +1,18 @@
 import React from 'react';
 
 type DeletePostModalProps = {
+  title: string;
+  description: string;
   onConfirm: () => void;
   onCancel: () => void;
 };
 
-const DeletePostModal: React.FC<DeletePostModalProps> = ({ onConfirm, onCancel }) => {
+const DeletePostModal: React.FC<DeletePostModalProps> = ({
+  title,
+  description,
+  onConfirm,
+  onCancel,
+}) => {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
       <div className="group select-none w-[300px] flex flex-col p-6 relative items-center justify-center bg-gray-800 border border-gray-800 shadow-lg rounded-2xl w-[27%]">
@@ -22,9 +29,9 @@ const DeletePostModal: React.FC<DeletePostModalProps> = ({ onConfirm, onCancel }
               fillRule="evenodd"
             ></path>
           </svg>
-          <h2 className="text-xl font-bold py-4 text-gray-200">게시글을 삭제하시겠습니까?</h2>
+          <h2 className="text-xl font-bold py-4 text-gray-200">{title}</h2>
           <p className="font-bold text-sm text-gray-500 px-2">
-            삭제된 게시글은 복구할 수 없습니다.
+            {description}
           </p>
         </div>
         <div className="p-2 mt-2 text-center space-x-5 md:block">
