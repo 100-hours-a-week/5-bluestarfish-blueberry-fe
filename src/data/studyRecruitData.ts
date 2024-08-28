@@ -10,7 +10,7 @@ const studyRecruitData = [
         roomId: 3,
         title: "JavaScript 기초 스터디 멤버 모집",
         content: "JavaScript 기초 문법부터 프로젝트 실습까지 함께 할 멤버를 모집합니다. 초보자 환영!",
-        type: "FINDING_MEMBERS",
+        type: "FINDING_ROOMS",
         isRecruited: true,
         isCamOn: true,
         createdAt: 1723276812,

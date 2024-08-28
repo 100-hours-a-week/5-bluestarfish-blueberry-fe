@@ -1,17 +1,72 @@
-import { useNavigate } from "react-router-dom";
-import LargeUserDisplay from "../LargeUserDisplay";
+import React, { useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import LargeUserDisplay from "../rooms/LargeUserDisplay";
+import axiosInstance from "../../utils/axiosInstance";
+import { useDeviceStore } from "../../store/store";
 
 type StudyroomWaitContainerProps = {};
 
 const StudyroomWaitContainer: React.FC = () => {
   const navigate = useNavigate();
+  const { roomId } = useParams<{ roomId: string }>(); // URL에서 roomId를 가져옴
+  const userId = 1;
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const {
+    camEnabled,
+    micEnabled,
+    speakerEnabled,
+    toggleCam,
+    toggleMic,
+    toggleSpeaker,
+  } = useDeviceStore();
 
   const handleClick = () => {
-    navigate("/studyroom");
+    enterStudyRoom();
+    navigate(`/studyroom/${roomId}`);
+    //
   };
+
+  const enterStudyRoom = async () => {
+    if (isLoading) return;
+    try {
+      setIsLoading(true);
+      const response = await axiosInstance.post(
+        `${process.env.REACT_APP_API_URL}/api/v1/rooms/${roomId}/users/${userId}`,
+        {
+          host: false,
+          active: true,
+          camEnabled: camEnabled,
+          micEnabled: micEnabled,
+          speakerEnabled: speakerEnabled,
+          goalTime: "14:30:30",
+          dayTime: "15:30:30",
+        }
+      );
+      if (response.status === 204) {
+        console.log("204 No Content");
+        navigate(`/studyroom/${roomId}`);
+      }
+    } catch (error: any) {
+      if (error.response) {
+        if (error.response.status === 404) {
+          console.error("404: ", "Not Found");
+        } else {
+          console.error(
+            `오류 발생 (${error.response.status}):`,
+            error.response.data.message || "서버 오류가 발생했습니다."
+          );
+        }
+      } else {
+        console.error("스터디룸 입장 중 오류 발생:", error.message);
+      }
+    } finally {
+      setIsLoading(false); // 로딩 종료
+    }
+  };
+
   return (
     <div className="w-full flex flex-col items-center justify-center">
-      <p className="text-[25px] font-bold text-shadow-sm mb-3">
+      <p className="text-[25px] font-bold text-shadow-sm text-black mb-3">
         스터디 룸 대기실
       </p>
       <LargeUserDisplay
@@ -21,24 +76,36 @@ const StudyroomWaitContainer: React.FC = () => {
         <p className="text-[14px]">현재 영상은 다른 사람이 볼 수 없습니다.</p>
       </div>
       <div className="mt-10 flex flex-row gap-5">
-        <button>
+        <button onClick={toggleCam}>
           <img
-            src={`${process.env.PUBLIC_URL}/assets/images/camera.png`}
-            alt="all"
+            src={
+              camEnabled
+                ? `${process.env.PUBLIC_URL}/assets/images/wait-camera-on.png`
+                : `${process.env.PUBLIC_URL}/assets/images/wait-camera-off.png`
+            }
+            alt="camera"
             className="h-[23px]"
           />
         </button>
-        <button>
+        <button onClick={toggleMic}>
           <img
-            src={`${process.env.PUBLIC_URL}/assets/images/mic.png`}
-            alt="all"
+            src={
+              micEnabled
+                ? `${process.env.PUBLIC_URL}/assets/images/wait-mic-on.png`
+                : `${process.env.PUBLIC_URL}/assets/images/wait-mic-off.png`
+            }
+            alt="mic"
             className="h-[28px]"
           />
         </button>
-        <button>
+        <button onClick={toggleSpeaker}>
           <img
-            src={`${process.env.PUBLIC_URL}/assets/images/speaker.png`}
-            alt="all"
+            src={
+              speakerEnabled
+                ? `${process.env.PUBLIC_URL}/assets/images/wait-speaker-on.png`
+                : `${process.env.PUBLIC_URL}/assets/images/wait-speaker-off.png`
+            }
+            alt="speaker"
             className="h-[26px]"
           />
         </button>

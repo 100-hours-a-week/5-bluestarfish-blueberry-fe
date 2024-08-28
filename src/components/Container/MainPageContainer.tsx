@@ -1,11 +1,16 @@
+import React from "react";
 import { useState } from "react";
-import Ranking from "../Ranking";
+import Carousel from "../common/Carousel";
+import RankingSlider from "../users/RankingSlider";
 import StudyroomTNContainer from "./StudyroomTNContainer";
-import Collapse from "../Collapse";
 import QnAModal from "../Modal/QnAModal";
+import { useEffect } from "react";
+import { useLoginedUserStore } from "../../store/store";
 
 const MainPageContainer: React.FC = () => {
   const [isQnAModalOpen, setQnAModalOpen] = useState(false);
+
+  const { userId, nickname, profileImage } = useLoginedUserStore();
 
   const closeQnAModal = () => {
     setQnAModalOpen(false);
@@ -15,15 +20,17 @@ const MainPageContainer: React.FC = () => {
     setQnAModalOpen(true);
   };
 
+  useEffect(() => {
+    console.log(
+      `userId = ${userId}, nickname = ${nickname}, image = ${profileImage}`
+    );
+  }, [userId]);
+
   return (
-    <body className="flex flex-col mt-[80px] items-center w-full bg-white">
-      <img
-        src={`${process.env.PUBLIC_URL}/assets/images/intro-1.png`}
-        alt="intro"
-        className="w-full"
-      />
-      <div className="w-[1030px]">
-        <Collapse />
+    <div className="flex flex-col mt-[80px] items-center w-full bg-white">
+      <Carousel />
+      <div className="w-full]">
+        <RankingSlider />
         <StudyroomTNContainer />
       </div>
       <div className="w-full flex justify-end  p-4">
@@ -37,7 +44,7 @@ const MainPageContainer: React.FC = () => {
         </div>
       </div>
       {isQnAModalOpen && <QnAModal closeModal={closeQnAModal} />}
-    </body>
+    </div>
   );
 };
 

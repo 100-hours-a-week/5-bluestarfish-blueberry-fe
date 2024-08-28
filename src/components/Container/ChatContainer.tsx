@@ -2,16 +2,19 @@ import React, { useState, useRef, useEffect } from "react";
 import { Client, IMessage } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
 import { useParams } from "react-router-dom"; // useParams를 사용하여 URL 파라미터를 가져옴
-import ChatStartMessage from "../ChatStartMessage";
-import ChatEndMessage from "../ChatEndMessage";
+import ChatStartMessage from "../rooms/ChatStartMessage";
+import ChatEndMessage from "../rooms/ChatEndMessage";
+import axiosInstance from "../../utils/axiosInstance";
+import { useLoginedUserStore } from "../../store/store";
 
 type ChatContainerProps = {};
 
 interface Message {
   message: string;
   senderId: number;
-  roomId: string;
-  time: string;
+  senderNickname: string;
+  senderProfileImage: string;
+  createdAt: string;
 }
 
 const ChatContainer: React.FC<ChatContainerProps> = () => {
@@ -20,16 +23,35 @@ const ChatContainer: React.FC<ChatContainerProps> = () => {
   const [content, setContent] = useState<string>("");
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const clientRef = useRef<Client | null>(null);
+  const { userId, nickname } = useLoginedUserStore();
 
-  const senderId = 1;
+  const getPreviousMessages = async () => {
+    try {
+      const response = await axiosInstance.get(
+        `${process.env.REACT_APP_API_URL}/api/v1/rooms/${roomId}/chats`
+      );
+
+      if (response.status === 200) {
+        console.log("200 OK");
+        setMessages(response.data.data);
+      }
+    } catch (error) {
+      console.error("채팅 데이터를 가져오는 중 오류 발생:", error);
+    }
+  };
 
   useEffect(() => {
-    const socket = new SockJS("http://localhost:8080/ws-chat");
+    console.log(messages, userId);
+  }, [messages]);
+
+  useEffect(() => {
+    getPreviousMessages();
+    const socket = new SockJS(`${process.env.REACT_APP_SOCKET_URL}`);
     const client = new Client({
       webSocketFactory: () => socket as WebSocket,
       onConnect: () => {
         if (!client || !roomId) return;
-        client.subscribe(`/rooms/${roomId}`, (message: IMessage) => {
+        client.subscribe(`/rooms/${roomId}/chats`, (message: IMessage) => {
           const body: Message = JSON.parse(message.body);
           setMessages((prevMessages) => [...prevMessages, body]);
         });
@@ -48,26 +70,21 @@ const ChatContainer: React.FC<ChatContainerProps> = () => {
         clientRef.current.deactivate();
       }
     };
-  }, [roomId]);
+  }, []);
 
   const sendMessage = () => {
     if (content.trim() && clientRef.current?.connected) {
       const currentTime = new Date();
-      const hours = String(currentTime.getHours()).padStart(2, "0");
-      const minutes = String(currentTime.getMinutes()).padStart(2, "0");
-      const formattedTime = `${hours}:${minutes}`;
+      // const hours = String(currentTime.getHours()).padStart(2, "0");
+      // const minutes = String(currentTime.getMinutes()).padStart(2, "0");
 
-      const message: Message = {
-        message: content,
-        senderId: 1,
-        roomId: roomId || "",
-        time: formattedTime,
-      };
       clientRef.current.publish({
         destination: `/rooms/${roomId}/chats`,
         body: JSON.stringify({
           message: content, // 실제 입력된 content를 message로 변경
-          senderId: senderId, // 실제 senderId를 함께 보냅니다.
+          senderId: userId, // 실제 senderId를 함께 보냅니다.
+          senderNickname: nickname,
+          senderProfileImage: "",
         }),
       });
     }
@@ -84,29 +101,32 @@ const ChatContainer: React.FC<ChatContainerProps> = () => {
 
   return (
     <div className="m-2 flex flex-col h-full">
-      <div className="flex-grow overflow-y-auto max-h-[530px] p-2">
-        {messages.map((msg, index) =>
-          msg.senderId === 1 ? (
-            <ChatStartMessage
-              key={index} // 배열의 각 항목에 고유한 key 값 설정
-              nickname="You"
-              time={msg.time}
-              message={msg.message}
-            />
-          ) : (
-            <ChatEndMessage
-              key={index} // 배열의 각 항목에 고유한 key 값 설정
-              nickname="You"
-              time={msg.time}
-              message={msg.message}
-            />
-          )
-        )}
+      <div className="grow overflow-y-auto h-[400px] p-2">
+        {Array.isArray(messages) &&
+          messages.map((msg, index) =>
+            msg.senderId === userId ? (
+              <ChatEndMessage
+                key={index} // 배열의 각 항목에 고유한 key 값 설정
+                senderNickname={msg.senderNickname}
+                createdAt={msg.createdAt}
+                message={msg.message}
+                senderProfileImage=""
+              />
+            ) : (
+              <ChatStartMessage
+                key={index} // 배열의 각 항목에 고유한 key 값 설정
+                senderNickname={msg.senderNickname}
+                createdAt={msg.createdAt}
+                message={msg.message}
+                senderProfileImage=""
+              />
+            )
+          )}
         <div ref={messagesEndRef}></div>
         <div className="flex flex-row gap-1 fixed bottom-3 right-3">
           <input
             placeholder="채팅을 입력해주세요."
-            className="w-[300px] border-2 rounded-[10px] text-black"
+            className="w-[300px] border-2 rounded-[10px] text-black p-1"
             value={content}
             onChange={(e) => setContent(e.target.value)}
           ></input>
@@ -117,7 +137,7 @@ const ChatContainer: React.FC<ChatContainerProps> = () => {
             <img
               src={`${process.env.PUBLIC_URL}/assets/images/paper-plane.png`}
               alt="Paper-plane"
-              className="mt-1 h-[28px]"
+              className="h-[20px]"
             />
           </button>
         </div>

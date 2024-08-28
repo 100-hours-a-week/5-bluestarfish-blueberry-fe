@@ -1,16 +1,23 @@
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
+// import { useParams } from "react-router-dom";
 import StudyroomContainer from "../components/Container/StudyroomContainer";
-import Sidebar from "../components/Sidebar";
+import Sidebar from "../components/rooms/Sidebar";
+import { useSetUserInfo } from "../utils/auth";
 
 const StudyroomPage: React.FC = () => {
+  const { setUserInfo } = useSetUserInfo();
+  useEffect(() => {
+    setUserInfo();
+  }, []);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  // const { roomId } = useParams<{ roomId: string }>(); // URL에서 roomId를 가져옴
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
   return (
-    <div className="bg-black min-h-screen flex-">
+    <div className="bg-black min-h-screen">
       <div
         className={`flex-grow transition-all duration-300 ${
           isSidebarOpen ? "mr-[400px]" : "mr-0"
@@ -44,7 +51,7 @@ const StudyroomPage: React.FC = () => {
             <button className="justify-self-end" onClick={toggleSidebar}>
               <img
                 src={`${process.env.PUBLIC_URL}/assets/images/side.png`}
-                alt="Exit"
+                alt="Sidebar"
                 className="w-[25px] cursor-pointer"
               />
             </button>
