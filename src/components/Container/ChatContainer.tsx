@@ -27,6 +27,10 @@ const ChatContainer: React.FC<ChatContainerProps> = () => {
   const clientRef = useRef<Client | null>(null);
   const { userId, nickname } = useLoginedUserStore();
 
+  useEffect(() => {
+    console.log(messages);
+  }, [messages]);
+
   const getPreviousMessages = async () => {
     try {
       const response = await axiosInstance.get(
@@ -50,7 +54,7 @@ const ChatContainer: React.FC<ChatContainerProps> = () => {
         if (!client || !roomId) return;
         client.subscribe(`/topic/rooms/${roomId}`, (message: IMessage) => {
           const body: any = JSON.parse(message.body);
-          setMessages((prevMessages) => [...prevMessages, body]);
+          if (body.id) setMessages((prevMessages) => [...prevMessages, body]);
         });
       },
       onStompError: (error) => {
@@ -71,7 +75,6 @@ const ChatContainer: React.FC<ChatContainerProps> = () => {
 
   const sendMessage = () => {
     if (content.trim() && clientRef.current?.connected) {
-      const currentTime = new Date();
       // const hours = String(currentTime.getHours()).padStart(2, "0");
       // const minutes = String(currentTime.getMinutes()).padStart(2, "0");
 
@@ -105,25 +108,27 @@ const ChatContainer: React.FC<ChatContainerProps> = () => {
     <div className="m-2 flex flex-col h-full">
       <div className="grow overflow-y-auto h-[400px] p-2">
         {Array.isArray(messages) &&
-          messages.map((msg, index) =>
-            msg.senderId === userId ? (
-              <ChatEndMessage
-                key={index} // 배열의 각 항목에 고유한 key 값 설정
-                senderNickname={msg.senderNickname}
-                createdAt={msg.createdAt}
-                message={msg.message}
-                senderProfileImage=""
-              />
-            ) : (
-              <ChatStartMessage
-                key={index} // 배열의 각 항목에 고유한 key 값 설정
-                senderNickname={msg.senderNickname}
-                createdAt={msg.createdAt}
-                message={msg.message}
-                senderProfileImage=""
-              />
-            )
-          )}
+          messages
+            .filter((msg) => msg.senderId)
+            .map((msg, index) =>
+              msg.senderId === userId ? (
+                <ChatEndMessage
+                  key={index} // 배열의 각 항목에 고유한 key 값 설정
+                  senderNickname={msg.senderNickname}
+                  createdAt={msg.createdAt}
+                  message={msg.message}
+                  senderProfileImage=""
+                />
+              ) : (
+                <ChatStartMessage
+                  key={index} // 배열의 각 항목에 고유한 key 값 설정
+                  senderNickname={msg.senderNickname}
+                  createdAt={msg.createdAt}
+                  message={msg.message}
+                  senderProfileImage=""
+                />
+              )
+            )}
         <div ref={messagesEndRef}></div>
         <form
           className="flex flex-row gap-1 fixed bottom-3 right-3"

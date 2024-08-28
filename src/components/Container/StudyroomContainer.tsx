@@ -49,9 +49,6 @@ const StudyroomContainer: React.FC = () => {
   const wsRef = useRef<WebSocket | null>(null);
   const participants: Record<string, Participant> = {};
 
-  const [isCamOn, setCamOn] = useState(true);
-  const [isMicOn, setMicOn] = useState(true);
-
   useEffect(() => {
     fetchStudyRoom();
   }, []);
@@ -72,7 +69,7 @@ const StudyroomContainer: React.FC = () => {
   }, [camEnabled, micEnabled, speakerEnabled]);
 
   useEffect(() => {
-    wsRef.current = new WebSocket("ws://localhost:8081/signal");
+    wsRef.current = new WebSocket(`${process.env.REACT_APP_SOCKET_RTC_URL}`);
 
     wsRef.current.onopen = () => {
       console.log("WebSocket connection established");
@@ -293,6 +290,7 @@ const StudyroomContainer: React.FC = () => {
   };
 
   const handleExitButton = async () => {
+    leaveRoom();
     await exitStudyRoom();
     navigate(`/wait/${roomId}`);
   };
@@ -300,6 +298,10 @@ const StudyroomContainer: React.FC = () => {
   // WebRTC functions
 
   const sendMessage = (message: any) => {
+    // if (!message.sender) {
+    //   console.error("Sender is missing in the message:", message);
+    //   return;
+    // }
     const jsonMessage = JSON.stringify(message);
     console.log("Sending message: " + jsonMessage);
     wsRef.current?.send(jsonMessage);
@@ -482,23 +484,6 @@ const StudyroomContainer: React.FC = () => {
               ></video>
               <span className="text-lg font-bold">{nickname}</span>
             </div>
-          </div>
-
-          <input
-            type="button"
-            id="button-leave"
-            onMouseUp={(e) => leaveRoom()}
-            value="Leave room"
-            className="mt-4"
-          />
-
-          <div className="flex flex-row items-center justify-center w-[300px] h-[100px] gap-5 mt-4">
-            <button className="py-2 px-4 bg-blue-500 text-white rounded">
-              {isCamOn ? "Turn Off Camera" : "Turn On Camera"}
-            </button>
-            <button className="py-2 px-4 bg-blue-500 text-white rounded">
-              {isMicOn ? "Turn Off Mic" : "Turn On Mic"}
-            </button>
           </div>
         </div>
       </div>
