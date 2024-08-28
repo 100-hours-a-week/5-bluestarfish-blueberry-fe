@@ -157,7 +157,7 @@ const RecruitStudyDetailContainer: React.FC = () => {
 
   const handleNavigateToRoom = () => {
     if (isRecruited) {
-      navigate("/wait");
+      navigate(`/wait/${id}`);
     }
   };
 
