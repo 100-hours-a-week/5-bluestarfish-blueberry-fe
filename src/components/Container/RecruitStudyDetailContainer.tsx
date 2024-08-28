@@ -7,6 +7,7 @@ import StudyRoomLink from "../StudyDetail/StudyRoomLink";
 import CommentSection from "../StudyDetail/CommentSection";
 import DeletePostModal from "../common/DeletePostModal";
 import ToastNotification from "../common/ToastNotification";
+import Studyroom from "../rooms/Studyroom";
 
 const RecruitStudyDetailContainer: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -157,7 +158,7 @@ const RecruitStudyDetailContainer: React.FC = () => {
 
   const handleNavigateToRoom = () => {
     if (isRecruited) {
-      navigate(`/wait/${id}`);
+      navigate(`/wait/${studyRoom.id}`); // 게시글 아이디로 이동하는 게 아닙니다요
     }
   };
 
@@ -181,7 +182,7 @@ const RecruitStudyDetailContainer: React.FC = () => {
   const handleCompleteRecruitment = async () => {
     try {
       const requestBody = {
-        userId: study.user.id,
+        userId: study.userResponse.id,
         roomId: study.room?.id,
         title: study.title,
         content: study.content,
@@ -216,7 +217,7 @@ const RecruitStudyDetailContainer: React.FC = () => {
     return <div>해당 게시글을 찾을 수 없습니다.</div>;
   }
 
-  const isAuthor = study.user.id === currentUser?.id;
+  const isAuthor = study.userResponse.id === currentUser?.id;
 
   return (
     <div className="container mx-auto mt-8 p-4 mt-[100px] w-[1000px] h-full">

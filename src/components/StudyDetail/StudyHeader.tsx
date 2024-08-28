@@ -57,9 +57,9 @@ const StudyHeader: React.FC<{
             <span>{study.postCamEnabled ? '캠켜공' : '캠끄공'}</span>
           </div>
           <div className="flex items-center space-x-1">
-            <img src={study.user.profileImage || `${process.env.PUBLIC_URL}/assets/images/real_ian.png`} alt={study.user.nickname} className="h-5 w-5 rounded-full" />
+            <img src={study.userResponse.profileImage || `${process.env.PUBLIC_URL}/assets/images/real_ian.png`} alt={study.userResponse.nickname} className="h-5 w-5 rounded-full" />
             {/* 작성자의 프로필 이미지와 닉네임을 표시 */}
-            <span>{study.user.nickname}</span>
+            <span>{study.userResponse.nickname}</span>
           </div>
         </div>
 
