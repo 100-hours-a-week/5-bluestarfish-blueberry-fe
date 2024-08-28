@@ -8,7 +8,6 @@ import TabBar from "../posts/TabBar";
 import ToastNotification from "../common/ToastNotification";
 import SubmitButton from "../common/SubmitButton";
 import axiosInstance from "../../utils/axiosInstance";
-import DefaultThumbnail from "../../images/study-thumbnail-3.png"
 
 // 스터디룸 객체의 타입을 정의
 interface StudyRoom {
@@ -214,7 +213,8 @@ const RecruitStudyCreateContainer: React.FC = () => {
                       camEnabled={room.postCamEnabled}
                       currentUsers={room.memberNumber}
                       maxUsers={room.maxUsers}
-                      thumbnail={room.thumbnail || DefaultThumbnail}
+                      // thumbnail={room.thumbnail || DefaultThumbnail}
+                      thumbnail={room.thumbnail || `${process.env.PUBLIC_URL}/assets/images/operator.png}`}
                       isSelected={tab0SelectedStudy === room.id}
                     />
                   </div>
