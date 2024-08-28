@@ -8,6 +8,7 @@ import TabBar from "../posts/TabBar";
 import ToastNotification from "../common/ToastNotification";
 import SubmitButton from "../common/SubmitButton";
 import axiosInstance from "../../utils/axiosInstance";
+import DefaultThumbnail from "../../images/study-thumbnail-3.png"
 
 interface StudyRoom {
   id: number;
@@ -44,7 +45,7 @@ const RecruitStudyCreateContainer: React.FC = () => {
   const [isFormValid, setIsFormValid] = useState<boolean>(false);
   const [showToast, setShowToast] = useState(false);
   const [activeTab, setActiveTab] = useState<number>(0);
-  const [currentUserId, setCurrentUserId] = useState<number | null>(null); // 현재 로그인된 사용자의 ID 상태
+  const [currentUserId, setCurrentUserId] = useState<number | null>(null);
 
   const navigate = useNavigate();
   const categories = [
@@ -52,24 +53,18 @@ const RecruitStudyCreateContainer: React.FC = () => {
     { name: "캠끄공", icon: "cam-off-icon.png" },
   ];
 
-  useEffect(() => {
-    const fetchStudyRooms = async () => {
-      try {
-        const response = await axiosInstance.get(`${process.env.REACT_APP_API_URL}/api/v1/rooms`);
-        setStudyRooms(response.data.data.content);
-      } catch (error) {
-        console.error("스터디룸 데이터를 불러오는데 실패했습니다:", error);
-      }
-    };
-
-    fetchStudyRooms();
-  }, []);
-
+  // 현재 로그인된 사용자의 ID를 가져오는 useEffect
   useEffect(() => {
     const fetchCurrentUser = async () => {
       try {
         const response = await axiosInstance.get(`${process.env.REACT_APP_API_URL}/api/v1/users/whoami`);
-        setCurrentUserId(response.data.data.id); // 로그인된 사용자의 ID를 상태로 저장
+        const userId = response.data.data.id;
+        setCurrentUserId(userId);
+
+        // 사용자 ID를 가져온 후에 스터디룸 데이터를 가져오는 함수 호출
+        if (userId) {
+          fetchStudyRooms(userId);
+        }
       } catch (error) {
         console.error("사용자 정보를 가져오는 데 실패했습니다:", error);
       }
@@ -77,6 +72,16 @@ const RecruitStudyCreateContainer: React.FC = () => {
 
     fetchCurrentUser();
   }, []);
+
+  // 현재 로그인된 사용자가 만든 스터디룸을 가져오는 함수
+  const fetchStudyRooms = async (userId: number) => {
+    try {
+      const response = await axiosInstance.get(`${process.env.REACT_APP_API_URL}/api/v1/rooms/my/${userId}`);
+      setStudyRooms(response.data.data);
+    } catch (error) {
+      console.error("스터디룸 데이터를 불러오는데 실패했습니다:", error);
+    }
+  };
 
   useEffect(() => {
     const {
@@ -126,8 +131,6 @@ const RecruitStudyCreateContainer: React.FC = () => {
         isRecruited: true,
         postCamEnabled: postCamEnabled,
       };
-
-      console.log('게시글 등록 완료! ' + requestBody.userId);
 
       if (activeTab === 0 && tab0SelectedStudy !== null) {
         requestBody.roomId = tab0SelectedStudy;
@@ -215,7 +218,7 @@ const RecruitStudyCreateContainer: React.FC = () => {
                       camEnabled={room.postCamEnabled}
                       currentUsers={room.memberNumber}
                       maxUsers={room.maxUsers}
-                      thumbnail={room.thumbnail || `${process.env.PUBLIC_URL}/assets/images/operator.png}`}
+                      thumbnail={DefaultThumbnail}
                       isSelected={tab0SelectedStudy === room.id}
                     />
                   </div>
