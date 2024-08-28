@@ -66,7 +66,7 @@ const Header: React.FC = () => {
               <img
                 src={`${process.env.PUBLIC_URL}/assets/images/notification.png`}
                 alt="Notifications"
-                className="h-9 w-9 rounded-full cursor-pointer mr-4 mt-1"
+                className="h-9 w-9 rounded-full cursor-pointer mr-4 mt-1 hidden"
                 onClick={toggleAlarmModal}
               />
               <img

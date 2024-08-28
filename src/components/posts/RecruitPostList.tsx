@@ -4,7 +4,7 @@ interface Post {
   id: number;
   title: string;
   type: string;
-  user: {
+  userResponse: {
     nickname: string;
     profileImage?: string | null;
   };
@@ -21,7 +21,7 @@ interface RecruitPostListProps {
 const RecruitPostList: React.FC<RecruitPostListProps> = ({ posts, onPostClick }) => {
   return (
     <div className="space-y-4">
-      {posts.map((post, index) => (
+      {posts.map((post) => (
         <div
           key={post.id}
           onClick={() => onPostClick(post.id)}  // Post 클릭 시 상세 페이지로 이동
@@ -45,11 +45,11 @@ const RecruitPostList: React.FC<RecruitPostListProps> = ({ posts, onPostClick })
               </div>
               <div className="flex items-center space-x-1">
                 <img
-                  src={post.user.profileImage || `${process.env.PUBLIC_URL}/assets/images/real_ian.png`}
-                  alt={post.user.nickname}
+                  src={post.userResponse.profileImage ?? `${process.env.PUBLIC_URL}/assets/images/real_ian.png`}  // profileImage가 없을 경우 기본 이미지 사용
+                  alt={post.userResponse.nickname}
                   className="h-5 w-5 rounded-full"
                 />
-                <span>{post.user.nickname}</span>
+                <span>{post.userResponse.nickname}</span>
               </div>
             </div>
           </div>

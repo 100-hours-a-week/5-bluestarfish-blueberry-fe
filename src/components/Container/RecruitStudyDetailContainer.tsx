@@ -182,7 +182,7 @@ const RecruitStudyDetailContainer: React.FC = () => {
   const handleCompleteRecruitment = async () => {
     try {
       const requestBody = {
-        userId: study.user.id,
+        userId: study.userResponse.id,
         roomId: study.room?.id,
         title: study.title,
         content: study.content,
@@ -217,7 +217,7 @@ const RecruitStudyDetailContainer: React.FC = () => {
     return <div>해당 게시글을 찾을 수 없습니다.</div>;
   }
 
-  const isAuthor = study.user.id === currentUser?.id;
+  const isAuthor = study.userResponse.id === currentUser?.id;
 
   return (
     <div className="container mx-auto mt-8 p-4 mt-[100px] w-[1000px] h-full">

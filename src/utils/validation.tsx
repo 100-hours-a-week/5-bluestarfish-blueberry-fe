@@ -6,8 +6,8 @@ export const isValidEmail = (email: string): boolean => {
 
 // 비밀번호 유효성 검사
 export const isValidPassword = (password: string): boolean => {
-  const passwordRegex =
-    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/;
+  // 최소 8자 이상, 최대 20자 이하, 영문자와 숫자가 최소 한 개씩 포함되어야 하며, 특수 문자는 선택 사항
+  const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*?&]{8,20}$/;
   return passwordRegex.test(password);
 };
 
@@ -49,58 +49,60 @@ export const validateStudyFormInputs = (
   };
 };
 
-// 이메일과 비밀번호를 모두 검증하는 함수
+// 이메일 유효성 검사 함수
 export const validateEmail = (email: string): string => {
   if (!email) {
     return "이메일을 입력해주세요.";
   }
-  if (email.length < 5) {
-    return "이메일은 최소 5자리 이상이어야 합니다.";
-  } else if (email.length < 5) {
-    return "이메일은 최소 5자리 이상이어야 합니다.";
-  }
   if (!isValidEmail(email)) {
-    return "유효하지 않은 이메일 형식입니다.";
+    return "유효하지 않은 이메일 형식입니다. 올바른 형식: example@domain.com";
   }
   return "";
 };
 
-// 스터디룸 암호 유효성 검사
+// 비밀번호 유효성 검사
 export const validateUserPassword = (pw: string): string => {
   if (!pw) {
     return "비밀번호를 입력해주세요.";
-  } else if (pw.length < 5) {
-    return "비밀번호는 최소 5자리 이상이어야 합니다.";
+  } else if (pw.length < 8) {
+    return "비밀번호는 최소 8자리 이상이어야 합니다.";
+  } else if (pw.length > 20) {
+    return "비밀번호는 최대 20자리 이하이어야 합니다.";
   }
 
   if (!isValidPassword(pw)) {
-    return "유효하지 않은 비밀번호 형식입니다.";
+    return "비밀번호에는 영문자와 숫자가 모두 포함되어야 하며, 특수 문자는 선택사항입니다.";
   }
+
   return "";
 };
 
 // 이메일과 비밀번호를 모두 검증하는 함수
 export const validateInputs = (email: string, password: string): string => {
   if (!email && !password) {
-    return "이메일과 비밀번호를 입력해주세요.";
-  } else if (!email) {
+    return "이메일과 비밀번호를 모두 입력해주세요.";
+  }
+
+  if (!email) {
     return "이메일을 입력해주세요.";
-  } else if (!password) {
+  }
+
+  if (!password) {
     return "비밀번호를 입력해주세요.";
   }
-  if (email.length < 5 && password.length < 5) {
-    return "이메일과 비밀번호는 최소 5자리 이상이어야 합니다.";
-  } else if (email.length < 5) {
-    return "이메일은 최소 5자리 이상이어야 합니다.";
-  } else if (password.length < 5) {
-    return "비밀번호는 최소 5자리 이상이어야 합니다.";
+
+  if (password.length < 8 || password.length > 20) {
+    return "비밀번호는 8자리 이상 20자리 이하이어야 합니다.";
   }
+
   if (!isValidEmail(email)) {
-    return "유효하지 않은 이메일 형식입니다.";
+    return "올바른 이메일 형식을 입력해주세요. 예: example@domain.com";
   }
+
   if (!isValidPassword(password)) {
-    return "유효하지 않은 비밀번호 형식입니다.";
+    return "비밀번호는 영문자와 숫자를 포함해야 하며, 특수 문자는 선택사항입니다.";
   }
+
   return "";
 };
 
@@ -141,31 +143,29 @@ export const validatePassword = (pw: string): string => {
   if (pw && (pw.length < 4 || pw.length > 20)) {
     return "암호는 4자 이상, 20자 이하여야 합니다.";
   } else if (pw && !passwordRegex.test(pw)) {
-    return "영문 혹은 숫자만 입력해주세요.";
+    return "암호는 영문자와 숫자만 포함해야 합니다.";
   }
   return "통과";
 };
 
+// 닉네임 유효성 검사
 export const validateNickname = (nickname: string): string => {
-  // 공백 체크
   if (nickname.length === 0) {
     return "닉네임을 입력해주세요.";
   }
 
-  // 공백 포함 여부 체크
   if (/\s/.test(nickname)) {
     return "닉네임에 공백이 포함될 수 없습니다.";
   }
 
-  // 길이 체크
   if (nickname.length > 10) {
     return "닉네임은 10자 이하여야 합니다.";
   }
 
-  // 유효한 닉네임
   return "사용 가능한 닉네임입니다.";
 };
 
+// 비밀번호 일치 여부 검사
 export const validatePasswordMatch = (
   password: string,
   confirmPassword: string
