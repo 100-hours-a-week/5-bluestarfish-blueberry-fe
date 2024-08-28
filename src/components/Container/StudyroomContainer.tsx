@@ -1,12 +1,14 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { Client, IMessage } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
+import kurentoUtils from "kurento-utils";
+import Participant from "../../utils/Participant";
+
 import SmallUserDisplay from "../rooms/SmallUserDisplay";
 import { useDeviceStore, useLoginedUserStore } from "../../store/store";
 import { useUserStore } from "../../store/userStore";
 import axiosInstance from "../../utils/axiosInstance";
-
 interface User {
   id: number;
   nickname: string;
@@ -42,6 +44,14 @@ const StudyroomContainer: React.FC = () => {
   const { userId, nickname, profileImage } = useLoginedUserStore();
   const { users, addUser, updateUser, setUsers } = useUserStore();
 
+  const localStreamRef = useRef<MediaStream | null>(null);
+  const localVideoRef = useRef<HTMLVideoElement | null>(null);
+  const wsRef = useRef<WebSocket | null>(null);
+  const participants: Record<string, Participant> = {};
+
+  const [isCamOn, setCamOn] = useState(true);
+  const [isMicOn, setMicOn] = useState(true);
+
   useEffect(() => {
     fetchStudyRoom();
   }, []);
@@ -60,6 +70,62 @@ const StudyroomContainer: React.FC = () => {
       speakerEnabled: speakerEnabled,
     });
   }, [camEnabled, micEnabled, speakerEnabled]);
+
+  useEffect(() => {
+    wsRef.current = new WebSocket("ws://localhost:8081/signal");
+
+    wsRef.current.onopen = () => {
+      console.log("WebSocket connection established");
+      register(); // WebSocket이 OPEN 상태가 된 후 register 호출
+    };
+
+    wsRef.current.onerror = (error) => {
+      console.error("WebSocket error: ", error);
+    };
+
+    return () => {
+      if (wsRef.current) {
+        wsRef.current.close();
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    if (wsRef.current) {
+      wsRef.current.onmessage = (message) => {
+        const parsedMessage = JSON.parse(message.data);
+        console.info("Received message: " + message.data);
+
+        switch (parsedMessage.id) {
+          case "existingParticipants":
+            onExistingParticipants(parsedMessage);
+            break;
+          case "newParticipantArrived":
+            onNewParticipant(parsedMessage);
+            break;
+          case "participantLeft":
+            onParticipantLeft(parsedMessage);
+            break;
+          case "receiveVideoAnswer":
+            receiveVideoResponse(parsedMessage);
+            break;
+          case "iceCandidate":
+            participants[parsedMessage.name].rtcPeer.addIceCandidate(
+              parsedMessage.candidate,
+              (error: any) => {
+                if (error) {
+                  console.error("Error adding candidate: " + error);
+                  return;
+                }
+              }
+            );
+            break;
+          default:
+            console.error("Unrecognized message", parsedMessage);
+        }
+      };
+    }
+  }, [wsRef.current]);
 
   const exitStudyRoom = async () => {
     if (isLoading) return;
@@ -209,10 +275,16 @@ const StudyroomContainer: React.FC = () => {
   };
 
   const clickCamIcon = () => {
+    localStreamRef.current
+      ?.getVideoTracks()
+      .forEach((track) => (track.enabled = !camEnabled));
     toggleCam();
   };
 
   const clickMicIcon = () => {
+    localStreamRef.current
+      ?.getAudioTracks()
+      .forEach((track) => (track.enabled = !micEnabled));
     toggleMic();
   };
 
@@ -223,6 +295,148 @@ const StudyroomContainer: React.FC = () => {
   const handleExitButton = async () => {
     await exitStudyRoom();
     navigate(`/wait/${roomId}`);
+  };
+
+  // WebRTC functions
+
+  const sendMessage = (message: any) => {
+    const jsonMessage = JSON.stringify(message);
+    console.log("Sending message: " + jsonMessage);
+    wsRef.current?.send(jsonMessage);
+  };
+
+  const register = () => {
+    navigator.mediaDevices
+      .getUserMedia({ video: true, audio: true })
+      .then((stream) => {
+        localStreamRef.current = stream;
+        if (localVideoRef.current) {
+          localVideoRef.current.srcObject = stream;
+        }
+      });
+
+    const message = {
+      id: "joinRoom",
+      name: nickname,
+      room: roomId,
+    };
+    sendMessage(message);
+  };
+
+  const onNewParticipant = (request: { name: string }) => {
+    receiveVideo(request.name);
+  };
+
+  const receiveVideoResponse = (result: { name: string; sdpAnswer: any }) => {
+    participants[result.name].rtcPeer.processAnswer(
+      result.sdpAnswer,
+      (error: any) => {
+        if (error) {
+          console.error(error);
+        }
+      }
+    );
+  };
+
+  const stop = () => {
+    console.log("Stopping WebRTC communication");
+
+    for (const key in participants) {
+      if (participants[key].rtcPeer) {
+        participants[key].rtcPeer.dispose();
+        participants[key].rtcPeer = null;
+      }
+    }
+
+    wsRef.current?.close();
+  };
+
+  const onExistingParticipants = (msg: { data: string[] }) => {
+    const constraints = {
+      audio: true,
+      video: {
+        mandatory: {
+          maxWidth: 300,
+          maxFrameRate: 120,
+          minFrameRate: 15,
+        },
+      },
+    };
+    console.log(`${nickname} registered in room`);
+
+    const participant = new Participant(nickname, nickname, sendMessage);
+    participants[nickname] = participant;
+
+    const video = participant.getVideoElement();
+
+    const options = {
+      localVideo: video,
+      mediaConstraints: constraints,
+      onicecandidate: participant.onIceCandidate.bind(participant),
+    };
+
+    participant.rtcPeer = new kurentoUtils.WebRtcPeer.WebRtcPeerSendonly(
+      options,
+      (error: any) => {
+        if (error) {
+          return console.error(error);
+        }
+        participant.rtcPeer.generateOffer(
+          participant.offerToReceiveVideo.bind(participant)
+        );
+      }
+    );
+
+    participant.rtcPeer.getLocalStream((stream: MediaStream) => {
+      localStreamRef.current = stream;
+      if (!stream) {
+        console.error("Failed to get local stream");
+      }
+    });
+
+    msg.data.forEach(receiveVideo);
+  };
+
+  const leaveRoom = () => {
+    sendMessage({ id: "leaveRoom" });
+
+    for (const key in participants) {
+      participants[key].dispose();
+    }
+
+    navigate("/");
+
+    wsRef.current?.close();
+  };
+
+  const receiveVideo = (sender: string) => {
+    const participant = new Participant(nickname, sender, sendMessage);
+    participants[sender] = participant;
+    const video = participant.getVideoElement();
+
+    const options = {
+      remoteVideo: video,
+      onicecandidate: participant.onIceCandidate.bind(participant),
+    };
+
+    participant.rtcPeer = new kurentoUtils.WebRtcPeer.WebRtcPeerRecvonly(
+      options,
+      (error: any) => {
+        if (error) {
+          return console.error(error);
+        }
+        participant.rtcPeer.generateOffer(
+          participant.offerToReceiveVideo.bind(participant)
+        );
+      }
+    );
+  };
+
+  const onParticipantLeft = (request: { name: string }) => {
+    console.log("Participant " + request.name + " left");
+    const participant = participants[request.name];
+    participant.dispose();
+    delete participants[request.name];
   };
 
   return (
@@ -237,6 +451,56 @@ const StudyroomContainer: React.FC = () => {
                 userStatus={user} // 필터링된 userStatus 전달
               />
             ))}
+      </div>
+      <div>
+        <div
+          id="container"
+          className="w-full h-full flex flex-col items-center"
+        >
+          <h2
+            id="room-header"
+            className="m-0 w-full h-20 border border-black box-border flex items-center justify-center"
+          >
+            방 번호 {roomId}
+          </h2>
+
+          <div
+            id="participants"
+            className="w-full h-[calc(100%-80px)] border border-black flex items-center justify-center"
+          >
+            <div
+              className="flex flex-col justify-center items-center w-[300px] h-[350px] border border-black rounded-lg"
+              id={nickname}
+            >
+              <video
+                id="video-나"
+                className="w-[300px] h-[225px]"
+                ref={localVideoRef}
+                autoPlay
+                playsInline
+                muted
+              ></video>
+              <span className="text-lg font-bold">{nickname}</span>
+            </div>
+          </div>
+
+          <input
+            type="button"
+            id="button-leave"
+            onMouseUp={(e) => leaveRoom()}
+            value="Leave room"
+            className="mt-4"
+          />
+
+          <div className="flex flex-row items-center justify-center w-[300px] h-[100px] gap-5 mt-4">
+            <button className="py-2 px-4 bg-blue-500 text-white rounded">
+              {isCamOn ? "Turn Off Camera" : "Turn On Camera"}
+            </button>
+            <button className="py-2 px-4 bg-blue-500 text-white rounded">
+              {isMicOn ? "Turn Off Mic" : "Turn On Mic"}
+            </button>
+          </div>
+        </div>
       </div>
       <div className="mt-10 flex flex-row gap-5 justify-center items-center">
         <button onClick={clickCamIcon}>
