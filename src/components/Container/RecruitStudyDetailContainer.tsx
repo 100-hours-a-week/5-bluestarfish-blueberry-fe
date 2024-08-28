@@ -7,6 +7,7 @@ import StudyRoomLink from "../StudyDetail/StudyRoomLink";
 import CommentSection from "../StudyDetail/CommentSection";
 import DeletePostModal from "../common/DeletePostModal";
 import ToastNotification from "../common/ToastNotification";
+import Studyroom from "../rooms/Studyroom";
 
 const RecruitStudyDetailContainer: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -157,7 +158,7 @@ const RecruitStudyDetailContainer: React.FC = () => {
 
   const handleNavigateToRoom = () => {
     if (isRecruited) {
-      navigate(`/wait/${id}`);
+      navigate(`/wait/${studyRoom.id}`); // 게시글 아이디로 이동하는 게 아닙니다요
     }
   };
 
