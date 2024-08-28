@@ -12,25 +12,11 @@ const LoginForm: React.FC = () => {
     useState<string>("text-red-500"); // 핼퍼 텍스트 색상 상태
   const [isValid, setIsValid] = useState<boolean>(false); // 입력값의 유효성 상태
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const {
-    userId,
-    nickname,
-    profileImage,
-    setUserId,
-    setNickname,
-    setProfileImage,
-  } = useLoginedUserStore();
 
   // useEffect 훅을 사용해 이메일과 비밀번호가 변경될 때마다 유효성 검사 수행
   useEffect(() => {
     checkInputs(); // 입력값 유효성 검사 함수 호출
   }, [email, password]); // email 또는 password가 변경될 때마다 호출
-
-  useEffect(() => {
-    console.log(
-      `userId = ${userId}, nickname = ${nickname}, image = ${profileImage}`
-    );
-  }, [userId]);
 
   // 입력값 유효성 검사 함수
   const checkInputs = () => {

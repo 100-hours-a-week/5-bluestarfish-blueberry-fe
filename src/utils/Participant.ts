@@ -86,7 +86,10 @@ class Participant {
       sender: this.name,
       sdpOffer: offerSdp,
     };
-
+    if (!this.name) {
+      console.error("Sender is missing while receiving video.");
+      return;
+    }
     this.sendMessage(msg);
   }
 
