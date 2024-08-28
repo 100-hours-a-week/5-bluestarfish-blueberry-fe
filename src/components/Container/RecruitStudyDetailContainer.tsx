@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import axios, { AxiosError } from "axios";
+import axiosInstance from "../../utils/axiosInstance";
 import StudyHeader from "../StudyDetail/StudyHeader";
 import StudyContent from "../StudyDetail/StudyContent";
 import StudyRoomLink from "../StudyDetail/StudyRoomLink";
 import CommentSection from "../StudyDetail/CommentSection";
 import DeletePostModal from "../common/DeletePostModal";
-import axiosInstance from "../../utils/axiosInstance";
 import ToastNotification from "../common/ToastNotification";
 
 const RecruitStudyDetailContainer: React.FC = () => {
@@ -20,6 +19,7 @@ const RecruitStudyDetailContainer: React.FC = () => {
   const [showToast, setShowToast] = useState(false);
   const [studyRoom, setStudyRoom] = useState<any | null>(null);
   const [currentUser, setCurrentUser] = useState<any | null>(null);
+  const [mentionId, setMentionId] = useState<number | null>(null); // 멘션된 사용자의 ID
   const studyId = id ? parseInt(id, 10) : null;
 
   // 현재 로그인된 사용자 정보를 가져오는 useEffect
@@ -45,7 +45,6 @@ const RecruitStudyDetailContainer: React.FC = () => {
         `${process.env.REACT_APP_API_URL}/api/v1/posts/comments/${studyId}?page=${page}`
       );
 
-      // 응답 데이터의 구조에 맞게 `content` 속성에서 댓글 목록을 추출
       const commentsData = response.data.data.content;
 
       if (Array.isArray(commentsData)) {
@@ -53,9 +52,14 @@ const RecruitStudyDetailContainer: React.FC = () => {
           id: comment.id,
           text: comment.content,
           author: comment.user.nickname,
-          userId: comment.user.id, // 추가: 댓글 작성자의 ID
-          createdAt: new Date(comment.createdAt).getTime(),
-          // profileImage: comment.user.profileImage,
+          userId: comment.user.id,
+          mentionedUser: comment.mentionedUser
+            ? {
+                id: comment.mentionedUser.id,
+                nickname: comment.mentionedUser.nickname,
+              }
+            : null,
+          createdAt: comment.createdAt ? new Date(comment.createdAt).getTime() : null,
           profileImage: `${process.env.PUBLIC_URL}/assets/images/real_ian.png`,
         }));
 
@@ -64,11 +68,7 @@ const RecruitStudyDetailContainer: React.FC = () => {
         console.error("댓글 데이터가 배열이 아닙니다:", commentsData);
       }
     } catch (error: unknown) {
-      if (axios.isAxiosError(error) && error.response && error.response.status === 404) {
-        console.error("해당 게시글에 댓글이 없습니다.");
-      } else {
-        console.error("댓글을 불러오는 데 실패했습니다:", getErrorMessage(error));
-      }
+      console.error("댓글을 불러오는 데 실패했습니다:", getErrorMessage(error));
     }
   };
 
@@ -107,12 +107,13 @@ const RecruitStudyDetailContainer: React.FC = () => {
     fetchStudyDetail();
   }, [studyId, navigate]);
 
-  // ToastNotification을 닫는 함수
-  const handleCloseToast = () => {
-    setShowToast(false);
+  // 댓글 멘션 기능 추가
+  const handleCommentMention = (authorId: number | null) => {
+    if (isRecruited && authorId !== currentUser?.id) {
+      setMentionId(authorId);
+    }
   };
 
-  // 댓글을 제출할 때 호출되는 함수
   const handleCommentSubmit = async (comment: string) => {
     if (!comment.trim()) {
       alert("댓글을 입력해주세요.");
@@ -128,7 +129,7 @@ const RecruitStudyDetailContainer: React.FC = () => {
       const requestBody = {
         postId: studyId,
         userId: currentUser.id,
-        mentionId: null, // 멘션이 필요하지 않다면 null로 설정
+        mentionId: mentionId, // 멘션된 사용자의 ID를 설정
         content: comment,
         createdAt: new Date().toISOString(),
       };
@@ -139,8 +140,8 @@ const RecruitStudyDetailContainer: React.FC = () => {
       );
 
       if (response.status === 201) {
-        // 댓글 작성 후 댓글 목록을 다시 불러오기
-        await fetchComments();
+        await fetchComments(); // 댓글 작성 후 댓글 목록을 다시 불러오기
+        setMentionId(null); // 멘션 상태 초기화
       } else {
         alert("댓글 작성에 실패했습니다.");
       }
@@ -150,19 +151,20 @@ const RecruitStudyDetailContainer: React.FC = () => {
     }
   };
 
-  // 스터디룸으로 이동하는 함수
+  const handleCloseToast = () => {
+    setShowToast(false);
+  };
+
   const handleNavigateToRoom = () => {
     if (isRecruited) {
       navigate("/wait");
     }
   };
 
-  // 게시글 수정 페이지로 이동하는 함수
   const handleEditPost = () => {
     navigate(`/recruit/update/${studyId}`);
   };
 
-  // 게시글을 삭제하는 함수
   const handleDeletePost = async () => {
     try {
       await axiosInstance.delete(
@@ -176,7 +178,6 @@ const RecruitStudyDetailContainer: React.FC = () => {
     }
   };
 
-  // 모집 완료 상태를 업데이트하는 함수
   const handleCompleteRecruitment = async () => {
     try {
       const requestBody = {
@@ -240,7 +241,8 @@ const RecruitStudyDetailContainer: React.FC = () => {
         comments={comments}
         isRecruited={isRecruited}
         onSubmitComment={handleCommentSubmit}
-        currentUser={currentUser} // 현재 사용자 정보 전달
+        onMention={handleCommentMention} // 멘션 기능을 전달
+        currentUser={currentUser}
         postId={studyId}
       />
 
@@ -251,7 +253,6 @@ const RecruitStudyDetailContainer: React.FC = () => {
           onConfirm={handleDeletePost}
           onCancel={() => setShowDeleteModal(false)}
         />
-
       )}
 
       {showToast && (
@@ -262,15 +263,15 @@ const RecruitStudyDetailContainer: React.FC = () => {
 };
 
 function getErrorMessage(error: unknown): string {
-  if (axios.isAxiosError(error)) {
-    if (error.response) {
-      return `Error: ${error.response.status} - ${error.response.data.message || error.message}`;
+  try {
+    if (error instanceof Error) {
+      return error.message;
     }
-    return error.message;
-  } else if (error instanceof Error) {
-    return error.message;
+    return String(error);
+  } catch (e) {
+    return 'Unknown error';
   }
-  return String(error);
 }
+
 
 export default RecruitStudyDetailContainer;
