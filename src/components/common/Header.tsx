@@ -44,7 +44,7 @@ const Header: React.FC = () => {
             />
             <span className="text-xl font-bold text-[#6D81D5]">blueberry</span>
           </Link>
-          <div className="relative w-[740px]">
+          <div className="relative w-[740px]" style={{display: "none"}}>
             <input
               type="text"
               placeholder="Search..."
