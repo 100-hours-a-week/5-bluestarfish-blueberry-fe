@@ -45,7 +45,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({
     setComment(value);
 
     // @를 입력하면 멘션을 자동으로 인식하여 설정
-    const mentionPattern = /@(\w+)$/;
+    const mentionPattern = /@([\w가-힣]+)/;
     const match = mentionPattern.exec(value);
 
     if (match) {
