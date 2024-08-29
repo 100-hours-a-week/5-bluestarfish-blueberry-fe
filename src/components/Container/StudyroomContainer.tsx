@@ -80,11 +80,11 @@ const StudyroomContainer: React.FC = () => {
       console.error("WebSocket error: ", error);
     };
 
-    return () => {
-      if (wsRef.current) {
-        wsRef.current.close();
-      }
-    };
+    // return () => {
+    //   if (wsRef.current) {
+    //     wsRef.current.close();
+    //   }
+    // };
   }, []);
 
   useEffect(() => {
