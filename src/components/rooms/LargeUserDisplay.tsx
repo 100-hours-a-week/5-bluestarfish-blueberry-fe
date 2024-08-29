@@ -25,6 +25,14 @@ const LargeUserDisplay: React.FC<LargeUserDisplayProps> = ({
         .catch((error) => {
           console.error("Error accessing camera: ", error);
         });
+      return () => {
+        if (videoRef.current && videoRef.current.srcObject) {
+          (videoRef.current.srcObject as MediaStream)
+            .getTracks()
+            .forEach((track) => track.stop());
+          videoRef.current.srcObject = null;
+        }
+      };
     } else {
       // 카메라가 꺼졌을 때 비디오 스트림을 제거
       if (videoRef.current && videoRef.current.srcObject) {
@@ -43,7 +51,7 @@ const LargeUserDisplay: React.FC<LargeUserDisplayProps> = ({
     >
       {camEnabled && (
         <video
-          className="w-full h-full object-cover rounded-[20px]"
+          className="w-full h-full object-cover rounded-[20px] transform scale-x-[-1]"
           ref={videoRef}
           autoPlay
           muted
