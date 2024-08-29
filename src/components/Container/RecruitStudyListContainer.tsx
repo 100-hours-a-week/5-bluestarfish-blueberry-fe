@@ -4,19 +4,7 @@ import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../utils/axiosInstance";
 import CategorySelector from "../rooms/CategorySelector";
 import RecruitPostList from "../posts/RecruitPostList";
-
-interface Post {
-  id: number;
-  title: string;
-  type: string;
-  userResponse: {
-    nickname: string;
-    profileImage?: string | null;
-  };
-  postCamEnabled: boolean;
-  room?: number | null;
-  recruited: boolean;
-}
+import { Post } from "../../types"; // 공통 타입 가져오기
 
 interface ApiResponse {
   data: {
@@ -30,8 +18,9 @@ const StudyRecruitListContainer: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState("전체보기");
   const [selectedType, setSelectedType] = useState("");
   const [posts, setPosts] = useState<Array<Post>>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [page, setPage] = useState(0); // 페이지 상태 추가
+  const [isLoading, setIsLoading] = useState(false); // 초기값 false로 변경
+  const [page, setPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
   const navigate = useNavigate();
 
   const categories = [
@@ -45,11 +34,10 @@ const StudyRecruitListContainer: React.FC = () => {
   ];
 
   useEffect(() => {
-    fetchPosts();
-  }, [selectedCategory, selectedType, page]);
-  // fetchPosts() 두 번 호출
+    fetchPosts(true);
+  }, [selectedCategory, selectedType]);
 
-  const fetchPosts = async () => {
+  const fetchPosts = async (reset: boolean = false): Promise<void> => {
     try {
       setIsLoading(true);
 
@@ -58,8 +46,8 @@ const StudyRecruitListContainer: React.FC = () => {
         selectedType === "스터디 멤버 찾기"
           ? "FINDING_MEMBERS"
           : selectedType === "스터디 룸 찾기"
-            ? "FINDING_ROOMS"
-            : "";
+          ? "FINDING_ROOMS"
+          : "";
 
       const response = await axiosInstance.get<ApiResponse>(
         `${process.env.REACT_APP_API_URL}/api/v1/posts`,
@@ -73,50 +61,61 @@ const StudyRecruitListContainer: React.FC = () => {
       );
 
       const postsData = response.data.data.content;
-      setPosts(postsData);
+      setTotalPages(response.data.data.totalPages);
+
+      if (reset) {
+        setPosts(postsData);
+        setPage(1); // 초기화 후 페이지를 1로 설정
+      } else {
+        setPosts((prevPosts) => [...prevPosts, ...postsData]);
+        setPage((prevPage) => prevPage + 1); // 무한 스크롤 시 페이지를 증가시킴
+      }
     } catch (error) {
       console.error("게시글 목록을 불러오지 못했습니다:", error);
-      setPosts([]); // 에러 발생 시 빈 배열로 설정
+      if (reset) {
+        setPosts([]);
+      }
     } finally {
-      setIsLoading(false);
+      setIsLoading(false); // 로딩 상태 해제
     }
   };
 
   const handleCategoryClick = (category: string) => {
     setSelectedCategory(category);
-    setPage(0); // 카테고리 변경 시 페이지 초기화
+    fetchPosts(true);
   };
 
   const handleTypeClick = (type: string) => {
     setSelectedType(selectedType === type ? "" : type);
-    setPage(0); // 타입 변경 시 페이지 초기화
+    fetchPosts(true);
   };
 
   const handlePostClick = async (postId: number) => {
     try {
-      // 게시글 존재 여부를 확인하기 위해 서버에 GET 요청
       const response = await axiosInstance.get(`${process.env.REACT_APP_API_URL}/api/v1/posts/${postId}`);
-      
-      // 게시글이 존재하면 상세 페이지로 이동
       if (response.status === 200) {
         navigate(`/recruit/${postId}`);
       }
-    } catch (error: any) { // 여기서 'any'로 캐스팅
-      // 404 에러 처리: 게시글이 존재하지 않을 경우
+    } catch (error: any) {
       if (error.response && error.response.status === 404) {
         alert("해당 게시글을 찾을 수 없습니다.");
       } else {
-        // 다른 에러 처리: 서버 에러 등
         console.error("게시글 조회 중 오류가 발생했습니다:", error);
         alert("서버 오류가 발생했습니다. 다시 시도해주세요.");
       }
     }
   };
-  
-
 
   const handleCreatePostClick = async () => {
     navigate("/recruit/create");
+  };
+
+  const fetchMorePosts = async (): Promise<void> => {
+    if (page < totalPages && !isLoading) { // 페이지가 끝나지 않았고 로딩 중이 아닐 때만 실행
+      setIsLoading(true);
+      await new Promise((resolve) => setTimeout(resolve, 500)); // 지연 시간 추가 (0.5초)
+      await fetchPosts();
+    }
   };
 
   return (
@@ -145,11 +144,14 @@ const StudyRecruitListContainer: React.FC = () => {
           handleTypeClick={handleTypeClick}
         />
 
-        {/* 모집 공고 글 목록 */}
-        {isLoading ? (
+        {isLoading && posts.length === 0 ? (
           <div>Loading...</div>
         ) : (
-          <RecruitPostList posts={posts} onPostClick={handlePostClick} />
+          <RecruitPostList
+            posts={posts}
+            onPostClick={handlePostClick}
+            fetchMorePosts={fetchMorePosts}
+          />
         )}
       </div>
     </div>
