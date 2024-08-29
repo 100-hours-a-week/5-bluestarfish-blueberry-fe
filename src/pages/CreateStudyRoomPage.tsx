@@ -2,13 +2,14 @@ import React, { useEffect } from "react";
 import Header from "../components/common/Header";
 import CreateStudyRoomContainer from "../components/Container/CreateStudyRoomContainer";
 import Footer from "../components/common/Footer";
-import { useSetUserInfo } from "../utils/auth";
+import { useAuthCheck } from "../utils/auth";
 
 const CreateStudyRoomPage: React.FC = () => {
-  const { setUserInfo } = useSetUserInfo();
+  const { authCheck } = useAuthCheck();
   useEffect(() => {
-    setUserInfo();
+    authCheck();
   }, []);
+
   return (
     <div className="flex flex-col min-h-screen bg-white">
       <Header />

@@ -12,11 +12,9 @@ export const useSetUserInfo = () => {
         `${process.env.REACT_APP_API_URL}/api/v1/users/whoami`
       );
       if (response.status === 200) {
-        await Promise.all([
-          setUserId(response.data.data.id),
-          setNickname(response.data.data.nickname),
-          setProfileImage(response.data.data.profile_image),
-        ]);
+        setUserId(response.data.data.id);
+        setNickname(response.data.data.nickname);
+        setProfileImage(response.data.data.profile_image);
       }
     } catch (error: any) {
       if (error.response) {
@@ -33,6 +31,39 @@ export const useSetUserInfo = () => {
   };
 
   return { setUserInfo };
+};
+
+export const useAuthCheck = () => {
+  const navigate = useNavigate();
+  const { setUserId, setNickname, setProfileImage } = useLoginedUserStore();
+
+  const authCheck = async () => {
+    try {
+      const response = await axiosInstance.get(
+        `${process.env.REACT_APP_API_URL}/api/v1/users/whoami`
+      );
+      if (response.status === 200) {
+        setUserId(response.data.data.id);
+        setNickname(response.data.data.nickname);
+        setProfileImage(response.data.data.profile_image);
+      }
+    } catch (error: any) {
+      if (error.response) {
+        if (error.response.status === 404) {
+          console.error("404: ", "Not found");
+        }
+      } else {
+        console.error(
+          "로그인 유저 정보를 받아오는 중 오류 발생:",
+          error.message
+        );
+      }
+      alert("로그인이 필요한 서비스입니다!");
+      navigate("/login");
+    }
+  };
+
+  return { authCheck };
 };
 
 export const useSetLoginedUserInfo = () => {
