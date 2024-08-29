@@ -54,10 +54,6 @@ const StudyroomContainer: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    console.log(users);
-  }, [users]);
-
-  useEffect(() => {
     sendRoomControlUpdate({
       id: userId,
       nickname: nickname,
