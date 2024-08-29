@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react';
-import Header from '../components/common/Header';
-import StudyRoomsListContainer from '../components/Container/StudyRoomsListContainer';
-import Footer from '../components/common/Footer';
+import React, { useEffect } from "react";
+import Header from "../components/common/Header";
+import StudyRoomsListContainer from "../components/Container/StudyRoomsListContainer";
+import Footer from "../components/common/Footer";
 import { useSetUserInfo } from "../utils/auth";
 
 const StudyRoomsListPage: React.FC = () => {

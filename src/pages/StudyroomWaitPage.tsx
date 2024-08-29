@@ -1,15 +1,17 @@
 import { useNavigate } from "react-router-dom";
-import { useSetUserInfo } from "../utils/auth";
+import { useAuthCheck } from "../utils/auth";
 import { useEffect } from "react";
 
 import StudyroomWaitContainer from "../components/Container/StudyroomWaitContainer";
 
 const StudyroomWaitPage: React.FC = () => {
-  const { setUserInfo } = useSetUserInfo();
+  const { authCheck } = useAuthCheck();
   useEffect(() => {
-    setUserInfo();
+    authCheck();
   }, []);
+
   const navigate = useNavigate();
+
   const exitWaitPage = () => {
     navigate("/");
   };
