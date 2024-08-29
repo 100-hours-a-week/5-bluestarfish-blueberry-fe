@@ -27,10 +27,6 @@ const ChatContainer: React.FC<ChatContainerProps> = () => {
   const clientRef = useRef<Client | null>(null);
   const { userId, nickname } = useLoginedUserStore();
 
-  useEffect(() => {
-    console.log(messages);
-  }, [messages]);
-
   const getPreviousMessages = async () => {
     try {
       const response = await axiosInstance.get(

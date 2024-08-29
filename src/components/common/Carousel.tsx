@@ -3,8 +3,8 @@ import React, { useState, useEffect, useRef } from "react";
 const Carousel = () => {
   const images = [
     `${process.env.PUBLIC_URL}/assets/images/intro-1.png`,
-    `${process.env.PUBLIC_URL}/assets/images/intro-1.png`,
-    `${process.env.PUBLIC_URL}/assets/images/intro-1.png`,
+    // `${process.env.PUBLIC_URL}/assets/images/intro-1.png`,
+    // `${process.env.PUBLIC_URL}/assets/images/intro-1.png`,
   ];
 
   const [currentIndex, setCurrentIndex] = useState(0);

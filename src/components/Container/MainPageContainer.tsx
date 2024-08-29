@@ -20,12 +20,6 @@ const MainPageContainer: React.FC = () => {
     setQnAModalOpen(true);
   };
 
-  useEffect(() => {
-    console.log(
-      `userId = ${userId}, nickname = ${nickname}, image = ${profileImage}`
-    );
-  }, [userId]);
-
   return (
     <div className="flex flex-col mt-[80px] items-center w-full bg-white">
       <Carousel />
