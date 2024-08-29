@@ -44,7 +44,7 @@ const Header: React.FC = () => {
             />
             <span className="text-xl font-bold text-[#6D81D5]">blueberry</span>
           </Link>
-          <div className="relative w-[740px]">
+          <div className="relative w-[740px]" style={{display: "none"}}>
             <input
               type="text"
               placeholder="Search..."
@@ -66,7 +66,7 @@ const Header: React.FC = () => {
               <img
                 src={`${process.env.PUBLIC_URL}/assets/images/notification.png`}
                 alt="Notifications"
-                className="h-9 w-9 rounded-full cursor-pointer mr-4 mt-1"
+                className="h-9 w-9 rounded-full cursor-pointer mr-4 mt-1 hidden"
                 onClick={toggleAlarmModal}
               />
               <img

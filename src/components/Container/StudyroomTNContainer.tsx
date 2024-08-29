@@ -9,13 +9,10 @@ interface StudyRoom {
   id: number;
   title: string;
   maxUsers: number;
-  // password: string;
-  thumbnail: string;
-  // description: string;
-  memberNumber: number;
-  // createdAt: string;
-  // deletedAt: string;
   camEnabled: boolean;
+  thumbnail: string;
+  memberNumber: number;
+  users?: any[]; // 'users' 속성을 선택적으로 만듭니다.
 }
 
 interface StudyroomTNContainerProps {
@@ -58,12 +55,6 @@ const StudyroomTNContainer: React.FC<StudyroomTNContainerProps> = ({
   }, []);
 
   useEffect(() => {
-    console.log(studyRoomsData.length);
-    console.log(filteredData.length);
-    console.log(displayedRooms);
-  }, [studyRoomsData, filteredData, displayedRooms]);
-
-  useEffect(() => {
     const filterRooms = () => {
       const filtered = studyRoomsData.filter((item) => {
         const matchesCategory =
@@ -99,14 +90,15 @@ const StudyroomTNContainer: React.FC<StudyroomTNContainerProps> = ({
 
     if (observer.current) observer.current.disconnect();
 
-    observer.current = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting) {
-          loadMoreRooms();
-        }
-      },
-      { threshold: 1 }
-    );
+    const handleObserver = (entries: IntersectionObserverEntry[]) => {
+      if (entries[0].isIntersecting) {
+        loadMoreRooms();
+      }
+    };
+
+    observer.current = new IntersectionObserver(handleObserver, {
+      threshold: 1,
+    });
 
     const loadMoreTriggerElement = document.querySelector("#load-more-trigger");
 
@@ -115,14 +107,14 @@ const StudyroomTNContainer: React.FC<StudyroomTNContainerProps> = ({
     }
 
     return () => observer.current?.disconnect();
-  }, [filteredData, displayedRooms]);
+  }, [filteredData, displayedRooms, isLoading]);
 
   const handleCategoryClick = (category: string) => {
     setSelectedCategory(category);
   };
 
   return (
-    <div className="my-4 max-w-[1024px]">
+    <div className="container mx-auto my-4 max-w-[1024px]">
       <StudyroomHeader
         selectedCategory={selectedCategory}
         categories={[
@@ -133,10 +125,10 @@ const StudyroomTNContainer: React.FC<StudyroomTNContainerProps> = ({
         handleCategoryClick={handleCategoryClick}
         isStudyRoomPage={isStudyRoomPage} // 스터디룸 페이지 여부를 전달
       />
-      <div className="my-5 mx-0 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-5 gap-x-[22px] gap-y-[22px] w-full">
+      <div className="my-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 w-full">
         {displayedRooms.length > 0 ? (
           displayedRooms.map((room) => (
-            <div key={room.id} className="cursor-pointer flex-grow">
+            <div key={room.id} className="flex justify-center">
               <StudyroomMTN
                 id={room.id}
                 title={room.title}
@@ -152,7 +144,7 @@ const StudyroomTNContainer: React.FC<StudyroomTNContainerProps> = ({
             </div>
           ))
         ) : (
-          <div className="cursor-pointer flex-grow">
+          <div className="flex justify-center">
             <div className="w-[187px] h-[171px]"></div>
           </div>
         )}
@@ -165,124 +157,12 @@ const StudyroomTNContainer: React.FC<StudyroomTNContainerProps> = ({
           {isLoading ? "Loading..." : "Scroll to load more"}
         </div>
       )}
-      <StudyroomFooter />
+      {!isStudyRoomPage && (
+        <StudyroomFooter />
+      )}
+      
     </div>
   );
 };
 
 export default StudyroomTNContainer;
-
-// import React, { useState, useEffect } from "react";
-// import StudyroomHeader from "../rooms/StudyroomHeader";
-// import StudyroomMTN from "../rooms/StudyroomMTN";
-// import StudyroomFooter from "../rooms/StudyroomFooter";
-// import dummyStudyRooms from "../../data/studyRooms";
-// import { useNavigate, useParams } from "react-router-dom";
-
-// const StudyroomTNContainer: React.FC = () => {
-//   const [studyRooms, setStudyRooms] = useState<StudyRoom[]>([]);
-//   const [filteredData, setFilteredData] = useState<StudyRoom[]>([]);
-//   const [isLoading, setIsLoading] = useState<boolean>(false);
-//   const [selectedCategory, setSelectedCategory] = useState("전체보기");
-//   const navigate = useNavigate();
-
-//   const categories = [
-//     { name: "전체보기", icon: "all.png" },
-//     { name: "캠켜공", icon: "camera-on.png" },
-//     { name: "캠끄공", icon: "camera-off.png" },
-//   ];
-
-//   useEffect(() => {
-//     setFilteredData(studyRooms);
-//     console.log(studyRooms);
-//   }, [studyRooms]);
-
-//   useEffect(() => {
-//     setFilteredData(
-//       studyRooms.filter((item) => {
-//         const matchesCategory =
-//           selectedCategory === "전체보기" ||
-//           (item.camEnabled === true && selectedCategory === "캠켜공") ||
-//           (item.camEnabled === false && selectedCategory === "캠끄공");
-//         return matchesCategory;
-//       })
-//     );
-//   }, [selectedCategory]);
-
-//   useEffect(() => {
-//     const filterData = () => {
-//       const filtered = studyRooms.filter((item) => {
-//         const matchesCategory =
-//           selectedCategory === "전체보기" ||
-//           (item.camEnabled === true && selectedCategory === "캠켜공") ||
-//           (item.camEnabled === false && selectedCategory === "캠끄공");
-//         return matchesCategory;
-//       });
-//       setFilteredData(filtered);
-//     };
-
-//     filterData(); // 필터링 함수 호출
-//   }, [studyRooms, selectedCategory]);
-
-//   const handleCategoryClick = (category: string) => {
-//     setSelectedCategory(category);
-//   };
-
-//   const makeStudyroom = async () => {
-//     try {
-//       const response = await axiosInstance.post(
-//         `${process.env.REACT_APP_API_URL}/api/v1/rooms`,
-//         {
-//           title: "모각공",
-//           maxUsers: 5,
-//           camEnabled: true,
-//           thumbnail: "s3 url",
-//           password: "qlalsfqjsgh12!@",
-//           description: "asdasdasdasdasdadadasda",
-//         }
-//       );
-
-//       if (response.status === 200) {
-//         alert("스터디룸 생성 성공!");
-//       }
-//     } catch (error) {
-//       console.log(error);
-//       alert("생성 실패!");
-//     }
-//   };
-
-//   return (
-//     <div className="my-4 max-w-[1024px]">
-//       <StudyroomHeader
-//         selectedCategory={selectedCategory}
-//         categories={categories}
-//         handleCategoryClick={handleCategoryClick}
-//       />
-//       <div className="my-5 mx-0 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-5 gap-x-[22px] gap-y-[22px] w-full">
-//         {filteredData.length > 0 ? (
-//           filteredData.map((room) => (
-//             <div key={room.id} className="cursor-pointer flex-grow">
-//               <StudyroomMTN
-//                 id={room.id}
-//                 title={room.title}
-//                 camEnabled={room.camEnabled}
-//                 currentUsers={1}
-//                 maxUsers={room.maxUsers}
-//                 thumbnail={`${process.env.PUBLIC_URL}/assets/images/study-thumbnail-1.png`}
-//                 isSelected={false}
-//               />
-//             </div>
-//           ))
-//         ) : (
-//           <div className="cursor-pointer flex-grow">
-//             <div className="w-[187px] h-[171px]"></div>
-//           </div>
-//         )}
-//       </div>
-//       <button onClick={makeStudyroom}>스터디룸 임시 생성</button>
-//       <StudyroomFooter />{" "}
-//     </div>
-//   );
-// };
-
-// export default StudyroomTNContainer;
