@@ -42,17 +42,17 @@ const HeaderModal: React.FC<HeaderModalProps> = ({ closeModal }) => {
       onClick={closeModal} // 모달 밖 클릭 시 닫기
     >
       <div
-        className="absolute flex flex-col items-center justify-center right-1 mt-[85px] w-[150px] h-[135px] bg-white text-black rounded-[15px] shadow-lg"
+        className="absolute items-center justify-center right-24 -top-4 mt-[85px] w-[150px] h-[135px] text-black rounded-[15px]"
         onClick={handleModalClick}
       >
-        <button className="w-[140px] h-[42px] border-2 rounded-[10px] hover:text-[#eb4c64] hover:bg-[#ebeeff]">
+        <button className="w-[140px] h-[42px] border-2 rounded-[10px] hover:text-[#eb4c64] hover:bg-[#ebeeff] hidden">
           마이페이지
         </button>
-        <button className="w-[140px] h-[42px] border-2 rounded-[10px] hover:text-[#eb4c64] hover:bg-[#ebeeff]">
+        <button className="w-[140px] h-[42px] border-2 rounded-[10px] hover:text-[#eb4c64] hover:bg-[#ebeeff] hidden">
           친구 관리
         </button>
         <button
-          className="w-[140px] h-[42px] border-2 rounded-[10px] hover:text-[#eb4c64] hover:bg-[#ebeeff]"
+          className="w-[140px] h-[42px] border-2 rounded-[10px] hover:text-[#eb4c64] hover:bg-[#ebeeff] bg-white"
           onClick={logout}
         >
           로그아웃

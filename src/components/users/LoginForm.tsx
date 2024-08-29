@@ -192,6 +192,7 @@ const LoginForm: React.FC = () => {
       <button
         className="bg-[#FFEB3B] hover:bg-[#FFE500] text-gray-800 py-2 px-4 rounded focus:outline-none focus:shadow-outline w-[70%] rounded-full"
         type="button"
+        style={{display: "none"}}
       >
         <div className="flex items-center space-x-4">
           <img
@@ -204,7 +205,7 @@ const LoginForm: React.FC = () => {
       </button>
 
       {/* 비밀번호 재설정 링크 */}
-      <div className="text-center mt-4">
+      <div className="text-center mt-4" style={{display: "none"}}>
         <small>비밀번호를 잃어버리셨나요?</small>
         <br />
         <a

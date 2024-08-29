@@ -335,13 +335,14 @@ const SignupForm: React.FC = () => {
           type="button"
           onClick={handleEmailVerificationButtonClick}
           disabled={isPossibleRequestEmail !== true}
+          style={{display: "none"}}
         >
           이메일 인증하기
         </button>
 
         <div>{renderImage()}</div>
         {/* 인증코드 입력 필드 */}
-        <div className="relative mb-6 mt-6 flex items-center gap-1">
+        <div className="relative mb-6 mt-6 flex items-center gap-1" style={{display: "none"}}>
           <input
             type="text"
             id="code"
@@ -499,6 +500,7 @@ const SignupForm: React.FC = () => {
       <button
         className="bg-[#FFEB3B] hover:bg-[#FFE500] text-gray-800 py-2 px-4 focus:outline-none focus:shadow-outline w-[70%] rounded-full"
         type="button"
+        style={{display: "none"}}
       >
         <div className="flex items-center space-x-4">
           <img
@@ -511,7 +513,7 @@ const SignupForm: React.FC = () => {
       </button>
 
       {/* 비밀번호 재설정 링크 */}
-      <div className="text-center mt-4">
+      <div className="text-center mt-4" style={{display: "none"}}>
         <small>비밀번호를 잃어버리셨나요?</small>
         <br />
         <a

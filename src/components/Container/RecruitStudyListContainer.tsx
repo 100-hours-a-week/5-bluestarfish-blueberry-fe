@@ -9,7 +9,7 @@ interface Post {
   id: number;
   title: string;
   type: string;
-  user: {
+  userResponse: {
     nickname: string;
     profileImage?: string | null;
   };
