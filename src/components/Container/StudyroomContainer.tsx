@@ -69,6 +69,7 @@ const StudyroomContainer: React.FC = () => {
   }, [camEnabled, micEnabled, speakerEnabled]);
 
   useEffect(() => {
+    // if (userId === 0) return;
     wsRef.current = new WebSocket(`${process.env.REACT_APP_SOCKET_RTC_URL}`);
 
     wsRef.current.onopen = () => {
@@ -80,11 +81,11 @@ const StudyroomContainer: React.FC = () => {
       console.error("WebSocket error: ", error);
     };
 
-    // return () => {
-    //   if (wsRef.current) {
-    //     wsRef.current.close();
-    //   }
-    // };
+    return () => {
+      if (wsRef.current) {
+        wsRef.current.close();
+      }
+    };
   }, []);
 
   useEffect(() => {
@@ -215,6 +216,7 @@ const StudyroomContainer: React.FC = () => {
 
         client.subscribe(`/rooms/${roomId}/management`, (message: IMessage) => {
           const body = JSON.parse(message.body);
+          console.log(body);
           body.id &&
             updateUser(body.id, {
               camEnabled: body.camEnabled,
@@ -224,6 +226,7 @@ const StudyroomContainer: React.FC = () => {
         });
         client.subscribe(`/rooms/${roomId}/member`, (message: IMessage) => {
           const body = JSON.parse(message.body);
+          console.log(body);
           body.id &&
             addUser({
               id: body.id,

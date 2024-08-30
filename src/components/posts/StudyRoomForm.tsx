@@ -99,10 +99,10 @@ const StudyRoomForm: React.FC<StudyRoomFormProps> = ({
         }
       );
 
-      if (response.status === 200) {
-        console.log("스터디룸 생성 성공");
+      if (response.status === 201) {
+        console.log(`${response.status}: 스터디룸 생성 성공`);
       } else {
-        console.log("스터디룸 생성 실패");
+        console.log(`${response.status}: 스터디룸 생성 실패`);
       }
     } catch (error) {
       console.error(error);
