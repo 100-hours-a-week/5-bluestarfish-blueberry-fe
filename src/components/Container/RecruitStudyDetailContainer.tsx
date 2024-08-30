@@ -7,7 +7,6 @@ import StudyRoomLink from "../StudyDetail/StudyRoomLink";
 import CommentSection from "../StudyDetail/CommentSection";
 import DeletePostModal from "../common/DeletePostModal";
 import ToastNotification from "../common/ToastNotification";
-import Studyroom from "../rooms/Studyroom";
 
 const RecruitStudyDetailContainer: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -20,10 +19,9 @@ const RecruitStudyDetailContainer: React.FC = () => {
   const [showToast, setShowToast] = useState(false);
   const [studyRoom, setStudyRoom] = useState<any | null>(null);
   const [currentUser, setCurrentUser] = useState<any | null>(null);
-  const [mentionId, setMentionId] = useState<number | null>(null); // 멘션된 사용자의 ID
+  const [mentionId, setMentionId] = useState<number | null>(null);
   const studyId = id ? parseInt(id, 10) : null;
 
-  // 현재 로그인된 사용자 정보를 가져오는 useEffect
   useEffect(() => {
     const fetchCurrentUser = async () => {
       try {
@@ -39,7 +37,6 @@ const RecruitStudyDetailContainer: React.FC = () => {
     fetchCurrentUser();
   }, []);
 
-  // 댓글 목록을 가져오는 함수
   const fetchComments = async (page = 0) => {
     try {
       const response = await axiosInstance.get(
@@ -73,7 +70,6 @@ const RecruitStudyDetailContainer: React.FC = () => {
     }
   };
 
-  // 게시글 상세 정보를 가져오는 useEffect
   useEffect(() => {
     const fetchStudyDetail = async () => {
       try {
@@ -85,18 +81,17 @@ const RecruitStudyDetailContainer: React.FC = () => {
         setStudy(studyData);
         setIsRecruited(studyData.recruited || false);
 
-        if (studyData.room) {
+        if (studyData.roomResponse) {
           setStudyRoom({
-            id: studyData.room.id,
-            title: studyData.room.title,
-            postCamEnabled: studyData.room.camEnabled,
-            currentUsers: studyData.room.currentUsers,
-            maxUsers: studyData.room.maxUsers,
-            thumbnail: studyData.room.thumbnail,
+            id: studyData.roomResponse.id,
+            title: studyData.roomResponse.title,
+            camEnabled: studyData.roomResponse.camEnabled,  // camEnabled 사용
+            memberNumber: studyData.roomResponse.memberNumber, // memberNumber 사용
+            maxUsers: studyData.roomResponse.maxUsers,
+            thumbnail: studyData.roomResponse.thumbnail,
           });
         }
 
-        // 댓글 목록을 불러오기
         await fetchComments();
       } catch (error: unknown) {
         console.error("게시글을 불러오지 못했습니다:", getErrorMessage(error));
@@ -108,7 +103,6 @@ const RecruitStudyDetailContainer: React.FC = () => {
     fetchStudyDetail();
   }, [studyId, navigate]);
 
-  // 댓글 멘션 기능 추가
   const handleCommentMention = (authorId: number | null) => {
     if (isRecruited && authorId !== currentUser?.id) {
       setMentionId(authorId);
@@ -130,7 +124,7 @@ const RecruitStudyDetailContainer: React.FC = () => {
       const requestBody = {
         postId: studyId,
         userId: currentUser.id,
-        mentionId: mentionId, // 멘션된 사용자의 ID를 설정
+        mentionId: mentionId,
         content: comment,
         createdAt: new Date().toISOString(),
       };
@@ -141,8 +135,8 @@ const RecruitStudyDetailContainer: React.FC = () => {
       );
 
       if (response.status === 201) {
-        await fetchComments(); // 댓글 작성 후 댓글 목록을 다시 불러오기
-        setMentionId(null); // 멘션 상태 초기화
+        await fetchComments();
+        setMentionId(null);
       } else {
         alert("댓글 작성에 실패했습니다.");
       }
@@ -158,7 +152,7 @@ const RecruitStudyDetailContainer: React.FC = () => {
 
   const handleNavigateToRoom = () => {
     if (isRecruited) {
-      navigate(`/wait/${studyRoom.id}`); // 게시글 아이디로 이동하는 게 아닙니다요
+      navigate(`/wait/${studyRoom.id}`);
     }
   };
 
@@ -242,7 +236,7 @@ const RecruitStudyDetailContainer: React.FC = () => {
         comments={comments}
         isRecruited={isRecruited}
         onSubmitComment={handleCommentSubmit}
-        onMention={handleCommentMention} // 멘션 기능을 전달
+        onMention={handleCommentMention}
         currentUser={currentUser}
         postId={studyId}
       />
@@ -273,6 +267,5 @@ function getErrorMessage(error: unknown): string {
     return 'Unknown error';
   }
 }
-
 
 export default RecruitStudyDetailContainer;
