@@ -118,7 +118,6 @@ const CreateStudyRoomContainer: React.FC = () => {
         handleThumbnailChange={handleThumbnailChange}
         handlePasswordChange={handlePasswordChange}
         handleDescriptionChange={(e) => setDescription(e.target.value)}
-        handleSubmit={handleSubmit}
       />
     </div>
   );

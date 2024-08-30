@@ -24,7 +24,6 @@ type StudyRoomFormProps = {
   handleThumbnailChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handlePasswordChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleDescriptionChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
-  handleSubmit: () => void;
 };
 
 const StudyRoomForm: React.FC<StudyRoomFormProps> = ({
@@ -44,9 +43,7 @@ const StudyRoomForm: React.FC<StudyRoomFormProps> = ({
   handleThumbnailChange,
   handlePasswordChange,
   handleDescriptionChange,
-  handleSubmit,
 }) => {
-  // 모든 입력이 유효한지 확인하는 변수
   const { userId } = useLoginedUserStore();
   const isFormValid =
     studyRoomNameError === "통과" &&
@@ -54,73 +51,62 @@ const StudyRoomForm: React.FC<StudyRoomFormProps> = ({
     (thumbnailError === "* 선택 사항" || thumbnailError === "통과") &&
     (passwordError === "* 선택 사항" || passwordError === "통과");
 
-  // 토스트 메시지 표시 여부를 관리하는 상태
   const [showToast, setShowToast] = useState(false);
-  // 페이지 이동을 위한 useNavigate 훅
   const navigate = useNavigate();
-  // 로딩 상태를 관리하는 상태
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  // 카메라 사용 여부를 관리하는 상태
-  const [isCam, setIsCam] = useState<boolean>(true);
+  const [isCamEnabled, setIsCamEnabled] = useState<boolean>(true);
 
-  // 카테고리에 따라 카메라 사용 여부를 설정
   useEffect(() => {
-    if (category !== "캠끄공") setIsCam(true);
-    else setIsCam(false);
+    setIsCamEnabled(category !== "캠끄공");
   }, [category]);
 
-  // 토스트 메시지 표시 함수
-  const handleShowToast = () => {
-    if (isFormValid) {
-      handleSubmit();
-      setShowToast(true);
-    }
-  };
-
   // 스터디룸 생성 요청 함수
-  const createStudyRooms = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault(); // 폼 제출 기본 동작 방지
-    if (isLoading) return;
+  const createStudyRooms = async (): Promise<void> => {
+    if (isLoading || !userId) return;
 
-    const trimmeedTitle = studyRoomName.trim(); // 스터디룸 이름 앞뒤 공백 제거
+    const trimmedTitle = studyRoomName.trim();
 
     try {
       setIsLoading(true);
+
       const response = await axiosInstance.post(
         `${process.env.REACT_APP_API_URL}/api/v1/rooms`,
         {
           userId: userId,
-          title: trimmeedTitle,
+          title: trimmedTitle,
           maxUsers: maxUsers,
-          camEnabled: isCam,
+          camEnabled: isCamEnabled,
           thumbnail: thumbnail,
           password: password,
           description: description,
         }
       );
 
-      if (response.status === 200) {
+      if (response.status === 200 || response.status === 201) {
         console.log("스터디룸 생성 성공");
+        setShowToast(true); // 생성 성공 후 토스트 메시지 표시
       } else {
         console.log("스터디룸 생성 실패");
       }
     } catch (error) {
-      console.error(error);
+      console.error("스터디룸 생성 중 오류:", error);
     } finally {
       setIsLoading(false); // 로딩 상태 해제
     }
   };
 
-  // 토스트 메시지 닫기 및 페이지 이동 함수
   const handleCloseToast = () => {
-    setTimeout(() => {
-      setShowToast(false);
-      navigate("/");
-    }, 0);
+    setShowToast(false);
+    navigate("/");
+  };
+
+  // 이 부분에서 createStudyRooms를 호출하도록 수정합니다.
+  const handleSubmitClick = async (): Promise<void> => {
+    await createStudyRooms();  // 비동기 함수 호출
   };
 
   return (
-    <form className="w-full max-w-3xl" onSubmit={createStudyRooms}>
+    <form className="w-full max-w-3xl" onSubmit={(e) => { e.preventDefault(); handleSubmitClick(); }}>
       {/* 스터디룸 이름 입력 필드 */}
       <div className="mb-4 relative">
         <div className="flex items-center space-x-2 mb-3">
@@ -330,7 +316,7 @@ const StudyRoomForm: React.FC<StudyRoomFormProps> = ({
       <div className="flex justify-center mt-10 mb-10 w-full">
         <SubmitButton
           isFormValid={isFormValid}
-          handleClick={handleShowToast}
+          handleClick={handleSubmitClick} // 클릭 시 handleSubmitClick 호출
           text="스터디룸 생성"
         />
         {showToast && (
