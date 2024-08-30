@@ -65,9 +65,13 @@ const StudyroomContainer: React.FC = () => {
   }, [camEnabled, micEnabled, speakerEnabled]);
 
   useEffect(() => {
-    wsRef.current = new WebSocket(`${process.env.REACT_APP_SOCKET_RTC_URL}`);
+    console.log(process.env.REACT_APP_SOCKET_RTC_URL);
+    // wsRef.current = new WebSocket(`${process.env.REACT_APP_SOCKET_RTC_URL}`);
 
-    wsRef.current.onopen = () => {
+    wsRef.current = new WebSocket("wss://blueberry826.com/signal");
+    //blueberry826.com/signal
+
+    wss: wsRef.current.onopen = () => {
       console.log("WebSocket connection established");
       register(); // WebSocket이 OPEN 상태가 된 후 register 호출
     };
