@@ -71,11 +71,7 @@ const StudyroomContainer: React.FC = () => {
     wsRef.current = new WebSocket("wss://blueberry826.com/signal");
     //blueberry826.com/signal
 
-    wsRef.current.onerror = function (event) {
-      console.log(event);
-    };
-
-    wss: wsRef.current.onopen = () => {
+    wsRef.current.onopen = () => {
       console.log("WebSocket connection established");
       register(); // WebSocket이 OPEN 상태가 된 후 register 호출
     };
@@ -84,11 +80,16 @@ const StudyroomContainer: React.FC = () => {
       console.error("WebSocket error: ", error);
     };
 
-    // return () => {
-    //   if (wsRef.current) {
-    //     wsRef.current.close();
-    //   }
-    // };
+    wsRef.current.onclose = (event) => {
+      console.log("WebSocket connection closed", event);
+      // 추가 종료 처리
+    };
+
+    return () => {
+      if (wsRef.current) {
+        wsRef.current.close();
+      }
+    };
   }, []);
 
   useEffect(() => {
