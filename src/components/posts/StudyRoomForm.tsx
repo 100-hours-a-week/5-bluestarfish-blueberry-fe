@@ -86,7 +86,7 @@ const StudyRoomForm: React.FC<StudyRoomFormProps> = ({
         console.log("스터디룸 생성 성공");
         setShowToast(true); // 생성 성공 후 토스트 메시지 표시
       } else {
-        console.log("스터디룸 생성 실패");
+        console.log(`${response.status}: 스터디룸 생성 실패`);
       }
     } catch (error) {
       console.error("스터디룸 생성 중 오류:", error);
@@ -102,11 +102,17 @@ const StudyRoomForm: React.FC<StudyRoomFormProps> = ({
 
   // 이 부분에서 createStudyRooms를 호출하도록 수정합니다.
   const handleSubmitClick = async (): Promise<void> => {
-    await createStudyRooms();  // 비동기 함수 호출
+    await createStudyRooms(); // 비동기 함수 호출
   };
 
   return (
-    <form className="w-full max-w-3xl" onSubmit={(e) => { e.preventDefault(); handleSubmitClick(); }}>
+    <form
+      className="w-full max-w-3xl"
+      onSubmit={(e) => {
+        e.preventDefault();
+        handleSubmitClick();
+      }}
+    >
       {/* 스터디룸 이름 입력 필드 */}
       <div className="mb-4 relative">
         <div className="flex items-center space-x-2 mb-3">

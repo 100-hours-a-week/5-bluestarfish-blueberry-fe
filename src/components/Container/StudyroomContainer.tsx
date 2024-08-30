@@ -224,6 +224,7 @@ const StudyroomContainer: React.FC = () => {
 
         client.subscribe(`/rooms/${roomId}/management`, (message: IMessage) => {
           const body = JSON.parse(message.body);
+          console.log(body);
           body.id &&
             updateUser(body.id, {
               camEnabled: body.camEnabled,
@@ -233,6 +234,7 @@ const StudyroomContainer: React.FC = () => {
         });
         client.subscribe(`/rooms/${roomId}/member`, (message: IMessage) => {
           const body = JSON.parse(message.body);
+          console.log(body);
           body.id &&
             addUser({
               id: body.id,
