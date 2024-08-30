@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from "react";
 import StudyroomHeader from "../rooms/StudyroomHeader";
 import StudyroomMTN from "../rooms/StudyroomMTN";
 import StudyroomFooter from "../rooms/StudyroomFooter";
-import studyRooms from "../../data/studyRooms"; // 더미 데이터 임포트
 import axiosInstance from "../../utils/axiosInstance";
 
 interface StudyRoom {
@@ -12,7 +11,7 @@ interface StudyRoom {
   camEnabled: boolean;
   thumbnail: string;
   memberNumber: number;
-  users?: any[]; // 'users' 속성을 선택적으로 만듭니다.
+  users?: any[];
 }
 
 interface StudyroomTNContainerProps {
@@ -20,70 +19,70 @@ interface StudyroomTNContainerProps {
 }
 
 const StudyroomTNContainer: React.FC<StudyroomTNContainerProps> = ({
-  isStudyRoomPage = false, // 기본값 설정
+  isStudyRoomPage = false,
 }) => {
-  const [studyRoomsData, setStudyRoomsData] = useState<StudyRoom[]>(studyRooms); // 더미 데이터를 초기값으로 설정
-  const [filteredData, setFilteredData] = useState<StudyRoom[]>([]);
-  const [displayedRooms, setDisplayedRooms] = useState<StudyRoom[]>([]);
+  const [studyRoomsData, setStudyRoomsData] = useState<StudyRoom[]>([]);
   const [selectedCategory, setSelectedCategory] = useState("전체보기");
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const observer = useRef<IntersectionObserver | null>(null);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
 
+  // roomsPerPage는 isStudyRoomPage에 따라 15 또는 10으로 설정
   const roomsPerPage = isStudyRoomPage ? 15 : 10;
 
-  const fetchStudyRooms = async () => {
-    if (isLoading) return;
+  const fetchStudyRooms = async (reset: boolean = false): Promise<void> => {
     try {
       setIsLoading(true);
+
       const response = await axiosInstance.get(
-        `${process.env.REACT_APP_API_URL}/api/v1/rooms`
+        `${process.env.REACT_APP_API_URL}/api/v1/rooms`,
+        {
+          params: {
+            page: reset ? 0 : currentPage, // 초기 로드 시 0페이지부터
+            size: roomsPerPage, // 페이지당 방의 수
+            category: selectedCategory !== "전체보기" ? selectedCategory : undefined,
+          },
+        }
       );
-      setStudyRoomsData(
-        Array.isArray(response.data.data.content)
-          ? response.data.data.content
-          : []
-      );
+
+      const roomsData = response.data.data.content;
+      setTotalPages(response.data.data.totalPages);
+
+      if (reset) {
+        setStudyRoomsData(roomsData);
+        setCurrentPage(1); // 초기화 후 다음 페이지는 1부터 시작
+      } else {
+        setStudyRoomsData((prevRooms) => [...prevRooms, ...roomsData]);
+        setCurrentPage((prevPage) => prevPage + 1);
+      }
     } catch (error) {
-      console.error("스터디룸 목록을 가져오는 중 오류 발생:", error);
+      console.error("스터디룸 목록을 불러오지 못했습니다:", error);
+      if (reset) {
+        setStudyRoomsData([]);
+      }
     } finally {
-      setIsLoading(false); // 로딩 종료
+      setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchStudyRooms();
-  }, []);
+    fetchStudyRooms(true); // 초기 로드 시 데이터 초기화
+  }, [selectedCategory]);
 
-  useEffect(() => {
-    const filterRooms = () => {
-      const filtered = studyRoomsData.filter((item) => {
-        const matchesCategory =
-          selectedCategory === "전체보기" ||
-          (item.camEnabled === true && selectedCategory === "캠켜공") ||
-          (item.camEnabled === false && selectedCategory === "캠끄공");
-        return matchesCategory;
-      });
-      setFilteredData(filtered);
-      setDisplayedRooms(filtered.slice(0, roomsPerPage)); // 처음에 표시할 방 수 설정
-    };
-
-    filterRooms();
-  }, [studyRoomsData, selectedCategory, isStudyRoomPage]);
-
-  const loadMoreRooms = () => {
-    if (isLoading || displayedRooms.length >= filteredData.length) return;
-    setIsLoading(true);
-    setTimeout(() => {
-      setDisplayedRooms((prevRooms) => [
-        ...prevRooms,
-        ...filteredData.slice(
-          prevRooms.length,
-          prevRooms.length + roomsPerPage
-        ),
-      ]);
-      setIsLoading(false);
-    }, 500); // 데이터 로드 시 약간의 지연시간 추가
+  const handleCategoryClick = (category: string) => {
+    setSelectedCategory(category);
+    fetchStudyRooms(true); // 카테고리 변경 시 데이터 초기화
   };
+
+  const loadMoreRooms = async (): Promise<void> => {
+    if (currentPage < totalPages && !isLoading) {
+      setIsLoading(true);
+      await new Promise((resolve) => setTimeout(resolve, 500)); // 지연 시간 추가 (0.5초)
+      await fetchStudyRooms();
+    }
+  };
+
+  const observer = useRef<IntersectionObserver | null>(null);
 
   useEffect(() => {
     if (!isStudyRoomPage) return;
@@ -91,7 +90,7 @@ const StudyroomTNContainer: React.FC<StudyroomTNContainerProps> = ({
     if (observer.current) observer.current.disconnect();
 
     const handleObserver = (entries: IntersectionObserverEntry[]) => {
-      if (entries[0].isIntersecting) {
+      if (entries[0].isIntersecting && !isLoading) {
         loadMoreRooms();
       }
     };
@@ -106,12 +105,13 @@ const StudyroomTNContainer: React.FC<StudyroomTNContainerProps> = ({
       observer.current.observe(loadMoreTriggerElement);
     }
 
-    return () => observer.current?.disconnect();
-  }, [filteredData, displayedRooms, isLoading]);
+    // 강제 트리거: 스크롤이 충분하지 않을 경우 데이터 추가 로드
+    if (document.documentElement.scrollHeight <= document.documentElement.clientHeight) {
+      loadMoreRooms();
+    }
 
-  const handleCategoryClick = (category: string) => {
-    setSelectedCategory(category);
-  };
+    return () => observer.current?.disconnect();
+  }, [isLoading, currentPage, totalPages]);
 
   return (
     <div className="container mx-auto my-4 max-w-[1024px]">
@@ -123,11 +123,11 @@ const StudyroomTNContainer: React.FC<StudyroomTNContainerProps> = ({
           { name: "캠끄공", icon: "camera-off.png" },
         ]}
         handleCategoryClick={handleCategoryClick}
-        isStudyRoomPage={isStudyRoomPage} // 스터디룸 페이지 여부를 전달
+        isStudyRoomPage={isStudyRoomPage}
       />
       <div className="my-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 w-full">
-        {displayedRooms.length > 0 ? (
-          displayedRooms.map((room) => (
+        {studyRoomsData.length > 0 ? (
+          studyRoomsData.map((room) => (
             <div key={room.id} className="flex justify-center">
               <StudyroomMTN
                 id={room.id}
@@ -149,7 +149,7 @@ const StudyroomTNContainer: React.FC<StudyroomTNContainerProps> = ({
           </div>
         )}
       </div>
-      {isStudyRoomPage && displayedRooms.length < filteredData.length && (
+      {isStudyRoomPage && currentPage < totalPages && (
         <div
           id="load-more-trigger"
           className="h-10 flex justify-center items-center"
@@ -157,10 +157,7 @@ const StudyroomTNContainer: React.FC<StudyroomTNContainerProps> = ({
           {isLoading ? "Loading..." : "Scroll to load more"}
         </div>
       )}
-      {!isStudyRoomPage && (
-        <StudyroomFooter />
-      )}
-      
+      {!isStudyRoomPage && <StudyroomFooter />}
     </div>
   );
 };
