@@ -67,7 +67,6 @@ const StudyroomContainer: React.FC = () => {
   }, [camEnabled, micEnabled, speakerEnabled]);
 
   useEffect(() => {
-    console.log(process.env.REACT_APP_SOCKET_RTC_URL);
     const connectWebSocket = () => {
       wsRef.current = new WebSocket(`${process.env.REACT_APP_SOCKET_RTC_URL}`);
 
@@ -92,6 +91,8 @@ const StudyroomContainer: React.FC = () => {
       if (wsRef.current) {
         wsRef.current.close();
       }
+      leaveRoom();
+      exitStudyRoom();
     };
   }, []);
 
