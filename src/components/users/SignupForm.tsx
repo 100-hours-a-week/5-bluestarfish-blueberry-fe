@@ -337,7 +337,7 @@ const SignupForm: React.FC = () => {
         {/* 인증코드 입력 필드 */}
         <div
           className="relative mb-6 mt-6 flex items-center gap-1"
-          style={{ display: "none" }}
+          // style={{ display: "none" }}
         >
           <input
             type="text"
