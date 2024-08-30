@@ -22,12 +22,12 @@ const StudyroomTNContainer: React.FC<StudyroomTNContainerProps> = ({
   isStudyRoomPage = false,
 }) => {
   const [studyRoomsData, setStudyRoomsData] = useState<StudyRoom[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState("전체보기");
+  const [filteredRooms, setFilteredRooms] = useState<StudyRoom[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
 
-  // roomsPerPage는 isStudyRoomPage에 따라 15 또는 10으로 설정
   const roomsPerPage = isStudyRoomPage ? 15 : 10;
 
   const fetchStudyRooms = async (reset: boolean = false): Promise<void> => {
@@ -38,9 +38,8 @@ const StudyroomTNContainer: React.FC<StudyroomTNContainerProps> = ({
         `${process.env.REACT_APP_API_URL}/api/v1/rooms`,
         {
           params: {
-            page: reset ? 0 : currentPage, // 초기 로드 시 0페이지부터
-            size: roomsPerPage, // 페이지당 방의 수
-            category: selectedCategory !== "전체보기" ? selectedCategory : undefined,
+            page: reset ? 0 : currentPage,
+            size: roomsPerPage,
           },
         }
       );
@@ -50,34 +49,57 @@ const StudyroomTNContainer: React.FC<StudyroomTNContainerProps> = ({
 
       if (reset) {
         setStudyRoomsData(roomsData);
-        setCurrentPage(1); // 초기화 후 다음 페이지는 1부터 시작
+        setCurrentPage(1);
       } else {
         setStudyRoomsData((prevRooms) => [...prevRooms, ...roomsData]);
         setCurrentPage((prevPage) => prevPage + 1);
       }
+
+      applyFilters(roomsData, reset);
     } catch (error) {
       console.error("스터디룸 목록을 불러오지 못했습니다:", error);
       if (reset) {
         setStudyRoomsData([]);
+        setFilteredRooms([]);
       }
     } finally {
       setIsLoading(false);
     }
   };
 
+  const applyFilters = (rooms: StudyRoom[], reset: boolean) => {
+    let filtered: StudyRoom[];
+
+    if (reset) {
+      filtered = [...rooms];
+    } else {
+      filtered = [...studyRoomsData];
+    }
+
+    if (selectedCategory === "캠켜공") {
+      filtered = filtered.filter((room) => room.camEnabled);
+    } else if (selectedCategory === "캠끄공") {
+      filtered = filtered.filter((room) => !room.camEnabled);
+    }
+
+    setFilteredRooms(filtered);
+  };
+
   useEffect(() => {
-    fetchStudyRooms(true); // 초기 로드 시 데이터 초기화
+    fetchStudyRooms(true);
   }, [selectedCategory]);
+
+  useEffect(() => {
+    setSelectedCategory("전체보기"); // 페이지가 처음 로드될 때 카테고리 설ㅈㅇ
+    fetchStudyRooms(true);
+  }, []);
 
   const handleCategoryClick = (category: string) => {
     setSelectedCategory(category);
-    fetchStudyRooms(true); // 카테고리 변경 시 데이터 초기화
   };
 
   const loadMoreRooms = async (): Promise<void> => {
     if (currentPage < totalPages && !isLoading) {
-      setIsLoading(true);
-      await new Promise((resolve) => setTimeout(resolve, 500)); // 지연 시간 추가 (0.5초)
       await fetchStudyRooms();
     }
   };
@@ -105,7 +127,6 @@ const StudyroomTNContainer: React.FC<StudyroomTNContainerProps> = ({
       observer.current.observe(loadMoreTriggerElement);
     }
 
-    // 강제 트리거: 스크롤이 충분하지 않을 경우 데이터 추가 로드
     if (document.documentElement.scrollHeight <= document.documentElement.clientHeight) {
       loadMoreRooms();
     }
@@ -126,8 +147,8 @@ const StudyroomTNContainer: React.FC<StudyroomTNContainerProps> = ({
         isStudyRoomPage={isStudyRoomPage}
       />
       <div className="my-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 w-full">
-        {studyRoomsData.length > 0 ? (
-          studyRoomsData.map((room) => (
+        {filteredRooms.length > 0 ? (
+          filteredRooms.map((room) => (
             <div key={room.id} className="flex justify-center">
               <StudyroomMTN
                 id={room.id}

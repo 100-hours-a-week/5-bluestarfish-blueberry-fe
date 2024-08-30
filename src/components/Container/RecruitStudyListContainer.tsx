@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../utils/axiosInstance";
 import CategorySelector from "../rooms/CategorySelector";
 import RecruitPostList from "../posts/RecruitPostList";
-import { Post } from "../../types"; // 공통 타입 가져오기
+import { Post } from "../../types";
 
 interface ApiResponse {
   data: {
@@ -17,8 +17,9 @@ interface ApiResponse {
 const StudyRecruitListContainer: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState("전체보기");
   const [selectedType, setSelectedType] = useState("");
-  const [posts, setPosts] = useState<Array<Post>>([]);
-  const [isLoading, setIsLoading] = useState(false); // 초기값 false로 변경
+  const [allPosts, setAllPosts] = useState<Array<Post>>([]); // 모든 게시글을 저장
+  const [filteredPosts, setFilteredPosts] = useState<Array<Post>>([]); // 필터링된 게시글을 저장
+  const [isLoading, setIsLoading] = useState(false);
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
   const navigate = useNavigate();
@@ -34,65 +35,81 @@ const StudyRecruitListContainer: React.FC = () => {
   ];
 
   useEffect(() => {
-    fetchPosts(true);
-  }, [selectedCategory, selectedType]);
+    const fetchInitialPosts = async () => {
+      await fetchPosts(true);
+    };
+
+    fetchInitialPosts();
+  }, []);
+
+  useEffect(() => {
+    applyFilters();
+  }, [selectedCategory, selectedType, allPosts]);
 
   const fetchPosts = async (reset: boolean = false): Promise<void> => {
     try {
       setIsLoading(true);
 
-      const recruited = selectedCategory === "모집 중";
-      const type =
-        selectedType === "스터디 멤버 찾기"
-          ? "FINDING_MEMBERS"
-          : selectedType === "스터디 룸 찾기"
-          ? "FINDING_ROOMS"
-          : "";
-
       const response = await axiosInstance.get<ApiResponse>(
         `${process.env.REACT_APP_API_URL}/api/v1/posts`,
         {
           params: {
-            page,
-            type,
-            recruited,
+            page, // 페이지네이션을 위한 페이지 번호
           },
         }
       );
-
       const postsData = response.data.data.content;
-      setTotalPages(response.data.data.totalPages);
 
       if (reset) {
-        setPosts(postsData);
-        setPage(1); // 초기화 후 페이지를 1로 설정
+        setAllPosts(postsData); // 모든 게시글 저장
+        setPage(1); // 페이지 초기화
       } else {
-        setPosts((prevPosts) => [...prevPosts, ...postsData]);
-        setPage((prevPage) => prevPage + 1); // 무한 스크롤 시 페이지를 증가시킴
+        setAllPosts((prevPosts) => [...prevPosts, ...postsData]); // 기존 게시글에 추가
+        setPage((prevPage) => prevPage + 1); // 페이지 번호 증가
       }
+
+      setTotalPages(response.data.data.totalPages); // 총 페이지 수 업데이트
     } catch (error) {
       console.error("게시글 목록을 불러오지 못했습니다:", error);
-      if (reset) {
-        setPosts([]);
-      }
+      setAllPosts([]);
+      setFilteredPosts([]);
     } finally {
-      setIsLoading(false); // 로딩 상태 해제
+      setIsLoading(false);
     }
+  };
+
+  const applyFilters = () => {
+    let filtered = [...allPosts];
+
+    if (selectedCategory === "모집 중") {
+      filtered = filtered.filter((post) => post.recruited);
+    }
+
+    if (selectedType) {
+      filtered = filtered.filter((post) =>
+        selectedType === "스터디 멤버 찾기"
+          ? post.type === "FINDING_MEMBERS"
+          : post.type === "FINDING_ROOMS"
+      );
+    }
+
+    setFilteredPosts(filtered);
   };
 
   const handleCategoryClick = (category: string) => {
     setSelectedCategory(category);
-    fetchPosts(true);
+    setSelectedType(""); // 카테고리 변경 시 타입을 초기화
   };
 
   const handleTypeClick = (type: string) => {
     setSelectedType(selectedType === type ? "" : type);
-    fetchPosts(true);
   };
 
   const handlePostClick = async (postId: number) => {
     try {
-      const response = await axiosInstance.get(`${process.env.REACT_APP_API_URL}/api/v1/posts/${postId}`);
+      const response = await axiosInstance.get(
+        `${process.env.REACT_APP_API_URL}/api/v1/posts/${postId}`
+      );
       if (response.status === 200) {
         navigate(`/recruit/${postId}`);
       }
@@ -111,10 +128,8 @@ const StudyRecruitListContainer: React.FC = () => {
   };
 
   const fetchMorePosts = async (): Promise<void> => {
-    if (page < totalPages && !isLoading) { // 페이지가 끝나지 않았고 로딩 중이 아닐 때만 실행
-      setIsLoading(true);
-      await new Promise((resolve) => setTimeout(resolve, 500)); // 지연 시간 추가 (0.5초)
-      await fetchPosts();
+    if (page < totalPages && !isLoading) {
+      await fetchPosts(); // 추가 게시글 로드
     }
   };
 
@@ -144,13 +159,13 @@ const StudyRecruitListContainer: React.FC = () => {
           handleTypeClick={handleTypeClick}
         />
 
-        {isLoading && posts.length === 0 ? (
+        {isLoading && filteredPosts.length === 0 ? (
           <div>Loading...</div>
         ) : (
           <RecruitPostList
-            posts={posts}
+            posts={filteredPosts}
             onPostClick={handlePostClick}
-            fetchMorePosts={fetchMorePosts}
+            fetchMorePosts={fetchMorePosts} // 여기에서 fetchMorePosts 전달
           />
         )}
       </div>
