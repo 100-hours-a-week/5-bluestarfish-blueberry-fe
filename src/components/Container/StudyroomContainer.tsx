@@ -69,7 +69,7 @@ const StudyroomContainer: React.FC = () => {
   useEffect(() => {
     console.log(process.env.REACT_APP_SOCKET_RTC_URL);
     const connectWebSocket = () => {
-      wsRef.current = new WebSocket("wss://blueberry826.com/signal/");
+      wsRef.current = new WebSocket(`${process.env.REACT_APP_SOCKET_RTC_URL}`);
 
       wsRef.current.onopen = () => {
         console.log("WebSocket connection established");
@@ -423,9 +423,18 @@ const StudyroomContainer: React.FC = () => {
     participants[sender] = participant;
     const video = participant.getVideoElement();
 
-    const options = {
+    var options = {
       remoteVideo: video,
       onicecandidate: participant.onIceCandidate.bind(participant),
+      configuration: {
+        iceServers: [
+          {
+            urls: "turn:13.209.11.178:3478",
+            username: "blueberry",
+            credential: "1234",
+          },
+        ],
+      },
     };
 
     participant.rtcPeer = new kurentoUtils.WebRtcPeer.WebRtcPeerRecvonly(
