@@ -49,6 +49,8 @@ const StudyroomContainer: React.FC = () => {
   const wsRef = useRef<WebSocket | null>(null);
   const participants: Record<string, Participant> = {};
 
+  const reconnectInterval = 5000; // 재연결 시도 간격 (밀리초)
+
   useEffect(() => {
     fetchStudyRoom();
   }, []);
@@ -66,25 +68,25 @@ const StudyroomContainer: React.FC = () => {
 
   useEffect(() => {
     console.log(process.env.REACT_APP_SOCKET_RTC_URL);
-    // wsRef.current = new WebSocket(`${process.env.REACT_APP_SOCKET_RTC_URL}`);
+    const connectWebSocket = () => {
+      wsRef.current = new WebSocket("wss://blueberry826.com/signal");
 
-    wsRef.current = new WebSocket("wss://blueberry826.com/signal");
-    //blueberry826.com/signal
+      wsRef.current.onopen = () => {
+        console.log("WebSocket connection established");
+        register(); // WebSocket이 OPEN 상태가 된 후 register 호출
+      };
 
-    wsRef.current.onopen = () => {
-      console.log("WebSocket connection established");
-      register(); // WebSocket이 OPEN 상태가 된 후 register 호출
+      wsRef.current.onerror = (error) => {
+        console.error("WebSocket error: ", error);
+      };
+
+      wsRef.current.onclose = (event) => {
+        console.log("WebSocket connection closed", event);
+        // 추가 종료 처리
+      };
     };
 
-    wsRef.current.onerror = (error) => {
-      console.error("WebSocket error: ", error);
-    };
-
-    wsRef.current.onclose = (event) => {
-      console.log("WebSocket connection closed", event);
-      // 추가 종료 처리
-    };
-
+    connectWebSocket();
     return () => {
       if (wsRef.current) {
         wsRef.current.close();
