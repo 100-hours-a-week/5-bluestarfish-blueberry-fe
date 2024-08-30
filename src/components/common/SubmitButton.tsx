@@ -1,19 +1,34 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 interface SubmitButtonProps {
   isFormValid: boolean;
-  handleClick: () => void;
+  handleClick: () => Promise<void>; // 변경: Promise<void>를 반환
   text: string;
 }
 
 const SubmitButton: React.FC<SubmitButtonProps> = ({ isFormValid, handleClick, text }) => {
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+
+  const handleClickWithDelay = async () => {
+    // 버튼 클릭 시 제출 이벤트 발생
+    await handleClick();
+
+    // 버튼을 일시적으로 비활성화
+    setIsButtonDisabled(true);
+
+    // 3초 후에 버튼을 다시 활성화
+    setTimeout(() => {
+      setIsButtonDisabled(false);
+    }, 3000);
+  };
+
   return (
     <div className="flex justify-center mt-10 mb-20">
       <button
-        onClick={handleClick}
-        disabled={!isFormValid}
+        onClick={handleClickWithDelay}
+        disabled={!isFormValid || isButtonDisabled}
         className={`btn w-[50%] h-[50px] py-2 rounded-full transition duration-200 flex justify-center items-center gap-3 ${
-          isFormValid
+          isFormValid && !isButtonDisabled
             ? 'cursor-pointer'
             : 'bg-gray-300 text-gray-500 cursor-not-allowed'
         }`}

@@ -1,16 +1,16 @@
 import React from "react";
 import StudyroomTN from "../rooms/StudyroomTN";
-import DefaultThumbnail from "../../images/study-thumbnail-3.png"
+import DefaultThumbnail from "../../images/study-thumbnail-3.png";
 
 // StudyRoomLink 컴포넌트가 받을 props의 타입 정의
 interface StudyRoomLinkProps {
   studyRoom: {
     id: number;
     title: string;
-    postCamEnabled: boolean;
-    currentUsers: number;
+    camEnabled: boolean;
+    memberNumber: number;
     maxUsers: number;
-    thumbnail: string;
+    thumbnail: string | null;
   } | null; // 스터디 룸 정보가 없을 수 있으므로 null 허용
   isRecruited: boolean; // 모집 상태 여부
   handleNavigateToRoom: () => void; // 스터디 룸으로 이동하는 함수
@@ -45,10 +45,10 @@ const StudyRoomLink: React.FC<StudyRoomLinkProps> = ({
           <StudyroomTN
             id={studyRoom.id}
             title={studyRoom.title}
-            camEnabled={studyRoom.postCamEnabled}
-            currentUsers={studyRoom.currentUsers}
+            camEnabled={studyRoom.camEnabled} // 서버 데이터의 camEnabled 사용
+            currentUsers={studyRoom.memberNumber} // 서버 데이터의 memberNumber 사용
             maxUsers={studyRoom.maxUsers}
-            thumbnail={studyRoom.thumbnail || DefaultThumbnail}
+            thumbnail={studyRoom.thumbnail || DefaultThumbnail} // 썸네일이 없을 경우 기본 이미지 사용
             isSelected={false}
           />
         </div>
