@@ -71,6 +71,10 @@ const StudyroomContainer: React.FC = () => {
     wsRef.current = new WebSocket("wss://blueberry826.com/signal");
     //blueberry826.com/signal
 
+    wsRef.current.onerror = function (event) {
+      console.log(event);
+    };
+
     wss: wsRef.current.onopen = () => {
       console.log("WebSocket connection established");
       register(); // WebSocket이 OPEN 상태가 된 후 register 호출
