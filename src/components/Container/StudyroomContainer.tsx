@@ -83,6 +83,7 @@ const StudyroomContainer: React.FC = () => {
       wsRef.current.onclose = (event) => {
         console.log("WebSocket connection closed", event);
         // 추가 종료 처리
+        setTimeout(connectWebSocket, reconnectInterval);
       };
     };
 
