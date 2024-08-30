@@ -69,7 +69,7 @@ const StudyroomContainer: React.FC = () => {
   useEffect(() => {
     console.log(process.env.REACT_APP_SOCKET_RTC_URL);
     const connectWebSocket = () => {
-      wsRef.current = new WebSocket("wss://blueberry826.com/signal");
+      wsRef.current = new WebSocket("wss://blueberry826.com/signal/");
 
       wsRef.current.onopen = () => {
         console.log("WebSocket connection established");
@@ -83,7 +83,7 @@ const StudyroomContainer: React.FC = () => {
       wsRef.current.onclose = (event) => {
         console.log("WebSocket connection closed", event);
         // 추가 종료 처리
-        setTimeout(connectWebSocket, reconnectInterval);
+        // setTimeout(connectWebSocket, reconnectInterval);
       };
     };
 
