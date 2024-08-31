@@ -39,7 +39,7 @@ class Participant {
     }
 
     this.video.id = "video-" + name;
-    this.video.className = "w-full h-full object-cover"; // Tailwind CSS 클래스 사용
+    this.video.className = "w-full h-full object-cover transform scale-x-[-1]"; // Tailwind CSS 클래스 사용
     this.video.autoplay = true;
     this.video.controls = false;
   }
