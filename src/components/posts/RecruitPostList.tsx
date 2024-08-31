@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { Post } from '../../types'; // 공통 타입 가져오기
+import React, { useEffect, useRef, useState } from "react";
+import { Post } from "../../types"; // 공통 타입 가져오기
 
 interface RecruitPostListProps {
   posts: Post[];
@@ -7,7 +7,11 @@ interface RecruitPostListProps {
   fetchMorePosts: () => Promise<void>; // 추가 데이터를 불러오는 함수
 }
 
-const RecruitPostList: React.FC<RecruitPostListProps> = ({ posts, onPostClick, fetchMorePosts }) => {
+const RecruitPostList: React.FC<RecruitPostListProps> = ({
+  posts,
+  onPostClick,
+  fetchMorePosts,
+}) => {
   const [isLoading, setIsLoading] = useState(false);
   const observer = useRef<IntersectionObserver | null>(null);
   const lastPostElementRef = useRef<HTMLDivElement | null>(null);
@@ -55,20 +59,33 @@ const RecruitPostList: React.FC<RecruitPostListProps> = ({ posts, onPostClick, f
               {post.title}
             </h3>
             <div className="flex items-center space-x-2 text-sm text-gray-600 mt-2">
-              <span className={`px-2 py-1 rounded-full ${post.type === 'FINDING_MEMBERS' ? 'bg-purple-200' : 'bg-blue-200'}`}>
-                {post.type === 'FINDING_MEMBERS' ? '멤버 찾기' : '룸 찾기'}
+              <span
+                className={`px-2 py-1 rounded-full ${
+                  post.type === "FINDING_MEMBERS"
+                    ? "bg-purple-200"
+                    : "bg-blue-200"
+                }`}
+              >
+                {post.type === "FINDING_MEMBERS" ? "멤버 찾기" : "룸 찾기"}
               </span>
               <div className="flex items-center space-x-1">
                 <img
-                  src={`${process.env.PUBLIC_URL}/assets/images/${post.postCamEnabled ? 'cam-on-icon-blue.png' : 'cam-off-icon-blue.png'}`}
-                  alt={post.postCamEnabled ? '캠켜공' : '캠끄공'}
+                  src={`${process.env.PUBLIC_URL}/assets/images/${
+                    post.postCamEnabled
+                      ? "cam-on-icon-blue.png"
+                      : "cam-off-icon-blue.png"
+                  }`}
+                  alt={post.postCamEnabled ? "캠켜공" : "캠끄공"}
                   className="h-5 w-5"
                 />
-                <span>{post.postCamEnabled ? '캠켜공' : '캠끄공'}</span>
+                <span>{post.postCamEnabled ? "캠켜공" : "캠끄공"}</span>
               </div>
               <div className="flex items-center space-x-1">
                 <img
-                  src={post.userResponse.profileImage ?? `${process.env.PUBLIC_URL}/assets/images/real_ian.png`} // profileImage가 없을 경우 기본 이미지 사용
+                  src={
+                    post.userResponse.profileImage ??
+                    `${process.env.PUBLIC_URL}/assets/images/real_ian.png`
+                  } // profileImage가 없을 경우 기본 이미지 사용
                   alt={post.userResponse.nickname}
                   className="h-5 w-5 rounded-full"
                 />
@@ -76,8 +93,12 @@ const RecruitPostList: React.FC<RecruitPostListProps> = ({ posts, onPostClick, f
               </div>
             </div>
           </div>
-          <span className={`px-3 py-1 rounded-full text-white ${post.recruited ? 'bg-green-500' : 'bg-gray-400'}`}>
-            {post.recruited ? '모집 중' : '모집 완료'}
+          <span
+            className={`px-3 py-1 rounded-full text-white ${
+              post.recruited ? "bg-green-500" : "bg-gray-400"
+            }`}
+          >
+            {post.recruited ? "모집 중" : "모집 완료"}
           </span>
         </div>
       ))}
