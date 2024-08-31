@@ -104,9 +104,8 @@ const StudyRecruitListContainer: React.FC = () => {
     setFilteredPosts(filtered);
   };
 
-  const handleCategoryClick = (category: string) => {
-    setSelectedCategory(category);
-    setSelectedType(""); // 카테고리 변경 시 타입을 초기화
+  const handleCategoryClick = (category: string) => { 
+    setSelectedCategory(category);                                                                                                                                                    
   };
 
   const handleTypeClick = (type: string) => {
