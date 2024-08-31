@@ -1,10 +1,7 @@
-import React from "react";
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Carousel from "../common/Carousel";
-import RankingSlider from "../users/RankingSlider";
 import StudyroomTNContainer from "./StudyroomTNContainer";
 import QnAModal from "../Modal/QnAModal";
-import { useEffect } from "react";
 import { useLoginedUserStore } from "../../store/store";
 
 const MainPageContainer: React.FC = () => {
@@ -20,24 +17,44 @@ const MainPageContainer: React.FC = () => {
     setQnAModalOpen(true);
   };
 
+  // 모달이 열릴 때 배경 스크롤 막기
+  useEffect(() => {
+    if (isQnAModalOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+  }, [isQnAModalOpen]);
+
   return (
     <div className="flex flex-col mt-[80px] items-center w-full bg-white">
       <Carousel />
-      <div className="">
-        {/* <RankingSlider /> */}
+      <div className="w-full max-w-[1024px] px-4">
         <StudyroomTNContainer />
       </div>
-      <div className="w-full flex justify-end  p-4">
-        <div className="flex rounded-full border-[1px] border-[#a5a5a5] bg-[#BAC0D8] w-[40px] h-[40px] items-center justify-center shadow-lg">
+      <div className="fixed right-4 bottom-4 p-4">
+        <button
+          onClick={openQnAModal}
+          className="flex items-center justify-center w-[50px] h-[50px] bg-[#E0E7FF] hover:bg-[#C6CFFF] rounded-full shadow-lg transition-transform transform hover:scale-105"
+        >
           <img
             src={`${process.env.PUBLIC_URL}/assets/images/operator.png`}
-            alt="Profile"
-            className="h-8 w-8 rounded-full cursor-pointer"
-            onClick={openQnAModal}
+            alt="Operator"
+            className="h-6 w-6"
           />
-        </div>
+        </button>
       </div>
-      {isQnAModalOpen && <QnAModal closeModal={closeQnAModal} />}
+
+      {isQnAModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          {/* 모달 배경 */}
+          <div className="fixed inset-0 bg-black bg-opacity-50 pointer-events-none" />
+          {/* 모달 내용 */}
+          <div className="relative z-50">
+            <QnAModal closeModal={closeQnAModal} />
+          </div>
+        </div>
+      )}
     </div>
   );
 };

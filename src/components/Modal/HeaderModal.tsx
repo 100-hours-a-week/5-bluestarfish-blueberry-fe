@@ -1,11 +1,13 @@
 import { useLoginedUserStore } from "../../store/store";
 import axiosInstance from "../../utils/axiosInstance";
+
 type HeaderModalProps = {
   closeModal: () => void;
 };
 
 const HeaderModal: React.FC<HeaderModalProps> = ({ closeModal }) => {
   const { setUserId, setNickname, setProfileImage } = useLoginedUserStore();
+
   const handleModalClick = (e: React.MouseEvent) => {
     e.stopPropagation(); // 모달 안쪽 클릭 시 이벤트 전파 막기
   };
@@ -38,11 +40,11 @@ const HeaderModal: React.FC<HeaderModalProps> = ({ closeModal }) => {
 
   return (
     <div
-      className="fixed inset-0 z-50"
+      className="fixed inset-0 z-50 flex items-center justify-center"
       onClick={closeModal} // 모달 밖 클릭 시 닫기
     >
       <div
-        className="absolute items-center justify-center right-24 -top-4 mt-[85px] w-[150px] h-[135px] text-black rounded-[15px]"
+        className="absolute right-4 top-16 lg:right-24 w-[90%] max-w-[150px] h-[135px] text-black shadow-lg md:w-[150px]"
         onClick={handleModalClick}
       >
         <button className="w-[140px] h-[42px] border-2 rounded-[10px] hover:text-[#eb4c64] hover:bg-[#ebeeff] hidden">

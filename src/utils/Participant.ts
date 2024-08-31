@@ -1,3 +1,5 @@
+import React from "react";
+
 interface SendMessage {
   (message: any): void;
 }
@@ -14,15 +16,8 @@ class Participant {
     this.name = name;
     this.sendMessage = sendMessage;
     this.container = document.createElement("div");
-    this.container.className = "participant";
-    this.container.style.display = "flex";
-    this.container.style.flexDirection = "column";
-    this.container.style.width = "300px";
-    this.container.style.height = "350px";
-    this.container.style.border = "1px solid #000000";
-    this.container.style.borderRadius = "15px";
-    this.container.style.alignItems = "center";
-    this.container.style.justifyContent = "center";
+    this.container.className =
+      "w-[400px] h-[300px] bg-white bg-cover rounded-[20px] shadow-lg flex flex-col items-center justify-center"; // Tailwind CSS 클래스 사용
     this.container.id = name;
 
     this.video = document.createElement("video");
@@ -30,7 +25,7 @@ class Participant {
     this.rtcPeer = null;
 
     this.span.appendChild(document.createTextNode(name));
-    this.span.className = "videoNickname";
+    this.span.className = "text-[16px] mt-2"; // Tailwind CSS 클래스 사용
 
     this.container.appendChild(this.video);
     this.container.appendChild(this.span);
@@ -44,7 +39,7 @@ class Participant {
     }
 
     this.video.id = "video-" + name;
-    this.video.className = "video";
+    this.video.className = "w-full h-full object-cover"; // Tailwind CSS 클래스 사용
     this.video.autoplay = true;
     this.video.controls = false;
   }
@@ -58,21 +53,21 @@ class Participant {
   }
 
   switchContainerClass(): void {
-    if (this.container.className === "participant") {
+    if (this.container.classList.contains("main")) {
       const elements = Array.from(
-        document.getElementsByClassName("participant main")
+        document.getElementsByClassName("main")
       ) as HTMLDivElement[];
       elements.forEach((item) => {
-        item.className = "participant";
+        item.classList.remove("main");
       });
-      this.container.className = "participant main";
+      this.container.classList.add("main");
     } else {
-      this.container.className = "participant";
+      this.container.classList.remove("main");
     }
   }
 
   isPresentMainParticipant(): boolean {
-    return document.getElementsByClassName("participant main").length !== 0;
+    return document.getElementsByClassName("main").length !== 0;
   }
 
   offerToReceiveVideo(error: any, offerSdp: any): void {
