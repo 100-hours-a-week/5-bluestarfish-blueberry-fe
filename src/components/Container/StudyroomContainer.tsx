@@ -472,11 +472,7 @@ const StudyroomContainer: React.FC = () => {
                 className={`w-[400x] h-[300px] bg-cover rounded-[20px] shadow-lg  ${
                   !camEnabled ? "hidden" : ""
                 }`}
-                // style={{
-                //   backgroundImage: `url(${process.env.PUBLIC_URL}/assets/images/user-display-default.png)`,
-                // }}
               >
-                {/* {camEnabled && ( */}
                 <video
                   id="video-나"
                   className="w-full h-full transform scale-x-[-1]"
@@ -485,7 +481,6 @@ const StudyroomContainer: React.FC = () => {
                   playsInline
                   muted
                 />
-                {/* )} */}
               </div>
               <span className="text-lg text-white">{nickname}</span>
             </div>

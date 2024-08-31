@@ -17,7 +17,7 @@ class Participant {
     this.sendMessage = sendMessage;
     this.container = document.createElement("div");
     this.container.className =
-      "w-[400px] h-[300px] bg-white bg-cover rounded-[20px] shadow-lg flex flex-col items-center justify-center"; // Tailwind CSS 클래스 사용
+      "w-[400px] h-[300px] bg-cover rounded-[20px] shadow-lg flex flex-col items-center justify-center"; // Tailwind CSS 클래스 사용
     this.container.id = name;
 
     this.video = document.createElement("video");
