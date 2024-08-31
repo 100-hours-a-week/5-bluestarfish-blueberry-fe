@@ -224,6 +224,7 @@ const StudyroomContainer: React.FC = () => {
 
         client.subscribe(`/rooms/${roomId}/management`, (message: IMessage) => {
           const body = JSON.parse(message.body);
+          console.log(body);
           body.id &&
             updateUser(body.id, {
               camEnabled: body.camEnabled,
@@ -233,6 +234,7 @@ const StudyroomContainer: React.FC = () => {
         });
         client.subscribe(`/rooms/${roomId}/member`, (message: IMessage) => {
           const body = JSON.parse(message.body);
+          console.log(body);
           body.id &&
             addUser({
               id: body.id,
@@ -366,7 +368,7 @@ const StudyroomContainer: React.FC = () => {
       audio: true,
       video: {
         mandatory: {
-          maxWidth: 300,
+          maxWidth: 400,
           maxFrameRate: 120,
           minFrameRate: 15,
         },
@@ -469,17 +471,6 @@ const StudyroomContainer: React.FC = () => {
 
   return (
     <div className="w-full flex flex-col items-center justify-center p-4">
-      <div className="my-12  flex flex-wrap gap-8 justify-center">
-        {Array.isArray(users) &&
-          users
-            // .filter((user) => user.id !== userId) // nowUserId와 다른 userStatus만 필터링
-            .map((user, index) => (
-              <SmallUserDisplay
-                key={index}
-                userStatus={user} // 필터링된 userStatus 전달
-              />
-            ))}
-      </div>
       <div>
         <div
           id="container"
@@ -488,27 +479,24 @@ const StudyroomContainer: React.FC = () => {
           <h2
             id="room-header"
             className="m-0 w-full h-20 border border-black box-border flex items-center justify-center"
-          >
-            방 번호 {roomId}
-          </h2>
-
+          ></h2>
           <div
             id="participants"
-            className="w-full h-[calc(100%-80px)] border border-black flex items-center justify-center"
+            className="w-full h-[calc(100%-80px)] border border-black flex items-center justify-center gap-4"
           >
             <div
-              className="flex flex-col justify-center items-center w-[300px] h-[350px] border border-black rounded-lg"
+              className="flex flex-col justify-center items-center w-[400px] h-[300px] border border-black rounded-lg"
               id={nickname}
             >
               <video
                 id="video-나"
-                className="w-[300px] h-[225px]"
+                className="w-[400px] h-[300px] rounded-[20px]"
                 ref={localVideoRef}
                 autoPlay
                 playsInline
                 muted
               ></video>
-              <span className="text-lg font-bold">{nickname}</span>
+              <span className="text-lg text-white">{nickname}</span>
             </div>
           </div>
         </div>

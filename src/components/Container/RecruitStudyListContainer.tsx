@@ -50,6 +50,14 @@ const StudyRecruitListContainer: React.FC = () => {
     try {
       setIsLoading(true);
 
+      const recruited = selectedCategory === "모집 중";
+      const type =
+        selectedType === "스터디 멤버 찾기"
+          ? "FINDING_MEMBERS"
+          : selectedType === "스터디 룸 찾기"
+          ? "FINDING_ROOMS"
+          : "";
+
       const response = await axiosInstance.get<ApiResponse>(
         `${process.env.REACT_APP_API_URL}/api/v1/posts`,
         {
