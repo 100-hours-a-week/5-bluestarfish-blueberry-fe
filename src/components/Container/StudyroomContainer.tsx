@@ -4,8 +4,6 @@ import { Client, IMessage } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
 import kurentoUtils from "kurento-utils";
 import Participant from "../../utils/Participant";
-
-import SmallUserDisplay from "../rooms/SmallUserDisplay";
 import { useDeviceStore, useLoginedUserStore } from "../../store/store";
 import { useUserStore } from "../../store/userStore";
 import axiosInstance from "../../utils/axiosInstance";
