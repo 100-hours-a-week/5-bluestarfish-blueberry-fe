@@ -41,7 +41,7 @@ const StudyroomHeader: React.FC<StudyroomHeaderProps> = ({
         <img
           src={`${process.env.PUBLIC_URL}/assets/images/${category.icon}`}
           alt={category.name}
-          className="h-3 w-3 sm:h-4 sm:w-4 md:h-5 md:w-5"
+          className="h-3 w-4 sm:h-3 sm:w-4 md:h-4 md:w-5"
         />
         <span>{category.name}</span>
       </button>
