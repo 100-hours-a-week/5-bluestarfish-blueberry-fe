@@ -8,8 +8,7 @@ const LoginForm: React.FC = () => {
   const [email, setEmail] = useState<string>(""); // 이메일 입력 상태
   const [password, setPassword] = useState<string>(""); // 비밀번호 입력 상태
   const [helperText, setHelperText] = useState<string>(""); // 헬퍼 텍스트 상태
-  const [helperTextColor, setHelperTextColor] =
-    useState<string>("text-red-500"); // 핼퍼 텍스트 색상 상태
+  const [helperTextColor, setHelperTextColor] = useState<string>("red-500"); // 핼퍼 텍스트 색상 상태
   const [isValid, setIsValid] = useState<boolean>(false); // 입력값의 유효성 상태
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -55,7 +54,7 @@ const LoginForm: React.FC = () => {
     if (validationMessage !== "") {
       setIsValid(false);
       setHelperText(`* ${validationMessage}`);
-      setHelperTextColor("text-red-500");
+      setHelperTextColor("red-500");
       return;
     }
 
@@ -73,7 +72,7 @@ const LoginForm: React.FC = () => {
         navigate(`/`);
       } else {
         setHelperText("* 이메일 또는 비밀번호를 다시 확인해주세요.");
-        setHelperTextColor("text-red-500");
+        setHelperTextColor("red-500");
       }
     } catch (error: any) {
       if (error.response) {
@@ -85,7 +84,7 @@ const LoginForm: React.FC = () => {
       }
       console.error(error);
       setHelperText("*이메일 또는 비밀번호가 올바르지 않습니다.");
-      setHelperTextColor("text-red-500");
+      setHelperTextColor("red-500");
     } finally {
       setIsLoading(false); // 로딩 종료
     }
@@ -192,7 +191,7 @@ const LoginForm: React.FC = () => {
       <button
         className="bg-[#FFEB3B] hover:bg-[#FFE500] text-gray-800 py-2 px-4 rounded focus:outline-none focus:shadow-outline w-[70%] rounded-full"
         type="button"
-        style={{display: "none"}}
+        style={{ display: "none" }}
       >
         <div className="flex items-center space-x-4">
           <img
@@ -205,7 +204,7 @@ const LoginForm: React.FC = () => {
       </button>
 
       {/* 비밀번호 재설정 링크 */}
-      <div className="text-center mt-4" style={{display: "none"}}>
+      <div className="text-center mt-4" style={{ display: "none" }}>
         <small>비밀번호를 잃어버리셨나요?</small>
         <br />
         <a

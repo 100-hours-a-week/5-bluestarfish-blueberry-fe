@@ -39,8 +39,8 @@ const CategorySelector: React.FC<CategorySelectorProps> = ({
       {types.map((type) => (
         <button
           key={type.name}  // 각 버튼에 고유한 키 부여 (타입 이름 사용)
-          className={`flex items-center space-x-2 px-4 py-2 rounded-full shadow-md hover:bg-[#6D81D5] hover:text-white transition duration-300 ${
-            selectedType === type.name ? 'bg-[#6D81D5] text-white' : 'bg-[#E0E7FF] text-[#4659AA]'
+          className={`flex items-center space-x-2 px-4 py-2 rounded-full shadow-md hover:bg-[#DCA4FF] hover:text-white transition duration-300 ${
+            selectedType === type.name ? 'bg-[#DCA4FF] text-white' : 'bg-[#EED3FF] text-[#4659AA]'
           }`}  // 선택된 타입과 일치하면 스타일 적용
           onClick={() => handleTypeClick(type.name)}  // 타입 클릭 시 해당 이름을 부모 컴포넌트로 전달
         >

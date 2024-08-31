@@ -26,12 +26,6 @@ const Header: React.FC = () => {
     setAlarmModalOpen(false);
   };
 
-  useEffect(() => {
-    console.log(
-      `userId = ${userId}, nickname = ${nickname}, image = ${profileImage}`
-    );
-  }, [userId]);
-
   return (
     <header className="fixed w-full bg-white z-50">
       <div className="flex items-center justify-between w-[1024px] h-[80px] mx-auto relative">
@@ -44,7 +38,7 @@ const Header: React.FC = () => {
             />
             <span className="text-xl font-bold text-[#6D81D5]">blueberry</span>
           </Link>
-          <div className="relative w-[740px]" style={{display: "none"}}>
+          <div className="relative w-[740px]" style={{ display: "none" }}>
             <input
               type="text"
               placeholder="Search..."
