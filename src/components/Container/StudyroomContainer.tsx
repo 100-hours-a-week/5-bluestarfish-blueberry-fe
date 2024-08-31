@@ -49,11 +49,13 @@ const StudyroomContainer: React.FC = () => {
   const wsRef = useRef<WebSocket | null>(null);
   const participants: Record<string, Participant> = {};
 
-  const reconnectInterval = 5000; // 재연결 시도 간격 (밀리초)
-
   useEffect(() => {
     fetchStudyRoom();
   }, []);
+
+  useEffect(() => {
+    console.log(users);
+  }, [users]);
 
   useEffect(() => {
     sendRoomControlUpdate({
@@ -67,32 +69,22 @@ const StudyroomContainer: React.FC = () => {
   }, [camEnabled, micEnabled, speakerEnabled]);
 
   useEffect(() => {
-    const connectWebSocket = () => {
-      wsRef.current = new WebSocket(`${process.env.REACT_APP_SOCKET_RTC_URL}`);
+    // if (userId === 0) return;
+    wsRef.current = new WebSocket(`${process.env.REACT_APP_SOCKET_RTC_URL}`);
 
-      wsRef.current.onopen = () => {
-        console.log("WebSocket connection established");
-        register(); // WebSocket이 OPEN 상태가 된 후 register 호출
-      };
-
-      wsRef.current.onerror = (error) => {
-        console.error("WebSocket error: ", error);
-      };
-
-      wsRef.current.onclose = (event) => {
-        console.log("WebSocket connection closed", event);
-        // 추가 종료 처리
-        // setTimeout(connectWebSocket, reconnectInterval);
-      };
+    wsRef.current.onopen = () => {
+      console.log("WebSocket connection established");
+      register(); // WebSocket이 OPEN 상태가 된 후 register 호출
     };
 
-    connectWebSocket();
+    wsRef.current.onerror = (error) => {
+      console.error("WebSocket error: ", error);
+    };
+
     return () => {
       if (wsRef.current) {
         wsRef.current.close();
       }
-      leaveRoom();
-      exitStudyRoom();
     };
   }, []);
 
@@ -283,10 +275,16 @@ const StudyroomContainer: React.FC = () => {
   };
 
   const clickCamIcon = () => {
-    localStreamRef.current
-      ?.getVideoTracks()
-      .forEach((track) => (track.enabled = !camEnabled));
-    toggleCam();
+    if (localStreamRef.current) {
+      localStreamRef.current.getVideoTracks().forEach((track) => {
+        track.enabled = !camEnabled;
+      });
+      toggleCam();
+      // 비디오 요소 업데이트
+      if (localVideoRef.current) {
+        localVideoRef.current.srcObject = localStreamRef.current;
+      }
+    }
   };
 
   const clickMicIcon = () => {
@@ -381,19 +379,10 @@ const StudyroomContainer: React.FC = () => {
 
     const video = participant.getVideoElement();
 
-    var options = {
+    const options = {
       localVideo: video,
       mediaConstraints: constraints,
       onicecandidate: participant.onIceCandidate.bind(participant),
-      configuration: {
-        iceServers: [
-          {
-            urls: "turn:13.209.11.178:3478",
-            username: "blueberry",
-            credential: "1234",
-          },
-        ],
-      },
     };
 
     participant.rtcPeer = new kurentoUtils.WebRtcPeer.WebRtcPeerSendonly(
@@ -435,18 +424,9 @@ const StudyroomContainer: React.FC = () => {
     participants[sender] = participant;
     const video = participant.getVideoElement();
 
-    var options = {
+    const options = {
       remoteVideo: video,
       onicecandidate: participant.onIceCandidate.bind(participant),
-      configuration: {
-        iceServers: [
-          {
-            urls: "turn:13.209.11.178:3478",
-            username: "blueberry",
-            credential: "1234",
-          },
-        ],
-      },
     };
 
     participant.rtcPeer = new kurentoUtils.WebRtcPeer.WebRtcPeerRecvonly(
@@ -485,17 +465,28 @@ const StudyroomContainer: React.FC = () => {
             className="w-full h-[calc(100%-80px)] border border-black flex items-center justify-center gap-4"
           >
             <div
-              className="flex flex-col justify-center items-center w-[400px] h-[300px] border border-black rounded-lg"
+              className="flex flex-col bg-cover justify-center items-center w-[400px] h-[300px] border border-black rounded-lg"
               id={nickname}
             >
-              <video
-                id="video-나"
-                className="w-[400px] h-[300px] rounded-[20px]"
-                ref={localVideoRef}
-                autoPlay
-                playsInline
-                muted
-              ></video>
+              <div
+                className={`w-[400x] h-[300px] bg-cover rounded-[20px] shadow-lg  ${
+                  !camEnabled ? "hidden" : ""
+                }`}
+                // style={{
+                //   backgroundImage: `url(${process.env.PUBLIC_URL}/assets/images/user-display-default.png)`,
+                // }}
+              >
+                {/* {camEnabled && ( */}
+                <video
+                  id="video-나"
+                  className="w-full h-full transform scale-x-[-1]"
+                  ref={localVideoRef}
+                  autoPlay
+                  playsInline
+                  muted
+                />
+                {/* )} */}
+              </div>
               <span className="text-lg text-white">{nickname}</span>
             </div>
           </div>
