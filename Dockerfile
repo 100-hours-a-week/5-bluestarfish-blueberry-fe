@@ -1,4 +1,4 @@
-FROM node:14
+FROM node:16
 WORKDIR /react-to-do/frontend
 COPY package.json package-lock.json ./
 RUN npm install 
@@ -11,7 +11,7 @@ CMD ["npm", "start"]
 # FROM node:16 AS build
 # WORKDIR /react-to-do/frontend
 # COPY package.json package-lock.json ./
-# RUN npm install 
+# RUN npm install
 # COPY . ./
 # RUN npm run build
 # FROM nginx:stable-alpine
