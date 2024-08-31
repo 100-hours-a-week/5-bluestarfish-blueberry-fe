@@ -17,7 +17,7 @@ class Participant {
     this.sendMessage = sendMessage;
     this.container = document.createElement("div");
     this.container.className =
-      "w-[400px] h-[300px] bg-white bg-cover rounded-[20px] shadow-lg flex flex-col items-center justify-center"; // Tailwind CSS 클래스 사용
+      "w-[400px] h-[300px] bg-cover rounded-[20px] shadow-lg flex flex-col items-center justify-center"; // Tailwind CSS 클래스 사용
     this.container.id = name;
 
     this.video = document.createElement("video");
@@ -39,7 +39,7 @@ class Participant {
     }
 
     this.video.id = "video-" + name;
-    this.video.className = "w-full h-full object-cover"; // Tailwind CSS 클래스 사용
+    this.video.className = "w-full h-full object-cover transform scale-x-[-1]"; // Tailwind CSS 클래스 사용
     this.video.autoplay = true;
     this.video.controls = false;
   }
