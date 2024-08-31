@@ -12,8 +12,9 @@ const MainPage: React.FC<MainPageProps> = () => {
   useEffect(() => {
     setUserInfo();
   }, []);
+
   return (
-    <div className="flex flex-col min-h-screen min-w-[780px] bg-white">
+    <div className="flex flex-col min-h-screen bg-white">
       <Header />
       <MainPageContainer />
       <Footer />

@@ -135,7 +135,7 @@ const StudyroomTNContainer: React.FC<StudyroomTNContainerProps> = ({
   }, [isLoading, currentPage, totalPages]);
 
   return (
-    <div className="container mx-auto my-4 max-w-[1024px]">
+    <div className="container mx-auto my-4 max-w-[1024px] px-4">
       <StudyroomHeader
         selectedCategory={selectedCategory}
         categories={[
