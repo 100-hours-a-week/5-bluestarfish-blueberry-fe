@@ -185,6 +185,7 @@ const SignupForm: React.FC = () => {
     } catch (error: any) {
       if (error.response) {
         console.log(error.response.message);
+        alert("닉네임 중복 검사 실패");
       }
     }
   };
