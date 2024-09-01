@@ -32,7 +32,7 @@ const MainPageContainer: React.FC = () => {
       <div className="w-full max-w-[1024px] px-4">
         <StudyroomTNContainer />
       </div>
-      <div className="w-full flex justify-end p-4">
+      <div className="fixed right-4 bottom-4 p-4">
         <button
           onClick={openQnAModal}
           className="flex items-center justify-center w-[50px] h-[50px] bg-[#E0E7FF] hover:bg-[#C6CFFF] rounded-full shadow-lg transition-transform transform hover:scale-105"

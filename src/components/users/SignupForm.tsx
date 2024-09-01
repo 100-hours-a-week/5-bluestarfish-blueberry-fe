@@ -43,6 +43,10 @@ const SignupForm: React.FC = () => {
   const [isValidNickname, setIsValidNickname] = useState<boolean>(false); // 입력값의 유효성 상태
   const [isValidConfirmPassword, setIsValidConfirmPassword] =
     useState<boolean>(false); // 입력값의 유효성 상태
+  const [isValidConfirmEmail, setIsValidConfirmEmail] =
+    useState<boolean>(false); // 입력값의 유효성 상태
+  const [isValidConfirmNickname, setIsValidConfirmNickname] =
+    useState<boolean>(false); // 입력값의 유효성 상태
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
@@ -66,11 +70,20 @@ const SignupForm: React.FC = () => {
       isValidEmail &&
       isValidPassword &&
       isValidNickname &&
-      isValidConfirmPassword
+      isValidConfirmPassword &&
+      isValidConfirmEmail &&
+      isValidConfirmNickname
     )
       setIsValid(true);
     else setIsValid(false);
-  }, [isValidEmail, isValidPassword, isValidNickname, isValidConfirmPassword]);
+  }, [
+    isValidEmail,
+    isValidPassword,
+    isValidNickname,
+    isValidConfirmPassword,
+    isValidConfirmEmail,
+    isValidConfirmNickname,
+  ]);
 
   // 입력값 유효성 검사 함수
   const checkEmail = () => {
@@ -131,6 +144,16 @@ const SignupForm: React.FC = () => {
     }
   };
 
+  const handleEmailChange = (email: string) => {
+    setEmail(email);
+    setIsValidConfirmEmail(false);
+  };
+
+  const handleNicknameChange = (nickname: string) => {
+    setNickname(nickname);
+    setIsValidConfirmNickname(false);
+  };
+
   const sendAuthCode = async (trimmedEmail: string, trimmedCode: string) => {
     try {
       const response = await axiosInstance.get(
@@ -139,6 +162,7 @@ const SignupForm: React.FC = () => {
 
       if (response.status === 200) {
         alert("인증에 성공하였습니다!");
+        setIsValidConfirmEmail(true);
       }
     } catch (error: any) {
       if (error.response) {
@@ -155,11 +179,13 @@ const SignupForm: React.FC = () => {
       );
 
       if (response.status === 200) {
+        setIsValidConfirmNickname(true);
         alert("닉네임 중복 검사 통과");
       }
     } catch (error: any) {
       if (error.response) {
         console.log(error.response.message);
+        alert("닉네임 중복 검사 실패");
       }
     }
   };
@@ -298,7 +324,7 @@ const SignupForm: React.FC = () => {
             id="email"
             value={email}
             onChange={(e: ChangeEvent<HTMLInputElement>) =>
-              setEmail(e.target.value)
+              handleEmailChange(e.target.value)
             } // 이메일 상태 업데이트
             className="peer w-full h-12 p-3 text-gray-700 border-b border-gray-300 rounded-lg focus:outline-none focus:border-[#4558A9] placeholder-transparent hover:border-[#4558A9]"
             placeholder="email"
@@ -328,7 +354,7 @@ const SignupForm: React.FC = () => {
           type="button"
           onClick={handleEmailVerificationButtonClick}
           disabled={isPossibleRequestEmail !== true}
-          style={{ display: "none" }}
+          // style={{ display: "none" }}
         >
           이메일 인증하기
         </button>
@@ -375,30 +401,27 @@ const SignupForm: React.FC = () => {
         </div>
         {/* 닉네임 입력 필드 */}
         <div className="relative mb-6 mt-6">
-          <div className="flex items-center gap-2">
-            <input
-              type="nickname"
-              id="nickname"
-              value={nickname}
-              onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                setNickname(e.target.value)
-              } // 닉네임 상태 업데이트
-              className="peer w-[80%] h-12 p-3 text-gray-700 border-b border-gray-300 rounded-lg focus:outline-none focus:border-[#4558A9] placeholder-transparent hover:border-[#4558A9]"
-              placeholder="10자 이하, 영어, 한글, 숫자만 가능합니다."
-            />
-            <button
-              className={`w-[18%] h-[40px] border-2 border-[#4659AA] rounded-[15px] text-[12px] font-bold "bg-[#4659AA] text-[#4659AA] hover:bg-[#1A349D] hover:text-white cursor-pointer"
+          <input
+            type="nickname"
+            id="nickname"
+            value={nickname}
+            onChange={(e: ChangeEvent<HTMLInputElement>) =>
+              handleNicknameChange(e.target.value)
+            } // 닉네임 상태 업데이트
+            className="peer w-[80%] h-12 p-3 text-gray-700 border-b border-gray-300 rounded-lg focus:outline-none focus:border-[#4558A9] placeholder-transparent hover:border-[#4558A9]"
+          />
+          <button
+            className={`w-[18%] h-[40px] border-2 border-[#4659AA] rounded-[15px] text-[12px] font-bold "bg-[#4659AA] text-[#4659AA] hover:bg-[#1A349D] hover:text-white cursor-pointer"
             }`}
-              type="button"
-              onClick={handleIsNicknameAvailableButtonClick}
-            >
-              중복확인
-            </button>
-          </div>
+            type="button"
+            onClick={handleIsNicknameAvailableButtonClick}
+          >
+            중복확인
+          </button>
           {/* 닉네임 입력 값이 없을 때 표시되는 라벨 */}
           {nickname === "" && (
             <label
-              htmlFor="password"
+              htmlFor="nickname"
               className="absolute left-3 top-3 text-gray-500 transition-all duration-300 transform origin-left pointer-events-none
                         peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100
                         peer-focus:-translate-y-9 peer-hover:-translate-y-9
