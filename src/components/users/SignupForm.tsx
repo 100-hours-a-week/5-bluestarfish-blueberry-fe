@@ -23,19 +23,20 @@ const SignupForm: React.FC = () => {
     useState<string>("text-red-500"); // 핼퍼 텍스트 색상 상태
   const [isPossibleRequestEmail, setIsPossibleRequestEmail] =
     useState<boolean>(false);
-  const [authCodeHelperText, setAuthCodeHelperText] = useState<string>(""); // 헬퍼 텍스트 상태
+  const [authCodeHelperText, setAuthCodeHelperText] =
+    useState<string>("* 이메일 인증을 진행해주세요."); // 헬퍼 텍스트 상태
   const [authCodeHelperTextColor, setAuthCodeHelperTextColor] =
-    useState<string>("text-red-500"); // 핼퍼 텍스트 색상 상태
+    useState<string>("red-500"); // 핼퍼 텍스트 색상 상태
   const [nicknameHelperText, setNicknameHelperText] = useState<string>(""); // 헬퍼 텍스트 상태
   const [nicknameHelperTextColor, setNicknameHelperTextColor] =
-    useState<string>("text-red-500"); // 핼퍼 텍스트 색상 상태
+    useState<string>("red-500"); // 핼퍼 텍스트 색상 상태
   const [passwordHelperText, setPasswordHelperText] = useState<string>(""); // 헬퍼 텍스트 상태
   const [passwordHelperTextColor, setPasswordHelperTextColor] =
-    useState<string>("text-red-500"); // 핼퍼 텍스트 색상 상태
+    useState<string>("red-500"); // 핼퍼 텍스트 색상 상태
   const [confirmPasswordhelperText, setConfirmPasswordHelperText] =
     useState<string>(""); // 헬퍼 텍스트 상태
   const [confirmPasswordHelperTextColor, setConfirmPasswordHelperTextColor] =
-    useState<string>("text-red-500"); // 핼퍼 텍스트 색상 상태
+    useState<string>("red-500"); // 핼퍼 텍스트 색상 상태
   const [isValid, setIsValid] = useState<boolean>(false); // 입력값의 유효성 상태
   const [isValidEmail, setIsValidEmail] = useState<boolean>(false);
   const [isValidPassword, setIsValidPassword] = useState<boolean>(false);
@@ -163,10 +164,13 @@ const SignupForm: React.FC = () => {
       if (response.status === 200) {
         alert("인증에 성공하였습니다!");
         setIsValidConfirmEmail(true);
+        setAuthCodeHelperText("이메일 인증 성공!");
+        setAuthCodeHelperTextColor("[#EBEEFF]");
       }
     } catch (error: any) {
       if (error.response) {
         console.log(error.response.message);
+        setAuthCodeHelperText("인증코드가 틀렸습니다. 다시 확인해주세요.");
         alert("인증 실패");
       }
     }
@@ -362,7 +366,7 @@ const SignupForm: React.FC = () => {
         <div>{renderImage()}</div>
         {/* 인증코드 입력 필드 */}
         <div
-          className="relative mb-6 mt-6 flex items-center gap-1"
+          className="relative mb-6 mt-6"
           // style={{ display: "none" }}
         >
           <input
