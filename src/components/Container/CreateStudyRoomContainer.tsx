@@ -97,8 +97,8 @@ const CreateStudyRoomContainer: React.FC = () => {
 
   // 컴포넌트 렌더링
   return (
-    <div className="container mx-auto flex flex-col items-center bg-[#EEEEFF] mt-[100px] mb-[30px] w-[60%] pt-[30px] pb-[30px] rounded-lg">
-      <h1 className="text-2xl font-bold mt-4 mb-20 text-black">
+    <div className="container mx-auto flex flex-col items-center bg-[#EEEEFF] mt-[100px] mb-[30px] w-full max-w-[800px] sm:max-w-[90%] md:max-w-[70%] lg:max-w-[60%] pt-[30px] pb-[30px] rounded-2xl">
+      <h1 className="text-lg sm:text-xl md:text-2xl font-bold mt-4 mb-10 sm:mb-16 md:mb-20 text-black text-center">
         📚 스터디룸 만들기 📚
       </h1>
       <StudyRoomForm
