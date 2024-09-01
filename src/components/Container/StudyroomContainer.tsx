@@ -444,9 +444,13 @@ const StudyroomContainer: React.FC = () => {
 
   const onParticipantLeft = (request: { name: string }) => {
     console.log("Participant " + request.name + " left");
-    const participant = participants[request.name];
-    participant.dispose();
-    delete participants[request.name];
+    var participant = participants[request.name];
+
+    // 추가 코드
+    if (participant !== undefined) {
+      participant.dispose();
+      delete participants[request.name];
+    }
   };
 
   return (
