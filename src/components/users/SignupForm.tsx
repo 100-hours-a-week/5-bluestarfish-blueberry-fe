@@ -340,7 +340,7 @@ const SignupForm: React.FC = () => {
 
   return (
     <div className="md:w-1/2 p-8 bg-[#EEEEFF] flex flex-col justify-center items-center">
-      <h2 className="text-[22px] font-bold text-gray-800 text-center">
+      <h2 className="text-[22px] font-bold text-gray-800 text-center mb-[-3px] mt-[-15px]">
         회원가입
       </h2>
       <form

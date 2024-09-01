@@ -55,7 +55,7 @@ export const validateEmail = (email: string): string => {
     return "이메일을 입력해주세요.";
   }
   if (!isValidEmail(email)) {
-    return "유효하지 않은 이메일 형식입니다. 올바른 형식: example@domain.com";
+    return "유효하지 않은 이메일 형식입니다.";
   }
   return "";
 };
