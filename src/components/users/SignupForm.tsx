@@ -8,6 +8,7 @@ import {
 import axiosInstance from "../../utils/axiosInstance";
 import Lottie from "react-lottie-player";
 import loadingAnimation from "../../animations/email-loading.json";
+import ToastNotification from "../common/ToastNotification";
 
 const SignupForm: React.FC = () => {
   const [email, setEmail] = useState<string>("");
@@ -48,6 +49,10 @@ const SignupForm: React.FC = () => {
   const [isValidConfirmNickname, setIsValidConfirmNickname] =
     useState<boolean>(false); // 입력값의 유효성 상태
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [showAuthSuccessToast, setShowAuthSuccessToast] = useState(false);
+  const [showAuthErrorToast, setShowAuthErrorToast] = useState(false);
+  const [showNicknameSuccessToast, setShowNicknameSuccessToast] = useState(false);
+  const [showNicknameErrorToast, setShowNicknameErrorToast] = useState(false);
 
   useEffect(() => {
     checkEmail();
@@ -161,13 +166,13 @@ const SignupForm: React.FC = () => {
       );
 
       if (response.status === 200) {
-        alert("인증에 성공하였습니다!");
         setIsValidConfirmEmail(true);
+        setShowAuthSuccessToast(true);
       }
     } catch (error: any) {
       if (error.response) {
         console.log(error.response.message);
-        alert("인증 실패");
+        setShowAuthErrorToast(true);
       }
     }
   };
@@ -180,12 +185,12 @@ const SignupForm: React.FC = () => {
 
       if (response.status === 200) {
         setIsValidConfirmNickname(true);
-        alert("닉네임 중복 검사 통과");
+        setShowNicknameSuccessToast(true);
       }
     } catch (error: any) {
       if (error.response) {
         console.log(error.response.message);
-        alert("닉네임 중복 검사 실패");
+        setShowNicknameErrorToast(true);
       }
     }
   };
@@ -312,12 +317,28 @@ const SignupForm: React.FC = () => {
     return null;
   };
 
+  const handleCloseAuthSuccessToast = () => {
+    setShowAuthSuccessToast(false);
+  };
+
+  const handleCloseAuthErrorToast = () => {
+    setShowAuthErrorToast(false);
+  };
+
+  const handleCloseNicknameSuccessToast = () => {
+    setShowNicknameSuccessToast(false);
+  };
+
+  const handleCloseNicknameErrorToast = () => {
+    setShowNicknameErrorToast(false);
+  };
+
   return (
-    <div className="p-8 bg-[#EEEEFF] rounded-[15px] flex flex-col justify-center items-center">
-      <h2 className="text-[25px] font-bold text-gray-800 mb-6 text-center">
+    <div className="md:w-1/2 p-8 bg-[#EEEEFF] flex flex-col justify-center items-center">
+      <h2 className="text-[22px] font-bold text-gray-800 text-center">
         회원가입
       </h2>
-      <form className="w-[300px] h-[600px] mb-20" onSubmit={signupUser}>
+      <form className="transform scale-90 origin-top w-[350px] max-h-[80vh] overflow-y-auto mb-20" onSubmit={signupUser}>
         <div className="relative mb-4 mt-10">
           <input
             type="text"
@@ -325,18 +346,17 @@ const SignupForm: React.FC = () => {
             value={email}
             onChange={(e: ChangeEvent<HTMLInputElement>) =>
               handleEmailChange(e.target.value)
-            } // 이메일 상태 업데이트
+            }
             className="peer w-full h-12 p-3 text-gray-700 border-b border-gray-300 rounded-lg focus:outline-none focus:border-[#4558A9] placeholder-transparent hover:border-[#4558A9]"
             placeholder="email"
           />
-          {/* 이메일 입력 값이 없을 때 표시되는 라벨 */}
           {email === "" && (
             <label
               htmlFor="email"
               className="absolute left-3 top-3 text-gray-500 transition-all duration-300 transform origin-left pointer-events-none
-                        peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100
-                        peer-focus:-translate-y-9 peer-hover:-translate-y-9
-                        peer-focus:text-[#4558A9] peer-hover:text-[#4558A9]"
+                      peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100
+                      peer-focus:-translate-y-9 peer-hover:-translate-y-9
+                      peer-focus:text-[#4558A9] peer-hover:text-[#4558A9]"
             >
               이메일
             </label>
@@ -346,25 +366,20 @@ const SignupForm: React.FC = () => {
           </p>
         </div>
         <button
-          className={`w-full h-[40px] border-2 border-[#4659AA] rounded-[15px] text-[#4659AA] text-[16px] font-bold  ${
-            isPossibleRequestEmail === true
-              ? "bg-[#4659AA] text-white hover:bg-[#1A349D] cursor-pointer"
-              : "bg-gray-400 text-gray-200 cursor-not-allowed"
-          }`}
+          className={`w-full h-[40px] border-2 rounded-full text-[#4659AA] text-[16px] font-bold  ${isPossibleRequestEmail === true
+            ? "bg-[#4659AA] text-white hover:bg-[#1A349D] cursor-pointer"
+            : "bg-gray-400 text-gray-200 cursor-not-allowed"
+            }`}
           type="button"
           onClick={handleEmailVerificationButtonClick}
           disabled={isPossibleRequestEmail !== true}
-          // style={{ display: "none" }}
         >
           이메일 인증하기
         </button>
 
         <div>{renderImage()}</div>
         {/* 인증코드 입력 필드 */}
-        <div
-          className="relative mb-6 mt-6 flex items-center gap-1"
-          // style={{ display: "none" }}
-        >
+        <div className="relative mb-6 mt-6 flex items-center gap-1">
           <input
             type="text"
             id="code"
@@ -372,16 +387,16 @@ const SignupForm: React.FC = () => {
             onChange={(e: ChangeEvent<HTMLInputElement>) =>
               setAuthCode(e.target.value)
             } // 인증코드 상태 업데이트
-            className="peer w-[85%] h-12 p-3 text-gray-700 border-b border-gray-300 rounded-lg focus:outline-none focus:border-[#4558A9] placeholder-transparent hover:border-[#4558A9]"
+            className="peer w-full h-12 p-3 pr-20 text-gray-700 border-b border-gray-300 rounded-lg focus:outline-none focus:border-[#4558A9] placeholder-transparent hover:border-[#4558A9]"
           />
           <button
-            className={`w-[13%] h-[40px] border-2 border-[#4659AA] rounded-[15px] text-[14px] font-bold "bg-[#4659AA] text-[#4659AA] hover:bg-[#1A349D] hover:text-white cursor-pointer"
-            }`}
+            className="absolute right-2 top-6 transform -translate-y-1/2 text-[#6D81D5] hover:text-[#4659AA] font-bold py-2 px-2 rounded-full focus:outline-none"
             type="button"
             onClick={handleAuthCodeButtonClick}
           >
             확인
           </button>
+
           {/* 인증코드 입력 값이 없을 때 표시되는 라벨 */}
           {authCode === "" && (
             <label
@@ -399,20 +414,18 @@ const SignupForm: React.FC = () => {
             {authCodeHelperText}
           </p>
         </div>
-        {/* 닉네임 입력 필드 */}
         <div className="relative mb-6 mt-6">
           <input
-            type="nickname"
+            type="text"
             id="nickname"
             value={nickname}
             onChange={(e: ChangeEvent<HTMLInputElement>) =>
               handleNicknameChange(e.target.value)
             } // 닉네임 상태 업데이트
-            className="peer w-[80%] h-12 p-3 text-gray-700 border-b border-gray-300 rounded-lg focus:outline-none focus:border-[#4558A9] placeholder-transparent hover:border-[#4558A9]"
+            className="peer w-full h-12 p-3 pr-24 text-gray-700 border-b border-gray-300 rounded-lg focus:outline-none focus:border-[#4558A9] placeholder-transparent hover:border-[#4558A9]"
           />
           <button
-            className={`w-[18%] h-[40px] border-2 border-[#4659AA] rounded-[15px] text-[12px] font-bold "bg-[#4659AA] text-[#4659AA] hover:bg-[#1A349D] hover:text-white cursor-pointer"
-            }`}
+            className="absolute right-2 top-6 transform -translate-y-1/2 text-[#6D81D5] hover:text-[#4659AA] font-bold py-2 px-2 rounded-full focus:outline-none"
             type="button"
             onClick={handleIsNicknameAvailableButtonClick}
           >
@@ -498,11 +511,10 @@ const SignupForm: React.FC = () => {
         {/* 회원가입 버튼 */}
         <div className="flex justify-center">
           <button
-            className={`relative h-[40px] ${
-              isValid
-                ? "bg-[#4659AA] hover:bg-[#1A349D]"
-                : "bg-gray-400 cursor-not-allowed"
-            } text-white font-bold py-3 px-6 rounded-full w-[70%] flex items-center justify-center text-center mb-3`}
+            className={`relative h-[40px] ${isValid
+              ? "bg-[#4659AA] hover:bg-[#1A349D]"
+              : "bg-gray-400 cursor-not-allowed"
+              } text-white font-bold py-3 px-6 rounded-full w-[70%] flex items-center justify-center text-center mb-3`}
             disabled={!isValid}
           >
             <span className="absolute transform transition-transform duration-300">
@@ -542,6 +554,18 @@ const SignupForm: React.FC = () => {
           비밀번호 재설정
         </a>
       </div>
+      {showAuthSuccessToast && (
+        <ToastNotification message="인증 성공!" isSuccess={true} onClose={handleCloseAuthSuccessToast} />
+      )}
+      {showAuthErrorToast && (
+        <ToastNotification message="인증 실패!" isSuccess={false} onClose={handleCloseAuthErrorToast} />
+      )}
+      {showNicknameSuccessToast && (
+        <ToastNotification message="사용 가능한 닉네임" isSuccess={true} onClose={handleCloseNicknameSuccessToast} />
+      )}
+      {showNicknameErrorToast && (
+        <ToastNotification message="사용 불가능한 닉네임" isSuccess={false} onClose={handleCloseNicknameErrorToast} />
+      )}
     </div>
   );
 };

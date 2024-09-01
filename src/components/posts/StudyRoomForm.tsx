@@ -319,7 +319,7 @@ const StudyRoomForm: React.FC<StudyRoomFormProps> = ({
           text="스터디룸 생성"
         />
         {showToast && (
-          <ToastNotification message="생성 완료!" onClose={handleCloseToast} />
+          <ToastNotification message="생성 완료!" isSuccess={true} onClose={handleCloseToast} />
         )}
       </div>
     </form>
