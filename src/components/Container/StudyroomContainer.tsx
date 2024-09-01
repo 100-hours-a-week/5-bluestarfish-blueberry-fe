@@ -379,10 +379,19 @@ const StudyroomContainer: React.FC = () => {
 
     const video = participant.getVideoElement();
 
-    const options = {
+    var options = {
       localVideo: video,
       mediaConstraints: constraints,
       onicecandidate: participant.onIceCandidate.bind(participant),
+      configuration: {
+        iceServers: [
+          {
+            urls: "turn:13.209.11.178:3478",
+            username: "blueberry",
+            credential: "1234",
+          },
+        ],
+      },
     };
 
     participant.rtcPeer = new kurentoUtils.WebRtcPeer.WebRtcPeerSendonly(
@@ -424,9 +433,18 @@ const StudyroomContainer: React.FC = () => {
     participants[sender] = participant;
     const video = participant.getVideoElement();
 
-    const options = {
+    var options = {
       remoteVideo: video,
       onicecandidate: participant.onIceCandidate.bind(participant),
+      configuration: {
+        iceServers: [
+          {
+            urls: "turn:13.209.11.178:3478",
+            username: "blueberry",
+            credential: "1234",
+          },
+        ],
+      },
     };
 
     participant.rtcPeer = new kurentoUtils.WebRtcPeer.WebRtcPeerRecvonly(
