@@ -262,7 +262,7 @@ const RecruitStudyUpdateContainer: React.FC = () => {
         />
 
         {showToast && (
-          <ToastNotification message="수정 완료!" onClose={handleCloseToast} />
+          <ToastNotification message="수정 완료!" isSuccess={true} onClose={handleCloseToast} />
         )}
       </div>
     </div>
