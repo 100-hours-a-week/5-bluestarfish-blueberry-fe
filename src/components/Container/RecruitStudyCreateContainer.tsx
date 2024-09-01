@@ -254,7 +254,7 @@ const RecruitStudyCreateContainer: React.FC = () => {
           text="게시글 등록" 
         />
         {showToast && (
-          <ToastNotification message="등록 완료!" onClose={handleCloseToast} />
+          <ToastNotification message="등록 완료!" isSuccess={true} onClose={handleCloseToast} />
         )}
       </div>
     </div>

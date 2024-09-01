@@ -3,11 +3,12 @@ import React, { useEffect, useState } from 'react';
 // ToastNotification 컴포넌트가 받아야 하는 props의 타입을 정의
 interface ToastNotificationProps {
   message: string;  // 알림에 표시될 메시지
+  isSuccess: boolean; // 성공 여부
   onClose: () => void;  // 알림이 닫힐 때 호출되는 함수
 }
 
 // ToastNotification 컴포넌트 정의
-const ToastNotification: React.FC<ToastNotificationProps> = ({ message, onClose }) => {
+const ToastNotification: React.FC<ToastNotificationProps> = ({ message, isSuccess, onClose }) => {
   // 알림의 진행 상태(퍼센트)를 관리하는 상태
   const [progress, setProgress] = useState(100);  // 초기값은 100 (알림이 처음에 표시될 때)
 
@@ -35,7 +36,11 @@ const ToastNotification: React.FC<ToastNotificationProps> = ({ message, onClose 
       <div className="flex items-center">
         {/* 체크 아이콘 */}
         <div className="rounded-full w-8 h-8 flex items-center justify-center mr-3">
-          <img src={`${process.env.PUBLIC_URL}/assets/images/check-icon.png`} alt="check" className="w-7 h-7" />
+          {isSuccess ? (
+            <img src={`${process.env.PUBLIC_URL}/assets/images/check-icon.png`} alt="Success" className="w-7 h-7" />
+          ) : (
+            <img src={`${process.env.PUBLIC_URL}/assets/images/error-icon.png`} alt="Error" className="w-7 h-7" />
+          )}
         </div>
         {/* 알림 메시지 */}
         <span className="text-black font-medium">{message}</span>
@@ -51,10 +56,11 @@ const ToastNotification: React.FC<ToastNotificationProps> = ({ message, onClose 
       {/* 진행 상태 표시 바 */}
       <div className="absolute bottom-0 left-0 w-full h-1 rounded-b-lg overflow-hidden">
         <div
-          className="bg-[#BDBDFF] h-full"
-          style={{ width: `${progress}%`, transition: `width 0.03s linear` }}  // progress에 따라 너비가 줄어듦
+          className={`h-full ${isSuccess ? 'bg-[#BDBDFF]' : 'bg-[#EB4C64]'}`}
+          style={{ width: `${progress}%`, transition: `width 0.03s linear` }}
         />
       </div>
+
     </div>
   );
 };
