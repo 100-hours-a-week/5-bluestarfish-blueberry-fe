@@ -102,7 +102,7 @@ const ChatContainer: React.FC<ChatContainerProps> = () => {
 
   return (
     <div className="m-2 flex flex-col h-full">
-      <div className="grow overflow-y-auto h-[400px] p-2">
+      <div className="grow overflow-y-auto h-[550px] p-2">
         {Array.isArray(messages) &&
           messages
             .filter((msg) => msg.senderId)
