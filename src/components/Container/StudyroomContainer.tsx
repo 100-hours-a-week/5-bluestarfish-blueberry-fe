@@ -4,8 +4,6 @@ import { Client, IMessage } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
 import kurentoUtils from "kurento-utils";
 import Participant from "../../utils/Participant";
-
-import SmallUserDisplay from "../rooms/SmallUserDisplay";
 import { useDeviceStore, useLoginedUserStore } from "../../store/store";
 import { useUserStore } from "../../store/userStore";
 import axiosInstance from "../../utils/axiosInstance";
@@ -484,7 +482,7 @@ const StudyroomContainer: React.FC = () => {
           ></h2>
           <div
             id="participants"
-            className="w-full h-[calc(100%-80px)] border border-black flex items-center justify-center gap-4"
+            className="w-full h-[calc(100%-80px)] border border-black flex flex-wrap items-center justify-center gap-8"
           >
             <div
               className="flex flex-col bg-cover justify-center items-center w-[400px] h-[300px] border border-black rounded-lg"
