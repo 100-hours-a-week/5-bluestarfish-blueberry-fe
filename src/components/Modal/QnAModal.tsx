@@ -3,11 +3,16 @@ import axiosInstance from "../../utils/axiosInstance";
 
 type QnAModalProps = {
   closeModal: () => void;
+  setShowToast: (arg1: boolean) => void;
 };
 
-const QnAModal: React.FC<QnAModalProps> = ({ closeModal }) => {
+const QnAModal: React.FC<QnAModalProps> = ({ closeModal, setShowToast }) => {
   const [content, setContent] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const handleShowToast = () => {
+    setShowToast(true);
+  };
 
   const submitContent = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault(); // 폼 제출 기본 동작 방지
@@ -24,7 +29,10 @@ const QnAModal: React.FC<QnAModalProps> = ({ closeModal }) => {
           content: trimmedContent,
         }
       );
-      if (response.status === 200) {
+      if (response.status === 201) {
+        setContent("");
+        handleShowToast();
+        closeModal();
         // 성공 처리
       }
     } catch (error) {
@@ -36,9 +44,7 @@ const QnAModal: React.FC<QnAModalProps> = ({ closeModal }) => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-      <div
-        className="fixed inset-0 z-40"
-      />
+      <div className="fixed inset-0 z-40" />
       <div className="relative z-50 w-[90%] max-w-[500px] bg-white text-black rounded-lg shadow-2xl p-6">
         <button onClick={closeModal} className="absolute top-4 right-4">
           <img
@@ -49,10 +55,11 @@ const QnAModal: React.FC<QnAModalProps> = ({ closeModal }) => {
         </button>
         <form className="text-left" onSubmit={submitContent}>
           <h2 className="text-lg font-bold text-gray-800 mb-2">
-            서비스 피드백을 남겨주세요  ꒰⍢꒱
+            서비스 피드백을 남겨주세요 ꒰⍢꒱
           </h2>
           <p className="text-sm text-gray-600 mb-4">
-            불편한 사항, 추가 기능, 에러 등 여러분의 의견이 저희 서비스를 만들어나갑니다!
+            불편한 사항, 추가 기능, 에러 등 여러분의 의견이 저희 서비스를
+            만들어나갑니다!
           </p>
           <textarea
             value={content}
