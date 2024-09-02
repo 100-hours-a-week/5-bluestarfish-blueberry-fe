@@ -2,7 +2,6 @@ import React from "react";
 import StudyroomTN from "../rooms/StudyroomTN";
 import DefaultThumbnail from "../../images/study-thumbnail-3.png";
 
-// StudyRoomLink 컴포넌트가 받을 props의 타입 정의
 interface StudyRoomLinkProps {
   studyRoom: {
     id: number;
@@ -11,46 +10,51 @@ interface StudyRoomLinkProps {
     memberNumber: number;
     maxUsers: number;
     thumbnail: string | null;
-  } | null; // 스터디 룸 정보가 없을 수 있으므로 null 허용
-  isRecruited: boolean; // 모집 상태 여부
-  handleNavigateToRoom: () => void; // 스터디 룸으로 이동하는 함수
+  } | null;
+  isRecruited: boolean;
+  handleNavigateToRoom: () => void;
 }
 
 const StudyRoomLink: React.FC<StudyRoomLinkProps> = ({
-  studyRoom, // 스터디 룸 정보
-  isRecruited, // 모집 상태
-  handleNavigateToRoom, // 스터디 룸으로 이동하는 함수
+  studyRoom,
+  isRecruited,
+  handleNavigateToRoom,
 }) => {
-  // studyRoom 정보가 없을 경우 메시지를 표시
   if (!studyRoom) {
-    return <div>스터디 룸 정보를 찾을 수 없습니다.</div>;
+    return <div></div>;
   }
 
   return (
-    <div className="mb-8">
-      {/* 스터디 룸 바로가기 제목 */}
+    <div className="mb-8 relative">
       <div className="text-black font-bold mb-3">스터디 룸 바로가기</div>
-
-      {/* 스터디 룸이 모집 중일 경우에만 클릭 가능하게 설정 */}
       <div
-        className="inline-block"
-        onClick={isRecruited ? handleNavigateToRoom : undefined} // 모집 중일 때만 handleNavigateToRoom 실행
+        className={`inline-block relative ${
+          !isRecruited ? "cursor-not-allowed opacity-50" : "hover:cursor-pointer"
+        }`}
+        onClick={isRecruited ? handleNavigateToRoom : undefined}
       >
-        <div
-          className={`hover:cursor-pointer ${
-            !isRecruited && "cursor-not-allowed opacity-50" // 모집 완료된 경우 클릭 불가 상태와 반투명 효과 적용
-          }`}
-        >
-          {/* StudyroomTN 컴포넌트를 사용하여 스터디 룸 정보를 표시 */}
+        <div className="relative">
           <StudyroomTN
             id={studyRoom.id}
             title={studyRoom.title}
-            camEnabled={studyRoom.camEnabled} // 서버 데이터의 camEnabled 사용
-            currentUsers={studyRoom.memberNumber} // 서버 데이터의 memberNumber 사용
+            camEnabled={studyRoom.camEnabled}
+            currentUsers={studyRoom.memberNumber}
             maxUsers={studyRoom.maxUsers}
-            thumbnail={studyRoom.thumbnail || DefaultThumbnail} // 썸네일이 없을 경우 기본 이미지 사용
+            thumbnail={studyRoom.thumbnail || DefaultThumbnail}
             isSelected={false}
           />
+
+          {/* 모집 완료 표시 */}
+          {!isRecruited && (
+            <div className="absolute inset-0 flex items-center justify-center z-10">
+              {/* 배경 오버레이 */}
+              <div className="absolute inset-0 bg-black opacity-70 rounded-md"></div>
+              {/* 모집 완료 텍스트 */}
+              <span className="relative text-red-300 text-3xl font-extrabold border-4 border-red-300 p-4 rounded-md transform -rotate-[20deg]">
+                모집 완료
+              </span>
+            </div>
+          )}
         </div>
       </div>
     </div>
