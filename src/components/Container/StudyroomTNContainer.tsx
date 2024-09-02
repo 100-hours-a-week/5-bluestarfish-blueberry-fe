@@ -33,7 +33,7 @@ const StudyroomTNContainer: React.FC<StudyroomTNContainerProps> = ({
   const fetchStudyRooms = async (reset: boolean = false): Promise<void> => {
     try {
       setIsLoading(true);
-
+  
       const response = await axiosInstance.get(
         `${process.env.REACT_APP_API_URL}/api/v1/rooms`,
         {
@@ -43,19 +43,19 @@ const StudyroomTNContainer: React.FC<StudyroomTNContainerProps> = ({
           },
         }
       );
-
+  
       const roomsData = response.data.data.content;
       setTotalPages(response.data.data.totalPages);
-
+  
       if (reset) {
         setStudyRoomsData(roomsData);
         setCurrentPage(1);
       } else {
-        setStudyRoomsData((prevRooms) => [...prevRooms, ...roomsData]);
+        setStudyRoomsData((prevRooms) => [...prevRooms, ...roomsData]); // 기존 데이터에 새 데이터 추가
         setCurrentPage((prevPage) => prevPage + 1);
       }
-
-      applyFilters(roomsData, reset);
+  
+      applyFilters(); // 필터링을 여기서 호출
     } catch (error) {
       console.error("스터디룸 목록을 불러오지 못했습니다:", error);
       if (reset) {
@@ -66,31 +66,26 @@ const StudyroomTNContainer: React.FC<StudyroomTNContainerProps> = ({
       setIsLoading(false);
     }
   };
-
-  const applyFilters = (rooms: StudyRoom[], reset: boolean) => {
-    let filtered: StudyRoom[];
-
-    if (reset) {
-      filtered = [...rooms];
-    } else {
-      filtered = [...studyRoomsData];
-    }
-
+  
+  const applyFilters = () => {
+    let filtered = [...studyRoomsData];
+  
     if (selectedCategory === "캠켜공") {
       filtered = filtered.filter((room) => room.camEnabled);
     } else if (selectedCategory === "캠끄공") {
       filtered = filtered.filter((room) => !room.camEnabled);
     }
-
+  
     setFilteredRooms(filtered);
   };
+  
 
   useEffect(() => {
-    fetchStudyRooms(true);
-  }, [selectedCategory]);
+    applyFilters();
+  }, [studyRoomsData, selectedCategory]);
 
   useEffect(() => {
-    setSelectedCategory("전체보기"); // 페이지가 처음 로드될 때 카테고리 설ㅈㅇ
+    setSelectedCategory("전체보기"); // 페이지가 처음 로드될 때 카테고리 설정
     fetchStudyRooms(true);
   }, []);
 
@@ -118,17 +113,13 @@ const StudyroomTNContainer: React.FC<StudyroomTNContainerProps> = ({
     };
 
     observer.current = new IntersectionObserver(handleObserver, {
-      threshold: 1,
+      threshold: 1 ,
     });
 
     const loadMoreTriggerElement = document.querySelector("#load-more-trigger");
 
     if (loadMoreTriggerElement) {
       observer.current.observe(loadMoreTriggerElement);
-    }
-
-    if (document.documentElement.scrollHeight <= document.documentElement.clientHeight) {
-      loadMoreRooms();
     }
 
     return () => observer.current?.disconnect();
