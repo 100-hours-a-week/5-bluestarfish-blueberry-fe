@@ -42,5 +42,12 @@ jobs:
             sudo docker pull ${{ secrets.DOCKER_REPO }}:latest
             sudo docker stop my_custom_name || true
             sudo docker rm my_custom_name || true
-            sudo docker run --name my_custom_name -d -p 3000:3000 ${{ secrets.DOCKER_REPO }}:latest
+            sudo docker run --name my_custom_name -d -p 3000:3000\
+              -e REACT_APP_API_URL=${{ secrets.REACT_APP_API_URL }} \
+              -e REACT_APP_SOCKET_URL=${{ secrets.REACT_APP_SOCKET_URL }} \
+              -e REACT_APP_SOCKET_STUDY_URL=${{ secrets.REACT_APP_SOCKET_STUDY_URL }} \
+              -e REACT_APP_SOCKET_RTC_URL=${{ secrets.REACT_APP_SOCKET_RTC_URL }} \
+              -e REACT_APP_TURN_URL=${{ secrets.REACT_APP_TURN_URL }} \
+              -e REACT_APP_SENTRY_DSN=${{ secrets.REACT_APP_SENTRY_DSN }} \
+              ${{ secrets.DOCKER_REPO }}:latest
             sudo docker image prune -f
