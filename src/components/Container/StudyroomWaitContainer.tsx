@@ -12,7 +12,7 @@ const StudyroomWaitContainer: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [cameraEnabled, setCameraEnabled] = useState<boolean>(true);
   const [microphoneEnabled, setMicrophoneEnabled] = useState<boolean>(true);
-  const [permissionsChecked, setPermissionsChecked] = useState<boolean>(false);
+  const [permissionsChecked, setPermissionsChecked] = useState<boolean>(true);
   const {
     camEnabled,
     micEnabled,
