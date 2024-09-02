@@ -30,8 +30,12 @@ const StudyroomWaitContainer: React.FC = () => {
       setPermissionsChecked(true);
     };
 
-    // checkPermissions();
+    checkPermissions();
   }, []);
+
+  useEffect(() => {
+    console.log(cameraEnabled, microphoneEnabled, permissionsChecked);
+  }, [cameraEnabled, microphoneEnabled, permissionsChecked]);
 
   const handleClick = () => {
     enterStudyRoom();
