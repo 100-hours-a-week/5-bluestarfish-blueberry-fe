@@ -130,13 +130,16 @@ const StudyroomWaitContainer: React.FC = () => {
         스터디 룸에 입장하기 전에 필요한 설정을 확인하세요 !
       </p>
       <button
-        className={`mt-10 rounded-[20px] w-[86px] h-[46px] ${
-          cameraEnabled && microphoneEnabled
-            ? "bg-[#4659aa] text-white"
-            : "bg-gray-400 text-gray-700 cursor-not-allowed"
-        } text-[20px] shadow-2xl`}
-        onClick={cameraEnabled && microphoneEnabled ? handleClick : undefined}
-        disabled={!cameraEnabled || !microphoneEnabled}
+        className={`mt-10 rounded-[20px] w-[86px] h-[46px] 
+        text-[20px] shadow-2xl "bg-[#4659aa] text-white"`}
+        // ${
+        //   cameraEnabled && microphoneEnabled
+        //     ? "bg-[#4659aa] text-white"
+        //     : "bg-gray-400 text-gray-700 cursor-not-allowed"
+        // }
+        // onClick={cameraEnabled && microphoneEnabled ? handleClick : undefined}
+        // disabled={!cameraEnabled || !microphoneEnabled}
+        onClick={handleClick}
       >
         입장
       </button>

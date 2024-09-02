@@ -104,7 +104,7 @@ const CreateStudyRoomContainer: React.FC = () => {
         studyRoomName={studyRoomName}
         maxUsers={maxUsers}
         category={category}
-        thumbnail={null}
+        thumbnail={null} // 파일 처리 로직 추가
         password={password}
         description={description}
         studyRoomNameError={studyRoomNameError}
