@@ -43,9 +43,9 @@ const StudyroomContainer: React.FC = () => {
   } = useDeviceStore();
   const { userId, nickname, profileImage } = useLoginedUserStore();
   const { users, addUser, updateUser, setUsers } = useUserStore();
-  const [cameraEnabled, setCameraEnabled] = useState<boolean>(true);
-  const [microphoneEnabled, setMicrophoneEnabled] = useState<boolean>(true);
-  const [permissionsChecked, setPermissionsChecked] = useState<boolean>(true);
+  const [cameraEnabled, setCameraEnabled] = useState<boolean>(false);
+  const [microphoneEnabled, setMicrophoneEnabled] = useState<boolean>(false);
+  const [permissionsChecked, setPermissionsChecked] = useState<boolean>(false);
 
   const localStreamRef = useRef<MediaStream | null>(null);
   const localVideoRef = useRef<HTMLVideoElement | null>(null);
@@ -107,6 +107,9 @@ const StudyroomContainer: React.FC = () => {
       return () => {
         if (wsRef.current) {
           wsRef.current.close();
+        }
+        if (localStreamRef.current) {
+          localStreamRef.current.getTracks().forEach((track) => track.stop());
         }
       };
     }

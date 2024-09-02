@@ -6,7 +6,6 @@ export async function checkMediaPermissions(): Promise<{
   let microphoneEnabled = false;
 
   try {
-    // 카메라 권한 확인
     const cameraPermission = await navigator.permissions.query({
       name: "camera" as PermissionName,
     });
