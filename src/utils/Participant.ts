@@ -25,7 +25,7 @@ class Participant {
     this.rtcPeer = null;
 
     this.span.appendChild(document.createTextNode(name));
-    this.span.className = "text-[16px] mt-2"; // Tailwind CSS 클래스 사용
+    this.span.className = "text-[16px] mt-2 text-white"; // Tailwind CSS 클래스 사용
 
     this.container.appendChild(this.video);
     this.container.appendChild(this.span);
