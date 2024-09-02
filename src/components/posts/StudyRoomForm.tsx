@@ -76,7 +76,7 @@ const StudyRoomForm: React.FC<StudyRoomFormProps> = ({
           title: trimmedTitle,
           maxUsers: maxUsers,
           camEnabled: isCamEnabled,
-          thumbnail: thumbnail,
+          thumbnail: null,
           password: password,
           description: description,
         }
@@ -144,14 +144,14 @@ const StudyRoomForm: React.FC<StudyRoomFormProps> = ({
 
         {studyRoomNameError && (
           <p
-            className={`text-xs italic mt-1 ${studyRoomNameError === "통과" ? "text-blue-500" : "text-red-500"
-              }`}
+            className={`text-xs italic mt-1 ${
+              studyRoomNameError === "통과" ? "text-blue-500" : "text-red-500"
+            }`}
           >
             {studyRoomNameError}
           </p>
         )}
       </div>
-
 
       {/* 최대 인원 설정 */}
       <div className="mt-5 mb-5 relative px-5">
@@ -171,10 +171,11 @@ const StudyRoomForm: React.FC<StudyRoomFormProps> = ({
               key={num}
               type="button"
               onClick={() => handleMaxUsersClick(num)}
-              className={`flex items-center space-x-2 px-7 py-2 rounded-full shadow-md hover:bg-[#6D81D5] hover:text-white transition duration-300 ${maxUsers === num
+              className={`flex items-center space-x-2 px-7 py-2 rounded-full shadow-md hover:bg-[#6D81D5] hover:text-white transition duration-300 ${
+                maxUsers === num
                   ? "bg-[#6D81D5] text-white"
                   : "bg-[#E0E7FF] text-[#4659AA]"
-                }`}
+              }`}
             >
               {num}명
             </button>
@@ -182,8 +183,9 @@ const StudyRoomForm: React.FC<StudyRoomFormProps> = ({
         </div>
         {maxUsersError && (
           <p
-            className={`text-xs italic mt-1 ${maxUsersError === "통과" ? "text-blue-500" : "text-red-500"
-              }`}
+            className={`text-xs italic mt-1 ${
+              maxUsersError === "통과" ? "text-blue-500" : "text-red-500"
+            }`}
           >
             {maxUsersError}
           </p>
@@ -201,14 +203,16 @@ const StudyRoomForm: React.FC<StudyRoomFormProps> = ({
               key={cat}
               onClick={() => handleCategoryClick(cat)}
               type="button"
-              className={`flex items-center space-x-2 px-8 py-2 rounded-full shadow-md hover:bg-[#6D81D5] hover:text-white transition duration-300 ${category === cat
+              className={`flex items-center space-x-2 px-8 py-2 rounded-full shadow-md hover:bg-[#6D81D5] hover:text-white transition duration-300 ${
+                category === cat
                   ? "bg-[#6D81D5] text-white"
                   : "bg-[#E0E7FF] text-[#4659AA]"
-                }`}
+              }`}
             >
               <img
-                src={`${process.env.PUBLIC_URL}/assets/images/${cat === "캠켜공" ? "cam-on-icon.png" : "cam-off-icon.png"
-                  }`}
+                src={`${process.env.PUBLIC_URL}/assets/images/${
+                  cat === "캠켜공" ? "cam-on-icon.png" : "cam-off-icon.png"
+                }`}
                 alt={cat}
                 className="w-5 h-5"
               />
@@ -251,8 +255,9 @@ const StudyRoomForm: React.FC<StudyRoomFormProps> = ({
         />
         {thumbnailError && (
           <p
-            className={`text-xs italic mt-1 ${thumbnailError === "통과" ? "text-blue-500" : "text-red-500"
-              }`}
+            className={`text-xs italic mt-1 ${
+              thumbnailError === "통과" ? "text-blue-500" : "text-red-500"
+            }`}
           >
             {thumbnailError}
           </p>
@@ -281,8 +286,9 @@ const StudyRoomForm: React.FC<StudyRoomFormProps> = ({
         />
         {passwordError && (
           <p
-            className={`text-xs italic mt-1 ${passwordError === "통과" ? "text-blue-500" : "text-red-500"
-              }`}
+            className={`text-xs italic mt-1 ${
+              passwordError === "통과" ? "text-blue-500" : "text-red-500"
+            }`}
           >
             {passwordError}
           </p>
@@ -319,7 +325,11 @@ const StudyRoomForm: React.FC<StudyRoomFormProps> = ({
           text="스터디룸 생성"
         />
         {showToast && (
-          <ToastNotification message="생성 완료!" isSuccess={true} onClose={handleCloseToast} />
+          <ToastNotification
+            message="생성 완료!"
+            isSuccess={true}
+            onClose={handleCloseToast}
+          />
         )}
       </div>
     </form>
