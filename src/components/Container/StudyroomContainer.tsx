@@ -384,7 +384,7 @@ const StudyroomContainer: React.FC = () => {
       configuration: {
         iceServers: [
           {
-            urls: "turn:13.209.11.178:3478",
+            urls: `${process.env.REACT_APP_TURN_URL}`,
             username: "blueberry",
             credential: "1234",
           },
@@ -437,7 +437,7 @@ const StudyroomContainer: React.FC = () => {
       configuration: {
         iceServers: [
           {
-            urls: "turn:13.209.11.178:3478",
+            urls: `${process.env.REACT_APP_TURN_URL}`,
             username: "blueberry",
             credential: "1234",
           },
