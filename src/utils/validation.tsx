@@ -124,6 +124,14 @@ export const validateMaxUsers = (maxUsers: number | null): string => {
   return "통과";
 };
 
+// 카테고리 유효성 검사
+export const validateCategory = (category: string | null): string => {
+  if (!category) {
+    return "카테고리를 선택해주세요.";
+  }
+  return "통과";
+};
+
 // 대표 이미지 유효성 검사
 export const validateThumbnail = (file: File | null): string => {
   if (file) {
