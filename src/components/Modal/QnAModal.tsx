@@ -1,5 +1,6 @@
 import React, { useState, ChangeEvent, FormEvent } from "react";
 import axiosInstance from "../../utils/axiosInstance";
+import ToastNotification from "../common/ToastNotification";
 
 type QnAModalProps = {
   closeModal: () => void;
@@ -8,6 +9,15 @@ type QnAModalProps = {
 const QnAModal: React.FC<QnAModalProps> = ({ closeModal }) => {
   const [content, setContent] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [showToast, setShowToast] = useState(false);
+
+  const handleShowToast = () => {
+    setShowToast(true);
+  };
+
+  const handleCloseToast = () => {
+    setShowToast(false);
+  };
 
   const submitContent = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault(); // 폼 제출 기본 동작 방지
@@ -24,7 +34,10 @@ const QnAModal: React.FC<QnAModalProps> = ({ closeModal }) => {
           content: trimmedContent,
         }
       );
-      if (response.status === 200) {
+      if (response.status === 201) {
+        setContent("");
+        closeModal();
+        handleShowToast();
         // 성공 처리
       }
     } catch (error) {
@@ -36,9 +49,7 @@ const QnAModal: React.FC<QnAModalProps> = ({ closeModal }) => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-      <div
-        className="fixed inset-0 z-40"
-      />
+      <div className="fixed inset-0 z-40" />
       <div className="relative z-50 w-[90%] max-w-[500px] bg-white text-black rounded-lg shadow-2xl p-6">
         <button onClick={closeModal} className="absolute top-4 right-4">
           <img
@@ -49,10 +60,11 @@ const QnAModal: React.FC<QnAModalProps> = ({ closeModal }) => {
         </button>
         <form className="text-left" onSubmit={submitContent}>
           <h2 className="text-lg font-bold text-gray-800 mb-2">
-            서비스 피드백을 남겨주세요  ꒰⍢꒱
+            서비스 피드백을 남겨주세요 ꒰⍢꒱
           </h2>
           <p className="text-sm text-gray-600 mb-4">
-            불편한 사항, 추가 기능, 에러 등 여러분의 의견이 저희 서비스를 만들어나갑니다!
+            불편한 사항, 추가 기능, 에러 등 여러분의 의견이 저희 서비스를
+            만들어나갑니다!
           </p>
           <textarea
             value={content}
@@ -81,7 +93,14 @@ const QnAModal: React.FC<QnAModalProps> = ({ closeModal }) => {
             </button>
           </div>
         </form>
-      </div>
+      </div>{" "}
+      {showToast && (
+        <ToastNotification
+          message="피드백 제출 완료!"
+          isSuccess={true}
+          onClose={handleCloseToast}
+        />
+      )}
     </div>
   );
 };
