@@ -2,14 +2,14 @@ import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import LargeUserDisplay from "../rooms/LargeUserDisplay";
 import axiosInstance from "../../utils/axiosInstance";
-import { useDeviceStore } from "../../store/store";
+import { useDeviceStore, useLoginedUserStore } from "../../store/store";
 
 type StudyroomWaitContainerProps = {};
 
 const StudyroomWaitContainer: React.FC = () => {
   const navigate = useNavigate();
   const { roomId } = useParams<{ roomId: string }>(); // URL에서 roomId를 가져옴
-  const userId = 1;
+  const { userId } = useLoginedUserStore();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const {
     camEnabled,
