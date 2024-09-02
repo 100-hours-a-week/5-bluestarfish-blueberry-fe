@@ -135,6 +135,7 @@ const ChatContainer: React.FC<ChatContainerProps> = () => {
             className="w-[300px] border-2 rounded-[10px] text-black p-1"
             value={content}
             onChange={(e) => setContent(e.target.value)}
+            maxLength={300}
           ></input>
           <button
             type="submit"
