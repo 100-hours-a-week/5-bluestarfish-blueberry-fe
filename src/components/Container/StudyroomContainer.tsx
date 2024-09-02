@@ -7,6 +7,8 @@ import Participant from "../../utils/Participant";
 import { useDeviceStore, useLoginedUserStore } from "../../store/store";
 import { useUserStore } from "../../store/userStore";
 import axiosInstance from "../../utils/axiosInstance";
+import { checkMediaPermissions } from "../../utils/checkMediaPermission";
+
 interface User {
   id: number;
   nickname: string;
@@ -41,6 +43,9 @@ const StudyroomContainer: React.FC = () => {
   } = useDeviceStore();
   const { userId, nickname, profileImage } = useLoginedUserStore();
   const { users, addUser, updateUser, setUsers } = useUserStore();
+  const [cameraEnabled, setCameraEnabled] = useState<boolean>(false);
+  const [microphoneEnabled, setMicrophoneEnabled] = useState<boolean>(false);
+  const [permissionsChecked, setPermissionsChecked] = useState<boolean>(false);
 
   const localStreamRef = useRef<MediaStream | null>(null);
   const localVideoRef = useRef<HTMLVideoElement | null>(null);
@@ -52,8 +57,23 @@ const StudyroomContainer: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    console.log(users);
-  }, [users]);
+    const checkPermissions = async () => {
+      const { camera, microphone } = await checkMediaPermissions();
+      setCameraEnabled(camera);
+      setMicrophoneEnabled(microphone);
+      setPermissionsChecked(true);
+    };
+
+    checkPermissions();
+  }, []);
+
+  useEffect(() => {
+    if (permissionsChecked) {
+      if (!cameraEnabled || !microphoneEnabled) {
+        navigate(-1);
+      }
+    }
+  }, [cameraEnabled, microphoneEnabled, permissionsChecked]);
 
   useEffect(() => {
     sendRoomControlUpdate({
@@ -67,24 +87,26 @@ const StudyroomContainer: React.FC = () => {
   }, [camEnabled, micEnabled, speakerEnabled]);
 
   useEffect(() => {
-    // if (userId === 0) return;
-    wsRef.current = new WebSocket(`${process.env.REACT_APP_SOCKET_RTC_URL}`);
+    if (permissionsChecked) {
+      // if (userId === 0) return;
+      wsRef.current = new WebSocket(`${process.env.REACT_APP_SOCKET_RTC_URL}`);
 
-    wsRef.current.onopen = () => {
-      console.log("WebSocket connection established");
-      register(); // WebSocket이 OPEN 상태가 된 후 register 호출
-    };
+      wsRef.current.onopen = () => {
+        console.log("WebSocket connection established");
+        register(); // WebSocket이 OPEN 상태가 된 후 register 호출
+      };
 
-    wsRef.current.onerror = (error) => {
-      console.error("WebSocket error: ", error);
-    };
+      wsRef.current.onerror = (error) => {
+        console.error("WebSocket error: ", error);
+      };
 
-    return () => {
-      if (wsRef.current) {
-        wsRef.current.close();
-      }
-    };
-  }, []);
+      return () => {
+        if (wsRef.current) {
+          wsRef.current.close();
+        }
+      };
+    }
+  }, [permissionsChecked]);
 
   useEffect(() => {
     if (wsRef.current) {

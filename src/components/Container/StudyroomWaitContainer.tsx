@@ -1,16 +1,18 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import LargeUserDisplay from "../rooms/LargeUserDisplay";
 import axiosInstance from "../../utils/axiosInstance";
 import { useDeviceStore, useLoginedUserStore } from "../../store/store";
-
-type StudyroomWaitContainerProps = {};
+import { checkMediaPermissions } from "../../utils/checkMediaPermission";
 
 const StudyroomWaitContainer: React.FC = () => {
   const navigate = useNavigate();
   const { roomId } = useParams<{ roomId: string }>(); // URL에서 roomId를 가져옴
   const { userId } = useLoginedUserStore();
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [cameraEnabled, setCameraEnabled] = useState<boolean>(false);
+  const [microphoneEnabled, setMicrophoneEnabled] = useState<boolean>(false);
+  const [permissionsChecked, setPermissionsChecked] = useState<boolean>(false);
   const {
     camEnabled,
     micEnabled,
@@ -20,10 +22,20 @@ const StudyroomWaitContainer: React.FC = () => {
     toggleSpeaker,
   } = useDeviceStore();
 
+  useEffect(() => {
+    const checkPermissions = async () => {
+      const { camera, microphone } = await checkMediaPermissions();
+      setCameraEnabled(camera);
+      setMicrophoneEnabled(microphone);
+      setPermissionsChecked(true);
+    };
+
+    checkPermissions();
+  }, []);
+
   const handleClick = () => {
     enterStudyRoom();
     navigate(`/studyroom/${roomId}`);
-    //
   };
 
   const enterStudyRoom = async () => {
@@ -114,11 +126,22 @@ const StudyroomWaitContainer: React.FC = () => {
         스터디 룸에 입장하기 전에 필요한 설정을 확인하세요 !
       </p>
       <button
-        className="mt-10 rounded-[20px] w-[86px] h-[46px] bg-[#4659aa] text-white text-[20px] shadow-2xl"
-        onClick={handleClick}
+        className={`mt-10 rounded-[20px] w-[86px] h-[46px] ${
+          cameraEnabled && microphoneEnabled
+            ? "bg-[#4659aa] text-white"
+            : "bg-gray-400 text-gray-700 cursor-not-allowed"
+        } text-[20px] shadow-2xl`}
+        onClick={cameraEnabled && microphoneEnabled ? handleClick : undefined}
+        disabled={!cameraEnabled || !microphoneEnabled}
       >
         입장
       </button>
+      {(!cameraEnabled || !microphoneEnabled) && permissionsChecked && (
+        <p className="text-red-500 text-[14px] mt-2">
+          카메라 및 마이크 권한을 허용해주세요. 페이지 새로고침 시 설정이
+          반영됩니다.
+        </p>
+      )}
     </div>
   );
 };
