@@ -2,12 +2,11 @@ import React, { useEffect, useState } from "react";
 import Carousel from "../common/Carousel";
 import StudyroomTNContainer from "./StudyroomTNContainer";
 import QnAModal from "../Modal/QnAModal";
-import { useLoginedUserStore } from "../../store/store";
+import ToastNotification from "../common/ToastNotification";
 
 const MainPageContainer: React.FC = () => {
   const [isQnAModalOpen, setQnAModalOpen] = useState(false);
-
-  const { userId, nickname, profileImage } = useLoginedUserStore();
+  const [showToast, setShowToast] = useState(false);
 
   const closeQnAModal = () => {
     setQnAModalOpen(false);
@@ -15,6 +14,10 @@ const MainPageContainer: React.FC = () => {
 
   const openQnAModal = () => {
     setQnAModalOpen(true);
+  };
+
+  const handleCloseToast = () => {
+    setShowToast(false);
   };
 
   // 모달이 열릴 때 배경 스크롤 막기
@@ -51,9 +54,16 @@ const MainPageContainer: React.FC = () => {
           <div className="fixed inset-0 bg-black bg-opacity-50 pointer-events-none" />
           {/* 모달 내용 */}
           <div className="relative z-50">
-            <QnAModal closeModal={closeQnAModal} />
+            <QnAModal closeModal={closeQnAModal} setShowToast={setShowToast} />
           </div>
         </div>
+      )}
+      {showToast && (
+        <ToastNotification
+          message="피드백 제출 완료!"
+          isSuccess={true}
+          onClose={handleCloseToast}
+        />
       )}
     </div>
   );
