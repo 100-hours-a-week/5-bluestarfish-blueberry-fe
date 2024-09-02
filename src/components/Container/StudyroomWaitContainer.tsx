@@ -131,7 +131,7 @@ const StudyroomWaitContainer: React.FC = () => {
       </p>
       <button
         className={`mt-10 rounded-[20px] w-[86px] h-[46px] 
-        text-[20px] shadow-2xl "bg-[#4659aa] text-white"`}
+        text-[20px] shadow-2xl bg-[#4659aa] text-white`}
         // ${
         //   cameraEnabled && microphoneEnabled
         //     ? "bg-[#4659aa] text-white"

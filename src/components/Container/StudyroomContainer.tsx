@@ -57,6 +57,10 @@ const StudyroomContainer: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    console.log(cameraEnabled, microphoneEnabled, permissionsChecked);
+  }, [cameraEnabled, microphoneEnabled, permissionsChecked]);
+
+  useEffect(() => {
     const checkPermissions = async () => {
       const { camera, microphone } = await checkMediaPermissions();
       setCameraEnabled(camera);
@@ -64,7 +68,7 @@ const StudyroomContainer: React.FC = () => {
       setPermissionsChecked(true);
     };
 
-    // checkPermissions();
+    checkPermissions();
   }, []);
 
   useEffect(() => {
