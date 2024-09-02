@@ -10,9 +10,9 @@ const StudyroomWaitContainer: React.FC = () => {
   const { roomId } = useParams<{ roomId: string }>(); // URL에서 roomId를 가져옴
   const { userId } = useLoginedUserStore();
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [cameraEnabled, setCameraEnabled] = useState<boolean>(false);
-  const [microphoneEnabled, setMicrophoneEnabled] = useState<boolean>(false);
-  const [permissionsChecked, setPermissionsChecked] = useState<boolean>(false);
+  const [cameraEnabled, setCameraEnabled] = useState<boolean>(true);
+  const [microphoneEnabled, setMicrophoneEnabled] = useState<boolean>(true);
+  const [permissionsChecked, setPermissionsChecked] = useState<boolean>(true);
   const {
     camEnabled,
     micEnabled,
@@ -30,7 +30,7 @@ const StudyroomWaitContainer: React.FC = () => {
       setPermissionsChecked(true);
     };
 
-    checkPermissions();
+    // checkPermissions();
   }, []);
 
   const handleClick = () => {
