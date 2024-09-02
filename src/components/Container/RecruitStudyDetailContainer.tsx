@@ -53,9 +53,9 @@ const RecruitStudyDetailContainer: React.FC = () => {
           userId: comment.user.id,
           mentionedUser: comment.mentionedUser
             ? {
-                id: comment.mentionedUser.id,
-                nickname: comment.mentionedUser.nickname,
-              }
+              id: comment.mentionedUser.id,
+              nickname: comment.mentionedUser.nickname,
+            }
             : null,
           createdAt: comment.createdAt ? new Date(comment.createdAt).getTime() : null,
           profileImage: `${process.env.PUBLIC_URL}/assets/images/real_ian.png`,
@@ -232,14 +232,23 @@ const RecruitStudyDetailContainer: React.FC = () => {
         handleNavigateToRoom={handleNavigateToRoom}
       />
 
-      <CommentSection
-        comments={comments}
-        isRecruited={isRecruited}
-        onSubmitComment={handleCommentSubmit}
-        onMention={handleCommentMention}
-        currentUser={currentUser}
-        postId={studyId}
-      />
+      {isRecruited &&
+        <CommentSection
+          comments={comments}
+          isRecruited={isRecruited}
+          onSubmitComment={handleCommentSubmit}
+          onMention={handleCommentMention}
+          currentUser={currentUser}
+          postId={studyId}
+        />
+      }
+
+      {!isRecruited && (
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
+        <span className="block w-full text-center"> ┈┈┈ ✁✃✁ 모집이 완료된 게시글입니다 ✁✁✃ ┈┈┈ </span>
+      </div>
+      
+      )}
 
       {showDeleteModal && (
         <DeletePostModal

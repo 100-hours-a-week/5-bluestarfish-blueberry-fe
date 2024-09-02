@@ -24,19 +24,20 @@ const SignupForm: React.FC = () => {
     useState<string>("text-red-500"); // 핼퍼 텍스트 색상 상태
   const [isPossibleRequestEmail, setIsPossibleRequestEmail] =
     useState<boolean>(false);
-  const [authCodeHelperText, setAuthCodeHelperText] = useState<string>(""); // 헬퍼 텍스트 상태
+  const [authCodeHelperText, setAuthCodeHelperText] =
+    useState<string>("* 이메일 인증을 진행해주세요."); // 헬퍼 텍스트 상태
   const [authCodeHelperTextColor, setAuthCodeHelperTextColor] =
-    useState<string>("text-red-500"); // 핼퍼 텍스트 색상 상태
+    useState<string>("red-500"); // 핼퍼 텍스트 색상 상태
   const [nicknameHelperText, setNicknameHelperText] = useState<string>(""); // 헬퍼 텍스트 상태
   const [nicknameHelperTextColor, setNicknameHelperTextColor] =
-    useState<string>("text-red-500"); // 핼퍼 텍스트 색상 상태
+    useState<string>("red-500"); // 핼퍼 텍스트 색상 상태
   const [passwordHelperText, setPasswordHelperText] = useState<string>(""); // 헬퍼 텍스트 상태
   const [passwordHelperTextColor, setPasswordHelperTextColor] =
-    useState<string>("text-red-500"); // 핼퍼 텍스트 색상 상태
+    useState<string>("red-500"); // 핼퍼 텍스트 색상 상태
   const [confirmPasswordhelperText, setConfirmPasswordHelperText] =
     useState<string>(""); // 헬퍼 텍스트 상태
   const [confirmPasswordHelperTextColor, setConfirmPasswordHelperTextColor] =
-    useState<string>("text-red-500"); // 핼퍼 텍스트 색상 상태
+    useState<string>("red-500"); // 핼퍼 텍스트 색상 상태
   const [isValid, setIsValid] = useState<boolean>(false); // 입력값의 유효성 상태
   const [isValidEmail, setIsValidEmail] = useState<boolean>(false);
   const [isValidPassword, setIsValidPassword] = useState<boolean>(false);
@@ -51,7 +52,8 @@ const SignupForm: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [showAuthSuccessToast, setShowAuthSuccessToast] = useState(false);
   const [showAuthErrorToast, setShowAuthErrorToast] = useState(false);
-  const [showNicknameSuccessToast, setShowNicknameSuccessToast] = useState(false);
+  const [showNicknameSuccessToast, setShowNicknameSuccessToast] =
+    useState(false);
   const [showNicknameErrorToast, setShowNicknameErrorToast] = useState(false);
 
   useEffect(() => {
@@ -167,11 +169,14 @@ const SignupForm: React.FC = () => {
 
       if (response.status === 200) {
         setIsValidConfirmEmail(true);
+        setAuthCodeHelperText("이메일 인증 성공!");
+        setAuthCodeHelperTextColor("[#EBEEFF]");
         setShowAuthSuccessToast(true);
       }
     } catch (error: any) {
       if (error.response) {
         console.log(error.response.message);
+        setAuthCodeHelperText("인증코드가 틀렸습니다. 다시 확인해주세요.");
         setShowAuthErrorToast(true);
       }
     }
@@ -335,10 +340,13 @@ const SignupForm: React.FC = () => {
 
   return (
     <div className="md:w-1/2 p-8 bg-[#EEEEFF] flex flex-col justify-center items-center">
-      <h2 className="text-[22px] font-bold text-gray-800 text-center">
+      <h2 className="text-[22px] font-bold text-gray-800 text-center mb-[-3px] mt-[-15px]">
         회원가입
       </h2>
-      <form className="transform scale-90 origin-top w-[350px] max-h-[80vh] overflow-y-auto mb-20" onSubmit={signupUser}>
+      <form
+        className="transform scale-90 origin-top w-[350px] max-h-[80vh] overflow-y-auto mb-20"
+        onSubmit={signupUser}
+      >
         <div className="relative mb-4 mt-10">
           <input
             type="text"
@@ -366,10 +374,11 @@ const SignupForm: React.FC = () => {
           </p>
         </div>
         <button
-          className={`w-full h-[40px] border-2 rounded-full text-[#4659AA] text-[16px] font-bold  ${isPossibleRequestEmail === true
-            ? "bg-[#4659AA] text-white hover:bg-[#1A349D] cursor-pointer"
-            : "bg-gray-400 text-gray-200 cursor-not-allowed"
-            }`}
+          className={`w-full h-[40px] border-2 rounded-full text-[#4659AA] text-[16px] font-bold  ${
+            isPossibleRequestEmail === true
+              ? "bg-[#4659AA] text-white hover:bg-[#1A349D] cursor-pointer"
+              : "bg-gray-400 text-gray-200 cursor-not-allowed"
+          }`}
           type="button"
           onClick={handleEmailVerificationButtonClick}
           disabled={isPossibleRequestEmail !== true}
@@ -379,7 +388,10 @@ const SignupForm: React.FC = () => {
 
         <div>{renderImage()}</div>
         {/* 인증코드 입력 필드 */}
-        <div className="relative mb-6 mt-6 flex items-center gap-1">
+        <div
+          className="relative mb-6 mt-6"
+          // style={{ display: "none" }}
+        >
           <input
             type="text"
             id="code"
@@ -511,10 +523,11 @@ const SignupForm: React.FC = () => {
         {/* 회원가입 버튼 */}
         <div className="flex justify-center">
           <button
-            className={`relative h-[40px] ${isValid
-              ? "bg-[#4659AA] hover:bg-[#1A349D]"
-              : "bg-gray-400 cursor-not-allowed"
-              } text-white font-bold py-3 px-6 rounded-full w-[70%] flex items-center justify-center text-center mb-3`}
+            className={`relative h-[40px] ${
+              isValid
+                ? "bg-[#4659AA] hover:bg-[#1A349D]"
+                : "bg-gray-400 cursor-not-allowed"
+            } text-white font-bold py-3 px-6 rounded-full w-[70%] flex items-center justify-center text-center mb-3`}
             disabled={!isValid}
           >
             <span className="absolute transform transition-transform duration-300">
@@ -555,16 +568,32 @@ const SignupForm: React.FC = () => {
         </a>
       </div>
       {showAuthSuccessToast && (
-        <ToastNotification message="인증 성공!" isSuccess={true} onClose={handleCloseAuthSuccessToast} />
+        <ToastNotification
+          message="인증 성공!"
+          isSuccess={true}
+          onClose={handleCloseAuthSuccessToast}
+        />
       )}
       {showAuthErrorToast && (
-        <ToastNotification message="인증 실패!" isSuccess={false} onClose={handleCloseAuthErrorToast} />
+        <ToastNotification
+          message="인증 실패!"
+          isSuccess={false}
+          onClose={handleCloseAuthErrorToast}
+        />
       )}
       {showNicknameSuccessToast && (
-        <ToastNotification message="사용 가능한 닉네임" isSuccess={true} onClose={handleCloseNicknameSuccessToast} />
+        <ToastNotification
+          message="사용 가능한 닉네임"
+          isSuccess={true}
+          onClose={handleCloseNicknameSuccessToast}
+        />
       )}
       {showNicknameErrorToast && (
-        <ToastNotification message="사용 불가능한 닉네임" isSuccess={false} onClose={handleCloseNicknameErrorToast} />
+        <ToastNotification
+          message="사용 불가능한 닉네임"
+          isSuccess={false}
+          onClose={handleCloseNicknameErrorToast}
+        />
       )}
     </div>
   );

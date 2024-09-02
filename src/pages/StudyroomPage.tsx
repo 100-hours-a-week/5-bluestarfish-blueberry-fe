@@ -3,9 +3,16 @@ import React, { useState, useEffect } from "react";
 import StudyroomContainer from "../components/Container/StudyroomContainer";
 import Sidebar from "../components/rooms/Sidebar";
 import { useAuthCheck } from "../utils/auth";
+import { useNavigate, useLocation, useParams } from "react-router-dom";
+import { usePreventRefresh } from "../utils/usePreventRefresh";
 
 const StudyroomPage: React.FC = () => {
+  usePreventRefresh();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { roomId } = useParams();
   const { authCheck } = useAuthCheck();
+
   useEffect(() => {
     authCheck();
   }, []);

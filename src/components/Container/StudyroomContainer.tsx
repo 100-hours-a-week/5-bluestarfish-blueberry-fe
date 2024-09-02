@@ -4,8 +4,6 @@ import { Client, IMessage } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
 import kurentoUtils from "kurento-utils";
 import Participant from "../../utils/Participant";
-
-import SmallUserDisplay from "../rooms/SmallUserDisplay";
 import { useDeviceStore, useLoginedUserStore } from "../../store/store";
 import { useUserStore } from "../../store/userStore";
 import axiosInstance from "../../utils/axiosInstance";
@@ -379,10 +377,19 @@ const StudyroomContainer: React.FC = () => {
 
     const video = participant.getVideoElement();
 
-    const options = {
+    var options = {
       localVideo: video,
       mediaConstraints: constraints,
       onicecandidate: participant.onIceCandidate.bind(participant),
+      configuration: {
+        iceServers: [
+          {
+            urls: "turn:13.209.11.178:3478",
+            username: "blueberry",
+            credential: "1234",
+          },
+        ],
+      },
     };
 
     participant.rtcPeer = new kurentoUtils.WebRtcPeer.WebRtcPeerSendonly(
@@ -424,9 +431,18 @@ const StudyroomContainer: React.FC = () => {
     participants[sender] = participant;
     const video = participant.getVideoElement();
 
-    const options = {
+    var options = {
       remoteVideo: video,
       onicecandidate: participant.onIceCandidate.bind(participant),
+      configuration: {
+        iceServers: [
+          {
+            urls: "turn:13.209.11.178:3478",
+            username: "blueberry",
+            credential: "1234",
+          },
+        ],
+      },
     };
 
     participant.rtcPeer = new kurentoUtils.WebRtcPeer.WebRtcPeerRecvonly(
@@ -444,9 +460,13 @@ const StudyroomContainer: React.FC = () => {
 
   const onParticipantLeft = (request: { name: string }) => {
     console.log("Participant " + request.name + " left");
-    const participant = participants[request.name];
-    participant.dispose();
-    delete participants[request.name];
+    var participant = participants[request.name];
+
+    // 추가 코드
+    if (participant !== undefined) {
+      participant.dispose();
+      delete participants[request.name];
+    }
   };
 
   return (
@@ -462,7 +482,7 @@ const StudyroomContainer: React.FC = () => {
           ></h2>
           <div
             id="participants"
-            className="w-full h-[calc(100%-80px)] border border-black flex items-center justify-center gap-4"
+            className="w-full h-[calc(100%-80px)] border border-black flex flex-wrap items-center justify-center gap-8"
           >
             <div
               className="flex flex-col bg-cover justify-center items-center w-[400px] h-[300px] border border-black rounded-lg"
