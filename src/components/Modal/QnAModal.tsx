@@ -1,22 +1,17 @@
 import React, { useState, ChangeEvent, FormEvent } from "react";
 import axiosInstance from "../../utils/axiosInstance";
-import ToastNotification from "../common/ToastNotification";
 
 type QnAModalProps = {
   closeModal: () => void;
+  setShowToast: (arg1: boolean) => void;
 };
 
-const QnAModal: React.FC<QnAModalProps> = ({ closeModal }) => {
+const QnAModal: React.FC<QnAModalProps> = ({ closeModal, setShowToast }) => {
   const [content, setContent] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [showToast, setShowToast] = useState(false);
 
   const handleShowToast = () => {
     setShowToast(true);
-  };
-
-  const handleCloseToast = () => {
-    setShowToast(false);
   };
 
   const submitContent = async (event: FormEvent<HTMLFormElement>) => {
@@ -36,8 +31,8 @@ const QnAModal: React.FC<QnAModalProps> = ({ closeModal }) => {
       );
       if (response.status === 201) {
         setContent("");
-        closeModal();
         handleShowToast();
+        closeModal();
         // 성공 처리
       }
     } catch (error) {
@@ -93,14 +88,7 @@ const QnAModal: React.FC<QnAModalProps> = ({ closeModal }) => {
             </button>
           </div>
         </form>
-      </div>{" "}
-      {showToast && (
-        <ToastNotification
-          message="피드백 제출 완료!"
-          isSuccess={true}
-          onClose={handleCloseToast}
-        />
-      )}
+      </div>
     </div>
   );
 };
