@@ -12,6 +12,7 @@ const QnAModal: React.FC<QnAModalProps> = ({ closeModal, setShowToast }) => {
 
   const handleShowToast = () => {
     setShowToast(true);
+    closeModal();
   };
 
   const submitContent = async (event: FormEvent<HTMLFormElement>) => {
@@ -32,7 +33,6 @@ const QnAModal: React.FC<QnAModalProps> = ({ closeModal, setShowToast }) => {
       if (response.status === 201) {
         setContent("");
         handleShowToast();
-        closeModal();
         // 성공 처리
       }
     } catch (error) {
