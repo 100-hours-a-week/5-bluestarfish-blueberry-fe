@@ -16,6 +16,7 @@ type StudyRoomFormProps = {
   description: string;
   studyRoomNameError: string;
   maxUsersError: string;
+  categoryError: string;
   thumbnailError: string;
   passwordError: string;
   handleStudyRoomNameChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -35,6 +36,7 @@ const StudyRoomForm: React.FC<StudyRoomFormProps> = ({
   description,
   studyRoomNameError,
   maxUsersError,
+  categoryError,
   thumbnailError,
   passwordError,
   handleStudyRoomNameChange,
@@ -48,6 +50,7 @@ const StudyRoomForm: React.FC<StudyRoomFormProps> = ({
   const isFormValid =
     studyRoomNameError === "통과" &&
     maxUsersError === "통과" &&
+    categoryError === "통과" &&
     (thumbnailError === "* 선택 사항" || thumbnailError === "통과") &&
     (passwordError === "* 선택 사항" || passwordError === "통과");
 
@@ -220,6 +223,14 @@ const StudyRoomForm: React.FC<StudyRoomFormProps> = ({
             </button>
           ))}
         </div>
+        {categoryError && (
+          <p
+            className={`text-xs italic mt-1 ${categoryError === "통과" ? "text-blue-500" : "text-red-500"
+              }`}
+          >
+            {categoryError}
+          </p>
+        )}
       </div>
 
       {/* 대표 이미지 업로드 */}

@@ -128,7 +128,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({
         <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="content">
           내용 <span className="text-gray-400 text-xs pl-1">({comment.length} / 20)</span>
         </label>
-        
+
         <div className="relative">
           <textarea
             className="w-full p-2 border-2 border-[#E0E7FF] rounded-lg bg-white resize-none focus:outline-none text-black"
@@ -141,7 +141,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({
             ref={textAreaRef}
             style={{ paddingBottom: '2rem', paddingLeft: '0.5rem' }}
           />
-          
+
           {/* 멘션 표시 섹션 */}
           {mention && (
             <div className="absolute bottom-3 left-2 bg-[#EEEEFF] text-[#A36DDA] px-2 py-1 rounded flex items-center">
@@ -158,11 +158,10 @@ const CommentSection: React.FC<CommentSectionProps> = ({
 
         {/* 댓글 등록 버튼 */}
         <button
-          className={`absolute -bottom-10 right-2 py-1 px-3 rounded-full shadow-md ${
-            isRecruited
+          className={`absolute -bottom-10 right-2 py-1 px-3 rounded-full shadow-md ${isRecruited
               ? 'bg-[#E0E7FF] text-[#4659AA] hover:bg-[#6D81D5] hover:text-white'
               : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-          }`}
+            }`}
           onClick={handleCommentSubmit}
           disabled={!isRecruited} // 모집이 완료된 경우 버튼 비활성화
         >
@@ -172,9 +171,9 @@ const CommentSection: React.FC<CommentSectionProps> = ({
 
       {/* 댓글 목록 섹션 */}
       <div>
-        {comments.slice(0, visibleComments).map((comment) => (
+        {comments.slice(0, visibleComments).map((comment, index) => (
           <div
-            key={comment.id}
+            key={`${comment.id}-${index}`} // id와 index를 결합하여 고유한 키 생성
             className="bg-white border border-gray-300 p-4 rounded-lg mb-2"
             onClick={() => handleMentionClick(comment)}
           >
@@ -211,6 +210,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({
           </div>
         ))}
       </div>
+
 
       {/* 삭제 확인 모달 */}
       {showDeleteModal && (

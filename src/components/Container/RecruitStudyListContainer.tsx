@@ -151,7 +151,7 @@ const StudyRecruitListContainer: React.FC = () => {
         <img
           src={`${process.env.PUBLIC_URL}/assets/images/create-post-button.png`}
           alt="create post"
-          className="absolute top-12 right-64 w-[130px] h-[30px]"
+          className="absolute top-12 right-64 w-[130px] h-[30px] cursor-pointer"
           onClick={handleCreatePostClick}
         />
       </div>

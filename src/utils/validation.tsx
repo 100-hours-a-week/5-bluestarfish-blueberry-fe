@@ -55,7 +55,7 @@ export const validateEmail = (email: string): string => {
     return "이메일을 입력해주세요.";
   }
   if (!isValidEmail(email)) {
-    return "유효하지 않은 이메일 형식입니다. 올바른 형식: example@domain.com";
+    return "유효하지 않은 이메일 형식입니다.";
   }
   return "";
 };
@@ -120,6 +120,14 @@ export const validateStudyRoomName = (name: string): string => {
 export const validateMaxUsers = (maxUsers: number | null): string => {
   if (!maxUsers) {
     return "최대 인원을 선택해주세요.";
+  }
+  return "통과";
+};
+
+// 카테고리 유효성 검사
+export const validateCategory = (category: string | null): string => {
+  if (!category) {
+    return "카테고리를 선택해주세요.";
   }
   return "통과";
 };
