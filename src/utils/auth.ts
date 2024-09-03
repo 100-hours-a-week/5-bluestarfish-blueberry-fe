@@ -14,6 +14,7 @@ export const useSetUserInfo = () => {
       );
       if (response.status === 200) {
         console.log(response.data.nickname);
+        console.log(response.data.nickname === null);
         if (response.data.nickname === null) {
           alert("닉네임 설정을 위한 페이지로 이동합니다!");
           navigate("/setnickname");
