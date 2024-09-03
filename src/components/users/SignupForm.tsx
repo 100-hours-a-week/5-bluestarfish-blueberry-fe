@@ -195,6 +195,7 @@ const SignupForm: React.FC = () => {
     } catch (error: any) {
       if (error.response) {
         console.log(error.response.message);
+        setIsValidConfirmNickname(false);
         setShowNicknameErrorToast(true);
       }
     }

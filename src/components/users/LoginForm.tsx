@@ -42,6 +42,10 @@ const LoginForm: React.FC = () => {
     navigate("/signup");
   };
 
+  const kakaoOAuth = () => {
+    window.location.href = `${process.env.REACT_APP_KAKAO_OAUTH_URL}`;
+  };
+
   // Axios로 로그인 요청 보내는 함수
   const loginUser = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault(); // 폼 제출 기본 동작 방지
@@ -191,7 +195,8 @@ const LoginForm: React.FC = () => {
       <button
         className="bg-[#FFEB3B] hover:bg-[#FFE500] text-gray-800 py-2 px-4 rounded focus:outline-none focus:shadow-outline w-[70%] rounded-full"
         type="button"
-        style={{ display: "none" }}
+        onClick={kakaoOAuth}
+        // style={{ display: "none" }}
       >
         <div className="flex items-center space-x-4">
           <img

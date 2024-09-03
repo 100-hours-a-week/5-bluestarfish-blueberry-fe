@@ -51,10 +51,15 @@ const StudyroomContainer: React.FC = () => {
   const localVideoRef = useRef<HTMLVideoElement | null>(null);
   const wsRef = useRef<WebSocket | null>(null);
   const participants: Record<string, Participant> = {};
+  const [numUsers, setNumUsers] = useState<number>(0);
 
   useEffect(() => {
     fetchStudyRoom();
   }, []);
+
+  useEffect(() => {
+    console.log(numUsers);
+  }, [numUsers]);
 
   useEffect(() => {
     console.log(cameraEnabled, microphoneEnabled, permissionsChecked);
@@ -333,10 +338,6 @@ const StudyroomContainer: React.FC = () => {
   // WebRTC functions
 
   const sendMessage = (message: any) => {
-    // if (!message.sender) {
-    //   console.error("Sender is missing in the message:", message);
-    //   return;
-    // }
     const jsonMessage = JSON.stringify(message);
     console.log("Sending message: " + jsonMessage);
     wsRef.current?.send(jsonMessage);
@@ -403,7 +404,8 @@ const StudyroomContainer: React.FC = () => {
 
     const participant = new Participant(nickname, nickname, sendMessage);
     participants[nickname] = participant;
-
+    //useState로 값을 업데이트하면 에러가 발생
+    setNumUsers(Object.keys(participants).length);
     const video = participant.getVideoElement();
 
     var options = {
@@ -460,6 +462,8 @@ const StudyroomContainer: React.FC = () => {
     participants[sender] = participant;
     const video = participant.getVideoElement();
 
+    //useState로 값을 업데이트하면 에러가 발생
+    setNumUsers(Object.keys(participants).length);
     var options = {
       remoteVideo: video,
       onicecandidate: participant.onIceCandidate.bind(participant),
@@ -496,10 +500,16 @@ const StudyroomContainer: React.FC = () => {
       participant.dispose();
       delete participants[request.name];
     }
+
+    //useState로 값을 업데이트하면 에러가 발생
+    setNumUsers(Object.keys(participants).length);
   };
 
   return (
     <div className="w-full flex flex-col items-center justify-center p-4">
+      <span id="numUsers" className="text-white">
+        {numUsers}
+      </span>
       <div>
         <div
           id="container"

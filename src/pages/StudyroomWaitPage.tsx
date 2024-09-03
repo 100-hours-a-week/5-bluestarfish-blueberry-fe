@@ -9,21 +9,8 @@ const StudyroomWaitPage: React.FC = () => {
   useEffect(() => {
     authCheck();
   }, []);
-
-  const navigate = useNavigate();
-
-  const exitWaitPage = () => {
-    navigate("/");
-  };
-
   return (
-    <div className="bg-white p-[25px]">
-      <img
-        src={`${process.env.PUBLIC_URL}/assets/images/exit.png`}
-        alt="Exit"
-        className="w-[30px] cursor-pointer"
-        onClick={exitWaitPage}
-      />
+    <div>
       <StudyroomWaitContainer />
     </div>
   );
