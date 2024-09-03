@@ -13,9 +13,10 @@ export const useSetUserInfo = () => {
         `${process.env.REACT_APP_API_URL}/api/v1/users/whoami`
       );
       if (response.status === 200) {
+        console.log(response.data.nickname);
         if (response.data.nickname === null) {
           alert("닉네임 설정을 위한 페이지로 이동합니다!");
-          navigate("/");
+          navigate("/setnickname");
         } else {
           setUserId(response.data.data.id);
           setNickname(response.data.data.nickname);
