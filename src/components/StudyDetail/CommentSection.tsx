@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import axiosInstance from '../../utils/axiosInstance';
 import DeletePostModal from '../common/DeletePostModal';
 
+// Comment 인터페이스: 각 댓글의 구조를 정의
 interface Comment {
   id: number;
   text: string;
@@ -12,6 +13,7 @@ interface Comment {
   mentionedUser: { id: number; nickname: string } | null;
 }
 
+// CommentSection 컴포넌트의 props 타입 정의
 interface CommentSectionProps {
   comments: Comment[]; // 댓글 배열
   isRecruited: boolean; // 모집 중인지 여부
@@ -37,10 +39,12 @@ const CommentSection: React.FC<CommentSectionProps> = ({
 
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
+  // 댓글 입력 시 호출되는 함수
   const handleCommentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const value = e.target.value;
     setComment(value);
 
+    // @를 입력하면 멘션을 자동으로 인식하여 설정
     const mentionPattern = /@([\w가-힣]+)/;
     const match = mentionPattern.exec(value);
 
@@ -52,37 +56,42 @@ const CommentSection: React.FC<CommentSectionProps> = ({
 
       if (mentionedComment) {
         setMention(username);
-        onMention(mentionedComment.userId);
+        onMention(mentionedComment.userId); // 상위 컴포넌트에 멘션된 사용자 ID 전달
         setComment(value.replace(mentionPattern, '').trim());
       }
     }
   };
 
+  // 댓글 제출 시 호출되는 함수
   const handleCommentSubmit = () => {
     if (comment.trim()) {
-      onSubmitComment(comment.trim());
-      setComment('');
-      setMention(null);
+      onSubmitComment(comment.trim()); // 상위 컴포넌트에 댓글을 전달
+      setComment(''); // 댓글 입력란 초기화
+      setMention(null); // 멘션 초기화
     }
   };
 
+  // 댓글을 클릭할 때 멘션을 처리하는 함수
   const handleMentionClick = (comment: Comment) => {
     if (isRecruited && comment.userId !== currentUser?.id) {
-      setMention(comment.author);
-      onMention(comment.userId);
+      setMention(comment.author); // 자신이 아닌 경우에만 멘션
+      onMention(comment.userId); // 멘션된 사용자 ID를 상위 컴포넌트에 전달
     }
   };
 
+  // 멘션 취소를 처리하는 함수
   const handleCancelMention = () => {
     setMention(null);
-    onMention(null);
+    onMention(null); // 상위 컴포넌트의 멘션 ID도 초기화
   };
 
+  // 삭제 버튼 클릭 시 호출되는 함수
   const handleDeleteClick = (commentId: number) => {
     setSelectedCommentId(commentId);
     setShowDeleteModal(true);
   };
 
+  // 댓글 삭제를 확정하는 함수 (모달에서 확인 버튼 클릭 시)
   const handleDeleteConfirm = async () => {
     if (selectedCommentId !== null) {
       try {
@@ -101,10 +110,11 @@ const CommentSection: React.FC<CommentSectionProps> = ({
     }
   };
 
+  // 스크롤 이벤트를 감지하여 화면에 보이는 댓글 수를 증가시키는 함수
   useEffect(() => {
     const handleScroll = () => {
       if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100) {
-        setVisibleComments((prev) => prev + 10);
+        setVisibleComments((prev) => prev + 10); // 스크롤이 끝에 가까워지면 10개의 댓글을 추가로 표시
       }
     };
 
@@ -118,23 +128,21 @@ const CommentSection: React.FC<CommentSectionProps> = ({
         <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="content">
           내용 <span className="text-gray-400 text-xs pl-1">({comment.length} / 20)</span>
         </label>
-        
+
         <div className="relative">
           <textarea
-            className={`w-full p-2 border-2 rounded-lg resize-none focus:outline-none text-black ${
-              isRecruited
-                ? 'border-[#E0E7FF] bg-white'
-                : 'border-gray-300 bg-gray-100 text-gray-500 cursor-not-allowed'
-            }`}
+            className="w-full p-2 border-2 border-[#E0E7FF] rounded-lg bg-white resize-none focus:outline-none text-black"
             rows={3}
             value={comment}
             onChange={handleCommentChange}
             placeholder="댓글을 입력하세요."
-            maxLength={20}
-            disabled={!isRecruited}
+            maxLength={20} // 최대 20자
+            disabled={!isRecruited} // 모집이 완료된 경우 댓글 입력 불가
             ref={textAreaRef}
+            style={{ paddingBottom: '2rem', paddingLeft: '0.5rem' }}
           />
-          
+
+          {/* 멘션 표시 섹션 */}
           {mention && (
             <div className="absolute bottom-3 left-2 bg-[#EEEEFF] text-[#A36DDA] px-2 py-1 rounded flex items-center">
               <span>@{mention}</span>
@@ -148,23 +156,24 @@ const CommentSection: React.FC<CommentSectionProps> = ({
           )}
         </div>
 
+        {/* 댓글 등록 버튼 */}
         <button
-          className={`absolute -bottom-10 right-2 py-1 px-3 rounded-full shadow-md ${
-            isRecruited
+          className={`absolute -bottom-10 right-2 py-1 px-3 rounded-full shadow-md ${isRecruited
               ? 'bg-[#E0E7FF] text-[#4659AA] hover:bg-[#6D81D5] hover:text-white'
               : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-          }`}
+            }`}
           onClick={handleCommentSubmit}
-          disabled={!isRecruited}
+          disabled={!isRecruited} // 모집이 완료된 경우 버튼 비활성화
         >
           댓글 등록
         </button>
       </section>
 
+      {/* 댓글 목록 섹션 */}
       <div>
-        {comments.slice(0, visibleComments).map((comment) => (
+        {comments.slice(0, visibleComments).map((comment, index) => (
           <div
-            key={comment.id}
+            key={`${comment.id}-${index}`} // id와 index를 결합하여 고유한 키 생성
             className="bg-white border border-gray-300 p-4 rounded-lg mb-2"
             onClick={() => handleMentionClick(comment)}
           >
@@ -202,6 +211,8 @@ const CommentSection: React.FC<CommentSectionProps> = ({
         ))}
       </div>
 
+
+      {/* 삭제 확인 모달 */}
       {showDeleteModal && (
         <DeletePostModal
           title="댓글을 삭제하시겠습니까?"
