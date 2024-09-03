@@ -48,6 +48,7 @@ jobs:
               -e REACT_APP_SOCKET_STUDY_URL=${{ secrets.REACT_APP_SOCKET_STUDY_URL }} \
               -e REACT_APP_SOCKET_RTC_URL=${{ secrets.REACT_APP_SOCKET_RTC_URL }} \
               -e REACT_APP_TURN_URL=${{ secrets.REACT_APP_TURN_URL }} \
+              -e REACT_APP_KAKAO_OAUTH_URL=${{ secrets.REACT_APP_KAKAO_OAUTH_URL }} \
               -e REACT_APP_SENTRY_DSN=${{ secrets.REACT_APP_SENTRY_DSN }} \
               ${{ secrets.DOCKER_REPO }}:latest
             sudo docker image prune -f
