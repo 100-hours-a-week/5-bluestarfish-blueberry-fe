@@ -18,9 +18,7 @@ const SetAuthNicknameForm: React.FC = () => {
   const [showNicknameSuccessToast, setShowNicknameSuccessToast] =
     useState(false);
   const [showNicknameErrorToast, setShowNicknameErrorToast] = useState(false);
-  // const { userId } = useLoginedUserStore();
-
-  const userId = 1;
+  const { userId } = useLoginedUserStore();
 
   useEffect(() => {
     checkNickname();
