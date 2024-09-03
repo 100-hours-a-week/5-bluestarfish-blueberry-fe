@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axiosInstance from "../../utils/axiosInstance";
 import StudyHeader from "../StudyDetail/StudyHeader";
@@ -20,6 +20,10 @@ const RecruitStudyDetailContainer: React.FC = () => {
   const [studyRoom, setStudyRoom] = useState<any | null>(null);
   const [currentUser, setCurrentUser] = useState<any | null>(null);
   const [mentionId, setMentionId] = useState<number | null>(null);
+  const [page, setPage] = useState(0); // 페이지 상태 추가
+  const [totalPages, setTotalPages] = useState(1); // 총 페이지 수 상태 추가
+  const observer = useRef<IntersectionObserver | null>(null);
+
   const studyId = id ? parseInt(id, 10) : null;
 
   useEffect(() => {
@@ -37,13 +41,14 @@ const RecruitStudyDetailContainer: React.FC = () => {
     fetchCurrentUser();
   }, []);
 
-  const fetchComments = async (page = 0) => {
+  const fetchComments = async (page: number) => {
     try {
       const response = await axiosInstance.get(
         `${process.env.REACT_APP_API_URL}/api/v1/posts/comments/${studyId}?page=${page}`
       );
 
       const commentsData = response.data.data.content;
+      setTotalPages(response.data.data.totalPages);
 
       if (Array.isArray(commentsData)) {
         const formattedComments = commentsData.map((comment: any) => ({
@@ -53,15 +58,15 @@ const RecruitStudyDetailContainer: React.FC = () => {
           userId: comment.user.id,
           mentionedUser: comment.mentionedUser
             ? {
-              id: comment.mentionedUser.id,
-              nickname: comment.mentionedUser.nickname,
-            }
+                id: comment.mentionedUser.id,
+                nickname: comment.mentionedUser.nickname,
+              }
             : null,
           createdAt: comment.createdAt ? new Date(comment.createdAt).getTime() : null,
           profileImage: `${process.env.PUBLIC_URL}/assets/images/real_ian.png`,
         }));
 
-        setComments(formattedComments);
+        setComments((prevComments) => [...prevComments, ...formattedComments]);
       } else {
         console.error("댓글 데이터가 배열이 아닙니다:", commentsData);
       }
@@ -85,14 +90,15 @@ const RecruitStudyDetailContainer: React.FC = () => {
           setStudyRoom({
             id: studyData.roomResponse.id,
             title: studyData.roomResponse.title,
-            camEnabled: studyData.roomResponse.camEnabled,  // camEnabled 사용
-            memberNumber: studyData.roomResponse.memberNumber, // memberNumber 사용
+            camEnabled: studyData.roomResponse.camEnabled,
+            memberNumber: studyData.roomResponse.memberNumber,
             maxUsers: studyData.roomResponse.maxUsers,
             thumbnail: studyData.roomResponse.thumbnail,
           });
         }
 
-        await fetchComments();
+        await fetchComments(0); // 첫 페이지 댓글 로드
+        setPage(1); // 페이지를 1로 설정 (다음에 불러올 페이지는 1)
       } catch (error: unknown) {
         console.error("게시글을 불러오지 못했습니다:", getErrorMessage(error));
         alert("해당 게시글을 찾을 수 없습니다.");
@@ -102,6 +108,29 @@ const RecruitStudyDetailContainer: React.FC = () => {
 
     fetchStudyDetail();
   }, [studyId, navigate]);
+
+  useEffect(() => {
+    if (observer.current) observer.current.disconnect();
+
+    const handleObserver = (entries: IntersectionObserverEntry[]) => {
+      if (entries[0].isIntersecting && page < totalPages) {
+        fetchComments(page);
+        setPage((prevPage) => prevPage + 1); // 페이지 증가
+      }
+    };
+
+    observer.current = new IntersectionObserver(handleObserver, {
+      threshold: 1,
+    });
+
+    const loadMoreTriggerElement = document.querySelector("#load-more-comments");
+
+    if (loadMoreTriggerElement) {
+      observer.current.observe(loadMoreTriggerElement);
+    }
+
+    return () => observer.current?.disconnect();
+  }, [page, totalPages]);
 
   const handleCommentMention = (authorId: number | null) => {
     if (isRecruited && authorId !== currentUser?.id) {
@@ -135,7 +164,10 @@ const RecruitStudyDetailContainer: React.FC = () => {
       );
 
       if (response.status === 201) {
-        await fetchComments();
+        setComments([]); // 기존 댓글 초기화
+        setPage(0); // 페이지 초기화
+        await fetchComments(0); // 첫 페이지 댓글 다시 로드
+        setPage(1); // 페이지를 1로 설정
         setMentionId(null);
       } else {
         alert("댓글 작성에 실패했습니다.");
@@ -232,7 +264,7 @@ const RecruitStudyDetailContainer: React.FC = () => {
         handleNavigateToRoom={handleNavigateToRoom}
       />
 
-      {isRecruited &&
+      {isRecruited && (
         <CommentSection
           comments={comments}
           isRecruited={isRecruited}
@@ -241,14 +273,17 @@ const RecruitStudyDetailContainer: React.FC = () => {
           currentUser={currentUser}
           postId={studyId}
         />
-      }
+      )}
 
       {!isRecruited && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
-        <span className="block w-full text-center"> ┈┈┈ ✁✃✁ 모집이 완료된 게시글입니다 ✁✁✃ ┈┈┈ </span>
-      </div>
-      
+          <span className="block w-full text-center"> ┈┈┈ ✁✃✁ 모집이 완료된 게시글입니다 ✁✁✃ ┈┈┈ </span>
+        </div>
       )}
+
+      <div id="load-more-comments" className="h-10 flex justify-center items-center">
+        {page < totalPages ? "Loading more comments..." : ""}
+      </div>
 
       {showDeleteModal && (
         <DeletePostModal
