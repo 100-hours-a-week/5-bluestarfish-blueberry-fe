@@ -14,6 +14,7 @@ import CreateStudyRoomPage from "./pages/CreateStudyRoomPage";
 import RecruitStudyUpdatePage from "./pages/RecruitStudyUpdatePage";
 import StudyRoomsListPage from "./pages/StudyRoomsListPage";
 import SetAuthNicknamePage from "./pages/SetAuthNicknamePage";
+import MyInfoPage from "./pages/MyInfoPage";
 import Home from "./components/common/test/Test";
 
 function App() {
@@ -30,6 +31,7 @@ function App() {
         <Route path="/recruit/:id" element={<RecruitStudyDetailPage />} />
         <Route path="/studyroom/create" element={<CreateStudyRoomPage />} />
         <Route path="/test/:roomId" element={<Home />} />
+        <Route path="/mypage" element={<MyInfoPage />} />
         <Route
           path="/recruit/update/:id"
           element={<RecruitStudyUpdatePage />}
