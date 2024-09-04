@@ -34,7 +34,7 @@ const PasswordModal: React.FC<PasswordModalProps> = ({
     try {
       setIsLoading(true);
       const response = await axiosInstance.post(
-        `${process.env.REACT_APP_API_URL}/api/v1/rooms/users/${userId}`,
+        `${process.env.REACT_APP_API_URL}/api/v1/rooms/password`,
         {
           userId: userId,
           roomId: roomId,
