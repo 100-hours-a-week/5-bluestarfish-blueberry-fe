@@ -13,13 +13,12 @@ export const useSetUserInfo = () => {
         `${process.env.REACT_APP_API_URL}/api/v1/users/whoami`
       );
       if (response.status === 200) {
-        if (response.data.nickname === null) {
+        setUserId(response.data.data.id);
+        setNickname(response.data.data.nickname);
+        setProfileImage(response.data.data.profile_image);
+        if (response.data.data.nickname === null) {
           alert("닉네임 설정을 위한 페이지로 이동합니다!");
-          navigate("/");
-        } else {
-          setUserId(response.data.data.id);
-          setNickname(response.data.data.nickname);
-          setProfileImage(response.data.data.profile_image);
+          navigate("/setnickname");
         }
       }
     } catch (error: any) {
