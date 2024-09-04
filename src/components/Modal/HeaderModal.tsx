@@ -1,5 +1,6 @@
 import { useLoginedUserStore } from "../../store/store";
 import axiosInstance from "../../utils/axiosInstance";
+import { useNavigate } from "react-router-dom";
 
 type HeaderModalProps = {
   closeModal: () => void;
@@ -7,6 +8,7 @@ type HeaderModalProps = {
 
 const HeaderModal: React.FC<HeaderModalProps> = ({ closeModal }) => {
   const { setUserId, setNickname, setProfileImage } = useLoginedUserStore();
+  const navigate = useNavigate();
 
   const handleModalClick = (e: React.MouseEvent) => {
     e.stopPropagation(); // 모달 안쪽 클릭 시 이벤트 전파 막기
@@ -38,6 +40,10 @@ const HeaderModal: React.FC<HeaderModalProps> = ({ closeModal }) => {
     setProfileImage("");
   };
 
+  const mypage = async () => {
+    navigate("/mypage");
+  };
+
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center"
@@ -47,7 +53,8 @@ const HeaderModal: React.FC<HeaderModalProps> = ({ closeModal }) => {
         className="absolute right-4 top-16 lg:right-24 w-[90%] max-w-[150px] h-[135px] text-black shadow-lg md:w-[150px]"
         onClick={handleModalClick}
       >
-        <button className="w-[140px] h-[42px] border-2 rounded-[10px] hover:text-[#eb4c64] hover:bg-[#ebeeff] hidden">
+        <button className="w-[140px] h-[42px] border-2 rounded-[10px] hover:text-[#eb4c64] hover:bg-[#ebeeff] bg-white"
+        onClick={mypage}>
           마이페이지
         </button>
         <button className="w-[140px] h-[42px] border-2 rounded-[10px] hover:text-[#eb4c64] hover:bg-[#ebeeff] hidden">
