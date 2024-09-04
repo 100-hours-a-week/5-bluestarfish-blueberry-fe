@@ -1,11 +1,10 @@
 import React, { useEffect } from "react";
-// import { useParams, useNavigate } from "react-router-dom";
 import BasicHeader from "../components/common/BasicHeader";
 import Footer from "../components/common/Footer";
 import RecruitStudyUpdateContainer from "../components/Container/RecruitStudyUpdateContainer";
 
 import { useAuthCheck } from "../utils/auth";
-const RecruitStudyCreatePage: React.FC = () => {
+const RecruitStudyUpdatePage: React.FC = () => {
   const { authCheck } = useAuthCheck();
   useEffect(() => {
     authCheck();
@@ -19,4 +18,4 @@ const RecruitStudyCreatePage: React.FC = () => {
   );
 };
 
-export default RecruitStudyCreatePage;
+export default RecruitStudyUpdatePage;
