@@ -3,25 +3,37 @@ import { useNavigate } from "react-router-dom";
 type StudyroomMTNProps = {
   id: number;
   title: string;
+  needPassword: boolean;
   camEnabled: boolean;
   currentUsers: number;
   maxUsers: number;
   thumbnail: string;
   isSelected: boolean;
+  openModal: () => void;
+  setClickedRoomId: (id: number) => void;
 };
 
 const StudyroomMTN: React.FC<StudyroomMTNProps> = ({
   id,
   title,
+  needPassword,
   camEnabled,
   currentUsers,
   maxUsers,
   thumbnail,
   isSelected,
+  openModal,
+  setClickedRoomId,
 }) => {
   const navigate = useNavigate(); // 페이지 이동을 위한 useNavigate 훅
   const enterStudyRoom = () => {
-    navigate(`/wait/${id}`);
+    if (needPassword) {
+      setClickedRoomId(id);
+      openModal();
+    } else
+      navigate(`/wait/${id}`, {
+        state: { authorized: true, needPassword: false },
+      });
   };
 
   return (
