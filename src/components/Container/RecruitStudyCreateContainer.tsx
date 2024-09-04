@@ -159,10 +159,17 @@ const RecruitStudyCreateContainer: React.FC = () => {
     setShowToast(true);
   };
 
-  const handleCloseToast = () => {
-    setShowToast(false);
-    navigate("/recruit/list");
-  };
+  // 토스트 닫기 핸들러를 `useEffect`를 사용하여 안전하게 호출
+  useEffect(() => {
+    if (showToast) {
+      const timer = setTimeout(() => {
+        setShowToast(false);
+        navigate("/recruit/list"); // 토스트가 닫힐 때 안전하게 상태 업데이트
+      }, 3000); // 3초 후에 토스트를 닫고 페이지 이동
+
+      return () => clearTimeout(timer); // 타이머 클린업
+    }
+  }, [showToast, navigate]);
 
   const handleCategorySelect = (category: string) => {
     if (activeTab === 0) {
@@ -254,7 +261,7 @@ const RecruitStudyCreateContainer: React.FC = () => {
           text="게시글 등록" 
         />
         {showToast && (
-          <ToastNotification message="등록 완료!" isSuccess={true} onClose={handleCloseToast} />
+          <ToastNotification message="등록 완료!" isSuccess={true} onClose={() => setShowToast(false)} />
         )}
       </div>
     </div>

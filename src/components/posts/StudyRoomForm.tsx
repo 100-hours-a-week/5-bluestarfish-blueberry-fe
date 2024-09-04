@@ -63,6 +63,18 @@ const StudyRoomForm: React.FC<StudyRoomFormProps> = ({
     setIsCamEnabled(category !== "캠끄공");
   }, [category]);
 
+  // 토스트 닫기 핸들러를 `useEffect`를 사용하여 안전하게 호출
+  useEffect(() => {
+    if (showToast) {
+      const timer = setTimeout(() => {
+        setShowToast(false);
+        navigate("/"); // 토스트가 닫힐 때 안전하게 상태 업데이트
+      }, 3000); // 3초 후에 토스트를 닫고 페이지 이동
+
+      return () => clearTimeout(timer); // 타이머 클린업
+    }
+  }, [showToast, navigate]);
+
   // 스터디룸 생성 요청 함수
   const createStudyRooms = async (): Promise<void> => {
     if (isLoading || !userId) return;
@@ -339,7 +351,7 @@ const StudyRoomForm: React.FC<StudyRoomFormProps> = ({
           <ToastNotification
             message="생성 완료!"
             isSuccess={true}
-            onClose={handleCloseToast}
+            onClose={() => setShowToast(false)}
           />
         )}
       </div>
