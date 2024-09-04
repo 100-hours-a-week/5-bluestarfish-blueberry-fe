@@ -75,7 +75,6 @@ import { useNavigate } from "react-router-dom";
 
 // export default StudyroomTN;
 
-
 type StudyroomTNProps = {
   id: number;
   title: string;
@@ -95,12 +94,10 @@ const StudyroomTN: React.FC<StudyroomTNProps> = ({
   thumbnail,
   isSelected,
 }) => {
-
   const navigate = useNavigate(); // 페이지 이동을 위한 useNavigate 훅
   const enterStudyRoom = () => {
     navigate(`/wait/${id}`);
   };
-
 
   return (
     <div className="relative w-[187px] h-[171px]">

@@ -3,15 +3,28 @@ import React, { useState, useEffect } from "react";
 import StudyroomContainer from "../components/Container/StudyroomContainer";
 import Sidebar from "../components/rooms/Sidebar";
 import { useAuthCheck } from "../utils/auth";
+import { useLocation, useNavigate } from "react-router-dom";
 import { usePreventRefresh } from "../utils/usePreventRefresh";
 
 const StudyroomPage: React.FC = () => {
   usePreventRefresh();
   const { authCheck } = useAuthCheck();
+  const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     authCheck();
   }, []);
+
+  useEffect(() => {
+    // state: { authorized: true, needPassword: false, password: content },
+    // 인가 여부 확인
+    if (!location.state || !location.state.authorized) {
+      alert("인가되지 않은 접근입니다.");
+      navigate("/");
+    }
+  }, [location, navigate]);
+
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   // const { roomId } = useParams<{ roomId: string }>(); // URL에서 roomId를 가져옴
 
