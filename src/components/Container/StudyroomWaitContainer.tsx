@@ -31,7 +31,7 @@ const StudyroomWaitContainer: React.FC = () => {
 
   useEffect(() => {
     if (location.state && location.state.password) {
-      setPassword(password);
+      setPassword(location.state.password);
     }
   }, [location]);
 
