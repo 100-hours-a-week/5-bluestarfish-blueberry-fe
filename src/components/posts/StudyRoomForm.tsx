@@ -237,8 +237,9 @@ const StudyRoomForm: React.FC<StudyRoomFormProps> = ({
         </div>
         {categoryError && (
           <p
-            className={`text-xs italic mt-1 ${categoryError === "통과" ? "text-blue-500" : "text-red-500"
-              }`}
+            className={`text-xs italic mt-1 ${
+              categoryError === "통과" ? "text-blue-500" : "text-red-500"
+            }`}
           >
             {categoryError}
           </p>

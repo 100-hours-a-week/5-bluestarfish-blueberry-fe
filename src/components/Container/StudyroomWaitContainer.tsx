@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import axiosInstance from "../../utils/axiosInstance";
 import { useDeviceStore, useLoginedUserStore } from "../../store/store";
 import { checkMediaPermissions } from "../../utils/checkMediaPermission";
@@ -9,6 +9,7 @@ const StudyroomWaitContainer: React.FC = () => {
   const { roomId } = useParams<{ roomId: string }>(); // URL에서 roomId를 가져옴
   const { userId } = useLoginedUserStore();
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [password, setPassword] = useState<string | null>(null);
   const [cameraEnabled, setCameraEnabled] = useState<boolean>(false);
   const [microphoneEnabled, setMicrophoneEnabled] = useState<boolean>(false);
   const [permissionsChecked, setPermissionsChecked] = useState<boolean>(false);
@@ -22,10 +23,17 @@ const StudyroomWaitContainer: React.FC = () => {
   } = useDeviceStore();
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const stream = useRef<MediaStream | null>(null);
+  const location = useLocation();
 
   useEffect(() => {
     console.log(cameraEnabled, microphoneEnabled, permissionsChecked);
   }, [cameraEnabled, microphoneEnabled, permissionsChecked]);
+
+  useEffect(() => {
+    if (location.state && location.state.password) {
+      setPassword(password);
+    }
+  }, [location]);
 
   useEffect(() => {
     const setupStream = async () => {
@@ -92,6 +100,7 @@ const StudyroomWaitContainer: React.FC = () => {
           speakerEnabled: speakerEnabled,
           goalTime: "14:30:30",
           dayTime: "15:30:30",
+          password: password,
         }
       );
       if (response.status === 204) {
