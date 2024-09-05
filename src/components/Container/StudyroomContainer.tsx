@@ -176,7 +176,9 @@ const StudyroomContainer: React.FC = () => {
       );
       if (response.status === 204) {
         console.log("204 No Content");
-        navigate(`/wait/${roomId}`);
+        navigate(`/wait/${roomId}`, {
+          state: { authorized: true },
+        });
       }
     } catch (error: any) {
       if (error.response) {
@@ -452,8 +454,6 @@ const StudyroomContainer: React.FC = () => {
     for (const key in participants) {
       participants[key].dispose();
     }
-
-    navigate("/");
 
     wsRef.current?.close();
   };
