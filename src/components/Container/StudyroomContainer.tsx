@@ -32,6 +32,7 @@ const StudyroomContainer: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { roomId } = useParams<{ roomId: string }>();
   const clientRef = useRef<Client | null>(null);
+  const location = useLocation();
   const navigate = useNavigate();
   const {
     camEnabled,
