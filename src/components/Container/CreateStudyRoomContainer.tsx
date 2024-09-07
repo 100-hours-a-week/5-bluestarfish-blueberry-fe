@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import StudyRoomForm from "../posts/StudyRoomForm";
 import {
   validateStudyRoomName, // 스터디룸 이름의 유효성을 검사하는 함수
-  validateMaxUsers,      // 최대 사용자 수의 유효성을 검사하는 함수
-  validateThumbnail,     // 썸네일 이미지의 유효성을 검사하는 함수
-  validatePassword,      // 비밀번호의 유효성을 검사하는 함수
-  validateCategory       // 카테고리 유효성을 검사하는 함수
-} from '../../utils/validation';
+  validateMaxUsers, // 최대 사용자 수의 유효성을 검사하는 함수
+  validateThumbnail, // 썸네일 이미지의 유효성을 검사하는 함수
+  validatePassword, // 비밀번호의 유효성을 검사하는 함수
+  validateCategory, // 카테고리 유효성을 검사하는 함수
+} from "../../utils/validation";
 
 const CreateStudyRoomContainer: React.FC = () => {
   const [studyRoomName, setStudyRoomName] = useState("");
@@ -32,7 +32,8 @@ const CreateStudyRoomContainer: React.FC = () => {
 
   const handleThumbnailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files ? e.target.files[0] : null; // 선택된 파일
-    setThumbnail(file); // 썸네일 업데이트
+    if (file === undefined) setThumbnail(null);
+    else setThumbnail(file); // 썸네일 업데이트
     setThumbnailError(validateThumbnail(file)); // 썸네일 유효성 검사 후 에러 메시지 업데이트
   };
 
@@ -42,44 +43,13 @@ const CreateStudyRoomContainer: React.FC = () => {
     setPasswordError(validatePassword(pw)); // 비밀번호 유효성 검사 후 에러 메시지 업데이트
   };
 
-  const validateForm = () => {
-    const isStudyRoomNameValid = validateStudyRoomName(studyRoomName); // 스터디룸 이름 유효성 검사
-    const isMaxUsersValid = validateMaxUsers(maxUsers); // 최대 사용자 수 유효성 검사
-    const isThumbnailValid = validateThumbnail(thumbnail); // 썸네일 유효성 검사
-    const isPasswordValid = validatePassword(password); // 비밀번호 유효성 검사
-    const isCategoryValid = validateCategory(category); // 카테고리 유효성 검사
-
-    // 유효성 검사 결과에 따라 에러 메시지 업데이트
-    setStudyRoomNameError(isStudyRoomNameValid);
-    setMaxUsersError(isMaxUsersValid);
-    setThumbnailError(isThumbnailValid);
-    setPasswordError(isPasswordValid);
-    setCategoryError(isCategoryValid);
-
-    // 모든 필드가 유효한지 확인하여 true/false 반환
-    return (
-      isStudyRoomNameValid === "통과" &&
-      isMaxUsersValid === "통과" &&
-      isCategoryValid === "통과" &&
-      (thumbnailError === "* 선택 사항" || thumbnailError === "통과") &&
-      (passwordError === "* 선택 사항" || passwordError === "통과")
-    );
-  };
-
-  const handleSubmit = () => {
-    if (validateForm()) {
-      console.log("스터디룸 생성 성공");
-      // 스터디룸 생성 로직 추가
-    }
-  };
-
   const handleMaxUsersClick = (selectedMaxUsers: number) => {
     if (maxUsers === selectedMaxUsers) {
       setMaxUsers(null); // 이미 선택된 사용자 수를 다시 클릭하면 선택 해제
-      setMaxUsersError('최대 인원을 선택해주세요.');
+      setMaxUsersError("최대 인원을 선택해주세요.");
     } else {
       setMaxUsers(selectedMaxUsers); // 선택된 사용자 수로 업데이트
-      setMaxUsersError('통과'); // 에러 메시지 업데이트
+      setMaxUsersError("통과"); // 에러 메시지 업데이트
     }
   };
 

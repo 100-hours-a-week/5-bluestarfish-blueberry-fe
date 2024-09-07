@@ -66,22 +66,33 @@ const StudyRoomForm: React.FC<StudyRoomFormProps> = ({
   // 스터디룸 생성 요청 함수
   const createStudyRooms = async (): Promise<void> => {
     if (isLoading || !userId) return;
-
     const trimmedTitle = studyRoomName.trim();
-
     try {
       setIsLoading(true);
 
+      // FormData 객체 생성
+      const formData = new FormData();
+
+      // 일반 데이터 추가
+      formData.append("userId", userId.toString()); // 숫자를 문자열로 변환
+      formData.append("title", trimmedTitle);
+      formData.append("maxUsers", String(maxUsers)); // 숫자는 문자열로 변환하여 전송
+      formData.append("camEnabled", String(isCamEnabled)); // Boolean 값도 문자열로 변환
+      formData.append("password", password || ""); // 비밀번호 없을 경우 빈 문자열
+      formData.append("description", description || ""); // 설명 없을 경우 빈 문자열
+
+      // 파일 추가 (null일 경우 제외)
+      if (thumbnail) {
+        formData.append("thumbnail", thumbnail); // 파일이 있는 경우에만 추가
+      }
+
       const response = await axiosInstance.post(
         `${process.env.REACT_APP_API_URL}/api/v1/rooms`,
+        formData, // FormData 객체 전송
         {
-          userId: userId,
-          title: trimmedTitle,
-          maxUsers: maxUsers,
-          camEnabled: isCamEnabled,
-          thumbnail: null,
-          password: password,
-          description: description,
+          headers: {
+            "Content-Type": "multipart/form-data", // FormData 전송을 위한 Content-Type 설정
+          },
         }
       );
 
@@ -103,7 +114,6 @@ const StudyRoomForm: React.FC<StudyRoomFormProps> = ({
     navigate("/");
   };
 
-  // 이 부분에서 createStudyRooms를 호출하도록 수정합니다.
   const handleSubmitClick = async (): Promise<void> => {
     await createStudyRooms(); // 비동기 함수 호출
   };
@@ -235,7 +245,7 @@ const StudyRoomForm: React.FC<StudyRoomFormProps> = ({
       </div>
 
       {/* 대표 이미지 업로드 */}
-      <div className="mb-5 relative relative px-5">
+      <div className="mb-5 relative px-5">
         <label
           className="block text-gray-700 text-sm sm:text-base md:text-lg font-bold mb-2"
           htmlFor="thumbnail"
@@ -277,7 +287,7 @@ const StudyRoomForm: React.FC<StudyRoomFormProps> = ({
       </div>
 
       {/* 암호 설정 */}
-      <div className="mb-4 relative relative px-5">
+      <div className="mb-4 relative px-5">
         <label
           className="block text-gray-700 text-sm sm:text-base md:text-lg font-bold mb-2"
           htmlFor="password"
@@ -308,12 +318,12 @@ const StudyRoomForm: React.FC<StudyRoomFormProps> = ({
       </div>
 
       {/* 스터디 소개 */}
-      <div className="mb-4 relative relative px-5">
+      <div className="mb-4 relative px-5">
         <label
           className="block text-gray-700 text-sm sm:text-base md:text-lg font-bold mb-2"
           htmlFor="description"
         >
-          스터디 소개{" "}
+          스터디 소개
           <span className="text-gray-400 text-xs pl-1">
             ({Math.min(description.length, 100)} / 100)
           </span>
