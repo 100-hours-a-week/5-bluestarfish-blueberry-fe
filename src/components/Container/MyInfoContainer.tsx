@@ -35,6 +35,7 @@ const MyInfoContainer: React.FC = () => {
     const [nicknameHelperTextColor, setNicknameHelperTextColor] = useState<string>("text-red-500");
     const [showNicknameSuccessToast, setShowNicknameSuccessToast] = useState(false);
     const [showNicknameErrorToast, setShowNicknameErrorToast] = useState(false);
+    const [showProfileUpdateSuccessToast, setShowProfileUpdateSuccessToast] = useState(false);
     const [profileImageError, setProfileImageError] = useState("");
     const [nicknameError, setNicknameError] = useState("* 닉네임 중복 검사를 진행해주세요.");
     const [passwordError, setPasswordError] = useState("* 헬퍼텍스트");
@@ -116,6 +117,11 @@ const MyInfoContainer: React.FC = () => {
         setShowNicknameErrorToast(false);
     };
 
+    const handleCloseProfileUpdateSuccessToast = () => {
+        setIsEditing(false); // 편집 모드 종료
+        setShowProfileUpdateSuccessToast(false);
+    }
+
     const handleEditClick = () => {
         setIsEditing(true); // 편집 모드로 전환
     };
@@ -189,9 +195,16 @@ const MyInfoContainer: React.FC = () => {
 
     const handleSaveClick = () => {
         if (isFormValid) {
-            setIsEditing(false); // 편집 모드 종료
-            // 서버에 저장 로직 추가 가능
-        }
+            setShowProfileUpdateSuccessToast(true); // 수정 완료 토스트 메시지 띄우기
+        
+            // 3초 뒤에 편집 모드를 종료
+            setTimeout(() => {
+                setIsEditing(false); // 편집 모드 종료
+                setShowProfileUpdateSuccessToast(false); // 토스트 메시지 종료
+            }, 3000);
+        
+            // 실제 유저 정보 수정 로직이 들어갈 자리
+        }        
     };
 
     if (!currentUser) {
@@ -291,14 +304,14 @@ const MyInfoContainer: React.FC = () => {
                             <>
                                 <button
                                     onClick={handleCancelClick}
-                                    className="bg-red-500 text-white font-semibold px-6 py-2 rounded-full shadow-lg hover:bg-red-600"
+                                    className="bg-red-500 text-white font-semibold px-6 py-2 rounded-full shadow-lg hover:bg-red-600 mt-8"
                                 >
                                     취소
                                 </button>
                                 <button
                                     onClick={handleSaveClick}
                                     disabled={!isFormValid} // 폼이 유효하지 않으면 버튼 비활성화
-                                    className={`px-6 py-2 rounded-full shadow-lg font-semibold ${isFormValid ? 'bg-[#4659AA] text-white hover:bg-[#3b4a99]' : 'bg-gray-400 text-gray-300 cursor-not-allowed'}`}
+                                    className={`px-6 py-2 mt-8 rounded-full shadow-lg font-semibold ${isFormValid ? 'bg-[#4659AA] text-white hover:bg-[#3b4a99]' : 'bg-gray-400 text-gray-300 cursor-not-allowed'}`}
                                 >
                                     수정완료
                                 </button>
@@ -326,6 +339,13 @@ const MyInfoContainer: React.FC = () => {
                     message="사용 불가능한 닉네임"
                     isSuccess={false}
                     onClose={handleCloseNicknameErrorToast}
+                />
+            )}
+            {showProfileUpdateSuccessToast && (
+                <ToastNotification
+                    message="수정 완료!"
+                    isSuccess={true}
+                    onClose={handleCloseProfileUpdateSuccessToast}
                 />
             )}
         </div>
