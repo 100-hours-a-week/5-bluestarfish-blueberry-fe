@@ -7,6 +7,7 @@ import ProfileSection from "../MyInfo/ProfileSection";
 import NicknameSection from "../MyInfo/NicknameSection";
 import PasswordSection from "../MyInfo/PasswordSection";
 import DeletePostModal from "../common/DeletePostModal";
+import StudyTimeChart from "../MyInfo/StudyTimeChart";
 import { validateProfileImage, validateNickname, validateUserPassword, validatePasswordMatch } from "../../utils/validation";
 
 const tabData = [
@@ -231,127 +232,122 @@ const MyInfoContainer: React.FC = () => {
             <div className="w-full max-w-3xl">
                 <TabBar activeIndex={activeTab} setActiveIndex={setActiveTab} tabs={tabData} pageType="myInfo" />
             </div>
-            {/* 프로필 섹션 */}
-            <div className="w-full max-w-3xl p-8 rounded-full flex flex-col items-center justify-center">
-                <div className="w-[50%] flex flex-col items-center">
-                    {/* 프로필 사진 */}
-                    <div className="container mx-auto flex flex-col items-center">
-                        <ProfileSection
-                            profileImagePreview={profileImagePreview}
-                            handleFileChange={handleFileChange}
-                            profileImageError={profileImageError}
+    
+            {activeTab === 0 ? (
+                // "나의 정보" 화면
+                <div className="w-full max-w-3xl p-8 rounded-full flex flex-col items-center justify-center">
+                    <div className="w-[50%] flex flex-col items-center">
+                        {/* 프로필 사진 */}
+                        <div className="container mx-auto flex flex-col items-center">
+                            <ProfileSection
+                                profileImagePreview={profileImagePreview}
+                                handleFileChange={handleFileChange}
+                                profileImageError={profileImageError}
+                                currentUser={currentUser}
+                                defaultProfileImage={defaultProfileImage}
+                                isEditing={isEditing}
+                            />
+                        </div>
+    
+                        {/* 닉네임 섹션 */}
+                        <NicknameSection
+                            nickname={nickname}
+                            handleNicknameChange={handleNicknameChange}
+                            nicknameError={nicknameError}
+                            nicknameHelperTextColor={nicknameHelperTextColor}
+                            nicknameHelperText={nicknameHelperText}
+                            handleIsNicknameAvailableButtonClick={handleIsNicknameAvailableButtonClick}
+                            isEditing={isEditing}
                             currentUser={currentUser}
-                            defaultProfileImage={defaultProfileImage}
+                        />
+    
+                        {/* 이메일 */}
+                        {!isEditing ? (
+                            <div className="mb-8 w-full">
+                                <div className="w-full text-left mb-2">
+                                    <span className="text-[#4659AA] bg-[#EEEEFF] px-3 py-1 rounded-full shadow-md">
+                                        이메일
+                                    </span>
+                                </div>
+                                <span className="text-black underline">
+                                    {currentUser.email}
+                                </span>
+                            </div>
+                        ) : <span></span>}
+    
+                        {/* 스터디 누적 시간 */}
+                        {!isEditing ? (
+                            <div className="mb-8 w-full mb-[50px]">
+                                <div className="w-full text-left mb-2">
+                                    <span className="text-[#4659AA] bg-[#EEEEFF] px-3 py-1 rounded-full shadow-md">
+                                        스터디 누적 시간
+                                    </span>
+                                </div>
+                                <span className="text-black">
+                                    24시간 53분
+                                </span>
+                            </div>
+                        ) : <span></span>}
+    
+                        {/* 비밀번호 섹션 */}
+                        <PasswordSection
+                            password={password}
+                            confirmPassword={confirmPassword}
+                            handlePasswordChange={handlePasswordChange}
+                            handleConfirmPasswordChange={handleConfirmPasswordChange}
+                            passwordError={passwordError}
+                            confirmPasswordError={confirmPasswordError}
                             isEditing={isEditing}
                         />
-                    </div>
-
-
-                    {/* 닉네임 섹션 */}
-                    <NicknameSection
-                        nickname={nickname}
-                        handleNicknameChange={handleNicknameChange}
-                        nicknameError={nicknameError}
-                        nicknameHelperTextColor={nicknameHelperTextColor}
-                        nicknameHelperText={nicknameHelperText}
-                        handleIsNicknameAvailableButtonClick={handleIsNicknameAvailableButtonClick}
-                        isEditing={isEditing}
-                        currentUser={currentUser}
-                    />
-
-                    {showNicknameSuccessToast && (
-                        <ToastNotification
-                            message="사용 가능한 닉네임"
-                            isSuccess={true}
-                            onClose={() => setShowNicknameSuccessToast(false)}
-                        />
-                    )}
-                    {showNicknameErrorToast && (
-                        <ToastNotification
-                            message="사용 불가능한 닉네임"
-                            isSuccess={false}
-                            onClose={() => setShowNicknameErrorToast(false)}
-                        />
-                    )}
-
-                    {/* 이메일 */}
-                    {!isEditing ? (
-                        <div className="mb-8 w-full">
-                            <div className="w-full text-left mb-2">
-                                <span className="text-[#4659AA] bg-[#EEEEFF] px-3 py-1 rounded-full shadow-md">
-                                    이메일
-                                </span>
-                            </div>
-                            <span className="text-black underline">
-                                {currentUser.email}
-                            </span>
+    
+                        {/* 버튼 섹션 */}
+                        <div className="flex space-x-4">
+                            {isEditing ? (
+                                <>
+                                    <button
+                                        onClick={handleCancelClick}
+                                        className="bg-red-500 text-white font-semibold px-6 py-2 rounded-full shadow-lg hover:bg-red-600 mt-8"
+                                    >
+                                        취소
+                                    </button>
+                                    <button
+                                        onClick={handleSaveClick}
+                                        disabled={!isFormValid}
+                                        className={`px-6 py-2 mt-8 rounded-full shadow-lg font-semibold ${isFormValid ? 'bg-[#4659AA] text-white hover:bg-[#3b4a99]' : 'bg-gray-400 text-gray-300 cursor-not-allowed'}`}
+                                    >
+                                        수정완료
+                                    </button>
+                                </>
+                            ) : (
+                                <>
+                                    <button
+                                        onClick={() => setShowWithdrawModal(true)}
+                                        className="bg-red-500 text-white font-semibold px-6 py-2 rounded-full shadow-lg hover:bg-red-600"
+                                    >
+                                        회원 탈퇴
+                                    </button>
+                                    <button
+                                        onClick={handleEditClick}
+                                        className="bg-[#4659AA] text-white font-semibold px-6 py-2 rounded-full shadow-lg hover:bg-[#3b4a99]"
+                                    >
+                                        정보 수정
+                                    </button>
+                                </>
+                            )}
                         </div>
-                    ) : <span></span>}
-
-                    {/* 스터디 누적 시간 */}
-                    {!isEditing ? (
-                        <div className="mb-8 w-full mb-[50px]">
-                            <div className="w-full text-left mb-2">
-                                <span className="text-[#4659AA] bg-[#EEEEFF] px-3 py-1 rounded-full shadow-md">
-                                    스터디 누적 시간
-                                </span>
-                            </div>
-                            <span className="text-black">
-                                24시간 53분
-                            </span>
-                        </div>
-                    ) : <span></span>}
-
-                    {/* 비밀번호 섹션 */}
-                    <PasswordSection
-                        password={password}
-                        confirmPassword={confirmPassword}
-                        handlePasswordChange={handlePasswordChange}
-                        handleConfirmPasswordChange={handleConfirmPasswordChange}
-                        passwordError={passwordError}
-                        confirmPasswordError={confirmPasswordError}
-                        isEditing={isEditing}
-                    />
-
-                    {/* 버튼 섹션 */}
-                    <div className="flex space-x-4">
-                        {/* <div className="flex justify-between w-full"> */}
-                        {isEditing ? (
-                            <>
-                                <button
-                                    onClick={handleCancelClick}
-                                    className="bg-red-500 text-white font-semibold px-6 py-2 rounded-full shadow-lg hover:bg-red-600 mt-8"
-                                >
-                                    취소
-                                </button>
-                                <button
-                                    onClick={handleSaveClick}
-                                    disabled={!isFormValid} // 폼이 유효하지 않으면 버튼 비활성화
-                                    className={`px-6 py-2 mt-8 rounded-full shadow-lg font-semibold ${isFormValid ? 'bg-[#4659AA] text-white hover:bg-[#3b4a99]' : 'bg-gray-400 text-gray-300 cursor-not-allowed'}`}
-                                >
-                                    수정완료
-                                </button>
-                            </>
-                        ) : (
-                            <>
-                                <button
-                                    onClick={() => setShowWithdrawModal(true)}
-                                    className="bg-red-500 text-white font-semibold px-6 py-2 rounded-full shadow-lg hover:bg-red-600"
-                                >
-                                    회원 탈퇴
-                                </button>
-                                <button
-                                    onClick={handleEditClick}
-                                    className="bg-[#4659AA] text-white font-semibold px-6 py-2 rounded-full shadow-lg hover:bg-[#3b4a99]"
-                                >
-                                    정보 수정
-                                </button>
-                            </>
-
-                        )}
                     </div>
                 </div>
-            </div>
+            ) : (
+                // "나의 스터디" 빈 화면
+                <div className="w-full max-w-3xl p-8 rounded-full flex flex-col items-center justify-center">
+                    <div className="w-[100%] flex flex-col items-center">
+                        {/* <p>나의 스터디 시간과 스터디룸 목록이 여기에 표시됩니다.</p> */}
+                        <StudyTimeChart />
+                    </div>
+                </div>
+            )}
+    
+            {/* Toast Notifications */}
             {showNicknameSuccessToast && (
                 <ToastNotification
                     message="사용 가능한 닉네임"
@@ -383,6 +379,7 @@ const MyInfoContainer: React.FC = () => {
             )}
         </div>
     );
+    
 };
 
 export default MyInfoContainer;
