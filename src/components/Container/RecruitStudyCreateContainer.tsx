@@ -160,9 +160,21 @@ const RecruitStudyCreateContainer: React.FC = () => {
   };
 
   const handleCloseToast = () => {
-    setShowToast(false);
-    navigate("/recruit/list");
+    setShowToast(false); // 토스트를 닫고
+    navigate("/recruit/list"); // 페이지 이동
   };
+
+  // 토스트 닫기 핸들러를 `useEffect`를 사용하여 안전하게 호출
+  useEffect(() => {
+    if (showToast) {
+      const timer = setTimeout(() => {
+        setShowToast(false);
+        navigate("/recruit/list"); // 토스트가 닫힐 때 안전하게 상태 업데이트
+      }, 3000); // 3초 후에 토스트를 닫고 페이지 이동
+
+      return () => clearTimeout(timer); // 타이머 클린업
+    }
+  }, [showToast, navigate]);
 
   const handleCategorySelect = (category: string) => {
     if (activeTab === 0) {
@@ -180,11 +192,16 @@ const RecruitStudyCreateContainer: React.FC = () => {
     setTab0SelectedStudy(tab0SelectedStudy === studyId ? null : studyId);
   };
 
+  const tabData = [
+    { name: '스터디 룸 멤버 찾기', icon: `${process.env.PUBLIC_URL}/assets/images/member-icon-blue.png` },
+    { name: '스터디 룸 찾기', icon: `${process.env.PUBLIC_URL}/assets/images/room-icon-blue.png` },
+  ];
+
   return (
     <div className="container mx-auto flex flex-col items-center mt-10">
       <h1 className="text-2xl font-bold mb-8 text-black">✍🏻 게시글 작성 ✍🏻</h1>
       <div className="w-full max-w-3xl">
-        <TabBar activeIndex={activeTab} setActiveIndex={setActiveTab} />
+        <TabBar activeIndex={activeTab} setActiveIndex={setActiveTab} tabs={tabData} pageType="post" />
 
         {activeTab === 0 ? (
           <>
