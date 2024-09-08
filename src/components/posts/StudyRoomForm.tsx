@@ -362,7 +362,7 @@ const StudyRoomForm: React.FC<StudyRoomFormProps> = ({
           <ToastNotification
             message="생성 완료!"
             isSuccess={true}
-            onClose={() => setShowToast(false)}
+            onClose={handleCloseToast}
           />
         )}
       </div>

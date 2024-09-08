@@ -150,12 +150,17 @@ const RecruitStudyUpdateContainer: React.FC = () => {
     navigate(`/recruit/${id}`); // 수정된 게시글 상세 페이지로 이동
   };
 
+  const tabData = [
+    { name: '스터디 룸 멤버 찾기', icon: `${process.env.PUBLIC_URL}/assets/images/member-icon-blue.png` },
+    { name: '스터디 룸 찾기', icon: `${process.env.PUBLIC_URL}/assets/images/room-icon-blue.png` },
+  ];
+
   return (
     <div className="container mx-auto flex flex-col items-center mt-10">
       <h1 className="text-2xl font-bold mb-8 text-black">✍🏻 게시글 수정 ✍🏻</h1>
       <div className="w-full max-w-3xl">
         {/* 탭 바 컴포넌트 */}
-        <TabBar activeIndex={activeTab} setActiveIndex={setActiveTab} />
+        <TabBar activeIndex={activeTab} setActiveIndex={setActiveTab} tabs={tabData} pageType="post" />
 
         {/* 활성화된 탭에 따라 다른 폼을 렌더링 */}
         {activeTab === 0 ? (

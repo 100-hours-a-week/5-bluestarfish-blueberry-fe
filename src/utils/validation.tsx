@@ -145,6 +145,19 @@ export const validateThumbnail = (file: File | null): string => {
   return "* 선택 사항"; // 파일이 없을 때 기본 헬퍼 텍스트로 설정
 };
 
+// 프로필 이미지 유효성 검사
+export const validateProfileImage = (file: File | null): string => {
+  if (file) {
+    if (!["image/jpeg", "image/png"].includes(file.type)) {
+      return "이미지 파일은 JPG, JPEG, PNG 형식이어야 합니다.";
+    } else if (file.size > 3 * 1024 * 1024) {
+      return "이미지 파일 크기는 최대 3MB입니다.";
+    }
+    return "통과";
+  }
+  return "* 헬퍼텍스트"; // 파일이 없을 때 기본 헬퍼 텍스트로 설정
+};
+
 // 스터디룸 암호 유효성 검사
 export const validatePassword = (pw: string): string => {
   const passwordRegex = /^[a-zA-Z0-9]*$/;
