@@ -6,7 +6,8 @@ type HeaderModalProps = {
 };
 
 const HeaderModal: React.FC<HeaderModalProps> = ({ closeModal }) => {
-  const { setUserId, setNickname, setProfileImage } = useLoginedUserStore();
+  const { nickname, setUserId, setNickname, setProfileImage } =
+    useLoginedUserStore();
 
   const handleModalClick = (e: React.MouseEvent) => {
     e.stopPropagation(); // 모달 안쪽 클릭 시 이벤트 전파 막기
@@ -47,6 +48,9 @@ const HeaderModal: React.FC<HeaderModalProps> = ({ closeModal }) => {
         className="absolute right-4 top-16 lg:right-24 w-[90%] max-w-[150px] h-[135px] text-black shadow-lg md:w-[150px]"
         onClick={handleModalClick}
       >
+        <p className="flex justify-center items-center w-[140px] h-[42px] border-2 rounded-[10px] hover:bg-[#ebeeff] bg-[#ffffff]">
+          {nickname}
+        </p>
         <button className="w-[140px] h-[42px] border-2 rounded-[10px] hover:text-[#eb4c64] hover:bg-[#ebeeff] hidden">
           마이페이지
         </button>
