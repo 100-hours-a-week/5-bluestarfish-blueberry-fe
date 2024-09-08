@@ -408,7 +408,7 @@ const StudyroomContainer: React.FC = () => {
     const participant = new Participant(nickname, nickname, sendMessage);
     participants[nickname] = participant;
     //useState로 값을 업데이트하면 에러가 발생
-    setNumUsers(Object.keys(participants).length);
+    // setNumUsers(Object.keys(participants).length);
     const video = participant.getVideoElement();
 
     var options = {
@@ -503,7 +503,7 @@ const StudyroomContainer: React.FC = () => {
     }
 
     //useState로 값을 업데이트하면 에러가 발생
-    setNumUsers(Object.keys(participants).length);
+    // setNumUsers(Object.keys(participants).length);
   };
 
   return (
