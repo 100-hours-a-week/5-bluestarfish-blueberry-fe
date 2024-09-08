@@ -55,7 +55,7 @@ const Header: React.FC = () => {
           </div>
         </div>
 
-        <div className="relative flex">
+        <div className="relative flex bg-transparent">
           {userId !== 0 ? (
             <>
               <img
