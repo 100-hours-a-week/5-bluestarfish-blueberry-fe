@@ -23,7 +23,7 @@ const StudyroomPage: React.FC = () => {
       alert("인가되지 않은 접근입니다.");
       navigate("/");
     }
-  }, [location, navigate]);
+  }, [location]);
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   // const { roomId } = useParams<{ roomId: string }>(); // URL에서 roomId를 가져옴
