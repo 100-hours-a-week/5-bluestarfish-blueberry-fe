@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import StudyRoomForm from "../posts/StudyRoomForm";
 import {
   validateStudyRoomName, // 스터디룸 이름의 유효성을 검사하는 함수
-  validateMaxUsers,      // 최대 사용자 수의 유효성을 검사하는 함수
-  validateThumbnail,     // 썸네일 이미지의 유효성을 검사하는 함수
-  validatePassword,      // 비밀번호의 유효성을 검사하는 함수
-  validateCategory       // 카테고리 유효성을 검사하는 함수
-} from '../../utils/validation';
+  validateMaxUsers, // 최대 사용자 수의 유효성을 검사하는 함수
+  validateThumbnail, // 썸네일 이미지의 유효성을 검사하는 함수
+  validatePassword, // 비밀번호의 유효성을 검사하는 함수
+  validateCategory, // 카테고리 유효성을 검사하는 함수
+} from "../../utils/validation";
 
 const CreateStudyRoomContainer: React.FC = () => {
   const [studyRoomName, setStudyRoomName] = useState("");
@@ -76,10 +76,10 @@ const CreateStudyRoomContainer: React.FC = () => {
   const handleMaxUsersClick = (selectedMaxUsers: number) => {
     if (maxUsers === selectedMaxUsers) {
       setMaxUsers(null); // 이미 선택된 사용자 수를 다시 클릭하면 선택 해제
-      setMaxUsersError('최대 인원을 선택해주세요.');
+      setMaxUsersError("최대 인원을 선택해주세요.");
     } else {
       setMaxUsers(selectedMaxUsers); // 선택된 사용자 수로 업데이트
-      setMaxUsersError('통과'); // 에러 메시지 업데이트
+      setMaxUsersError("통과"); // 에러 메시지 업데이트
     }
   };
 

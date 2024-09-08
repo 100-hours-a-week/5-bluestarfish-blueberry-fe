@@ -24,10 +24,6 @@ const StudyroomWaitContainer: React.FC = () => {
   const stream = useRef<MediaStream | null>(null);
 
   useEffect(() => {
-    console.log(cameraEnabled, microphoneEnabled, permissionsChecked);
-  }, [cameraEnabled, microphoneEnabled, permissionsChecked]);
-
-  useEffect(() => {
     const setupStream = async () => {
       try {
         // 스트림 요청
