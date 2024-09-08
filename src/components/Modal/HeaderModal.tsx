@@ -53,10 +53,6 @@ const HeaderModal: React.FC<HeaderModalProps> = ({ closeModal }) => {
         className="absolute right-4 top-16 lg:right-24 w-[90%] max-w-[150px] h-[135px] text-black md:w-[150px] bg-transparent"
         onClick={handleModalClick} // 모달 내부 클릭 시 닫기 방지
       >
-        {/* <button
-        className="w-[140px] h-[42px] border-2 rounded-[10px] hover:text-[#eb4c64] hover:bg-[#ebeeff] bg-white"
-        onClick={mypage}
-      > */}
         <p className="flex justify-center items-center w-[140px] h-[42px] border-2 rounded-[10px] hover:bg-[#ebeeff] bg-[#ffffff]">
           {nickname}
         </p>
