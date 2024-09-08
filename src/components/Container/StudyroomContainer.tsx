@@ -32,7 +32,6 @@ const StudyroomContainer: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { roomId } = useParams<{ roomId: string }>();
   const clientRef = useRef<Client | null>(null);
-  const location = useLocation();
   const navigate = useNavigate();
   const {
     camEnabled,
@@ -176,9 +175,7 @@ const StudyroomContainer: React.FC = () => {
       );
       if (response.status === 204) {
         console.log("204 No Content");
-        navigate(`/wait/${roomId}`, {
-          state: { authorized: true },
-        });
+        navigate(`/wait/${roomId}`);
       }
     } catch (error: any) {
       if (error.response) {
@@ -408,7 +405,7 @@ const StudyroomContainer: React.FC = () => {
     const participant = new Participant(nickname, nickname, sendMessage);
     participants[nickname] = participant;
     //useState로 값을 업데이트하면 에러가 발생
-    // setNumUsers(Object.keys(participants).length);
+    setNumUsers(Object.keys(participants).length);
     const video = participant.getVideoElement();
 
     var options = {
@@ -455,6 +452,8 @@ const StudyroomContainer: React.FC = () => {
       participants[key].dispose();
     }
 
+    navigate("/");
+
     wsRef.current?.close();
   };
 
@@ -464,7 +463,7 @@ const StudyroomContainer: React.FC = () => {
     const video = participant.getVideoElement();
 
     //useState로 값을 업데이트하면 에러가 발생
-    // setNumUsers(Object.keys(participants).length);
+    setNumUsers(Object.keys(participants).length);
     var options = {
       remoteVideo: video,
       onicecandidate: participant.onIceCandidate.bind(participant),
@@ -503,7 +502,7 @@ const StudyroomContainer: React.FC = () => {
     }
 
     //useState로 값을 업데이트하면 에러가 발생
-    // setNumUsers(Object.keys(participants).length);
+    setNumUsers(Object.keys(participants).length);
   };
 
   return (
