@@ -93,6 +93,33 @@ const MyInfoContainer: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    if (profileImage) {
+      const validationError = validateProfileImage(profileImage); // 유효성 검사
+      setProfileImageError(validationError);
+      setIsValidProfileImage(validationError === "통과"); // 유효성 검사 통과 여부 업데이트
+
+      if (validationError === "통과") {
+        // 유효성 검사를 통과한 경우 이미지를 미리보기로 업데이트
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setProfileImagePreview(reader.result as string); // 이미지를 미리보기로 업데이트
+        };
+        reader.readAsDataURL(profileImage); // 파일을 읽어서 base64 URL로 변환
+      } else {
+        // 유효성 검사를 통과하지 못한 경우 기존 프로필 이미지로 되돌림
+        setProfileImagePreview(
+          currentUser?.profileImage || defaultProfileImage
+        );
+      }
+    } else {
+      // 파일이 선택되지 않았을 경우 기본 이미지로 설정
+      setProfileImagePreview(currentUser?.profileImage || defaultProfileImage);
+      setProfileImageError(""); // 파일이 없을 때 기본 헬퍼 텍스트로 설정
+      setIsValidProfileImage(true); // 유효성 검사 실패
+    }
+  }, [profileImage]);
+
+  useEffect(() => {
     const isFormValidNow =
       isValidNickname &&
       isValidPassword &&
@@ -125,7 +152,6 @@ const MyInfoContainer: React.FC = () => {
 
   const handleIsNicknameAvailableButtonClick = async () => {
     const trimmedNickname = nickname.trim();
-    console.log(trimmedNickname);
 
     if (trimmedNickname === currentUser.nickname) {
       setIsValidNickname(true); // 중복 검사에 통과했을 때 유효성 검사 통과
@@ -210,31 +236,31 @@ const MyInfoContainer: React.FC = () => {
       setProfileImage(null);
     }
 
-    if (profileImage) {
-      const validationError = validateProfileImage(profileImage); // 유효성 검사
-      console.log(validationError);
-      setProfileImageError(validationError);
-      setIsValidProfileImage(validationError === "통과"); // 유효성 검사 통과 여부 업데이트
+    // if (profileImage) {
+    //   const validationError = validateProfileImage(profileImage); // 유효성 검사
+    //   console.log(validationError);
+    //   setProfileImageError(validationError);
+    //   setIsValidProfileImage(validationError === "통과"); // 유효성 검사 통과 여부 업데이트
 
-      if (validationError === "통과") {
-        // 유효성 검사를 통과한 경우 이미지를 미리보기로 업데이트
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          setProfileImagePreview(reader.result as string); // 이미지를 미리보기로 업데이트
-        };
-        reader.readAsDataURL(profileImage); // 파일을 읽어서 base64 URL로 변환
-      } else {
-        // 유효성 검사를 통과하지 못한 경우 기존 프로필 이미지로 되돌림
-        setProfileImagePreview(
-          currentUser?.profileImage || defaultProfileImage
-        );
-      }
-    } else {
-      // 파일이 선택되지 않았을 경우 기본 이미지로 설정
-      setProfileImagePreview(currentUser?.profileImage || defaultProfileImage);
-      setProfileImageError(""); // 파일이 없을 때 기본 헬퍼 텍스트로 설정
-      setIsValidProfileImage(true); // 유효성 검사 실패
-    }
+    //   if (validationError === "통과") {
+    //     // 유효성 검사를 통과한 경우 이미지를 미리보기로 업데이트
+    //     const reader = new FileReader();
+    //     reader.onloadend = () => {
+    //       setProfileImagePreview(reader.result as string); // 이미지를 미리보기로 업데이트
+    //     };
+    //     reader.readAsDataURL(profileImage); // 파일을 읽어서 base64 URL로 변환
+    //   } else {
+    //     // 유효성 검사를 통과하지 못한 경우 기존 프로필 이미지로 되돌림
+    //     setProfileImagePreview(
+    //       currentUser?.profileImage || defaultProfileImage
+    //     );
+    //   }
+    // } else {
+    //   // 파일이 선택되지 않았을 경우 기본 이미지로 설정
+    //   setProfileImagePreview(currentUser?.profileImage || defaultProfileImage);
+    //   setProfileImageError(""); // 파일이 없을 때 기본 헬퍼 텍스트로 설정
+    //   setIsValidProfileImage(true); // 유효성 검사 실패
+    // }
   };
 
   const handleSaveClick = () => {
@@ -262,8 +288,8 @@ const MyInfoContainer: React.FC = () => {
       if (nickname) {
         formData.append("nickname", nickname);
       }
-      if (profileImage) {
-        formData.append("profile-image", profileImage); // 파일이 있는 경우에만 추가
+      if (profileImage && profileImage !== undefined) {
+        formData.append("profileImage", profileImage); // 파일이 있는 경우에만 추가
       }
 
       const response = await axiosInstance.patch(
@@ -279,6 +305,7 @@ const MyInfoContainer: React.FC = () => {
       if (response.status === 204) {
         console.log("204: No Content, 수정 완료");
         setShowProfileUpdateSuccessToast(true);
+        navigate(0);
       }
     } catch (error) {
       console.log(error);
@@ -409,9 +436,9 @@ const MyInfoContainer: React.FC = () => {
                 </button>
                 <button
                   onClick={patchUser}
-                  disabled={!isFormValid} // 폼이 유효하지 않으면 버튼 비활성화
+                  disabled={!isFormValid && !isLoading} // 폼이 유효하지 않으면 버튼 비활성화
                   className={`px-6 py-2 mt-8 rounded-full shadow-lg font-semibold ${
-                    isFormValid
+                    isFormValid || isLoading
                       ? "bg-[#4659AA] text-white hover:bg-[#3b4a99]"
                       : "bg-gray-400 text-gray-300 cursor-not-allowed"
                   }`}
