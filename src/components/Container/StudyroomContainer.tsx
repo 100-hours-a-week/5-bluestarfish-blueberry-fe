@@ -464,7 +464,7 @@ const StudyroomContainer: React.FC = () => {
     const video = participant.getVideoElement();
 
     //useState로 값을 업데이트하면 에러가 발생
-    setNumUsers(Object.keys(participants).length);
+    // setNumUsers(Object.keys(participants).length);
     var options = {
       remoteVideo: video,
       onicecandidate: participant.onIceCandidate.bind(participant),
