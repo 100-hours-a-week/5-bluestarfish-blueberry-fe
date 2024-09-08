@@ -3,18 +3,26 @@ import React from 'react';
 interface TabBarProps {
   activeIndex: number;
   setActiveIndex: (index: number) => void;
+  tabs: { name: string; icon: string }[]; // 탭 데이터를 외부에서 전달받음
+  pageType: string; // 페이지 구분을 위함
 }
 
-const TabBar: React.FC<TabBarProps> = ({ activeIndex, setActiveIndex }) => {
-  // 탭 목록 데이터: 각 탭의 이름과 아이콘 경로를 정의
-  const tabs = [
-    { name: '스터디 룸 멤버 찾기', icon: `${process.env.PUBLIC_URL}/assets/images/member-icon-blue.png` },
-    { name: '스터디 룸 찾기', icon: `${process.env.PUBLIC_URL}/assets/images/room-icon-blue.png` },
-  ];
-
+const TabBar: React.FC<TabBarProps> = ({ activeIndex, setActiveIndex, tabs, pageType }) => {
   // 탭 클릭 시 호출되는 함수: 클릭된 탭의 인덱스를 activeIndex 상태로 설정
   const handleTabClick = (index: number) => {
     setActiveIndex(index);
+  };
+
+  // 페이지별 밑줄 위치 계산 함수
+  const getUnderlineLeftPosition = () => {
+    switch (pageType) {
+      case 'myInfo':
+        return `calc(${activeIndex * 50}% + 87px)`; // 마이 페이지에서 밑줄 위치
+      case 'post':
+        return `calc(${activeIndex * 50}% + ${activeIndex === 0 ? '95px' : '95px'})`; // 게시글 페이지에서 밑줄 위치
+      default:
+        return `calc(${activeIndex * 50}% + ${activeIndex === 0 ? '95px' : '95px'})`; // 기본 위치
+    }
   };
 
   return (
@@ -26,7 +34,7 @@ const TabBar: React.FC<TabBarProps> = ({ activeIndex, setActiveIndex }) => {
           style={{
             // 밑줄의 너비와 위치를 활성화된 탭에 맞게 설정
             width: '100px',
-            left: `calc(${activeIndex * 50}% + ${activeIndex === 0 ? '95px' : '95px'})`,
+            left: getUnderlineLeftPosition(),
           }}
         ></div>
 
@@ -55,7 +63,7 @@ const TabBar: React.FC<TabBarProps> = ({ activeIndex, setActiveIndex }) => {
                   activeIndex === index ? 'text-[#4659AA]' : ''
                 }`}  // 활성화된 탭의 텍스트는 색상이 변경
               >
-                {tab.name}
+                <span>{tab.name}</span>
               </span>
             </div>
           </div>
@@ -65,4 +73,4 @@ const TabBar: React.FC<TabBarProps> = ({ activeIndex, setActiveIndex }) => {
   );
 };
 
-export default TabBar;  // 컴포넌트를 기본 내보내기로 설정
+export default TabBar;

@@ -257,7 +257,6 @@ const SignupForm: React.FC = () => {
     window.location.href = "/"; // 루트 페이지로 리다이렉트
   };
 
-  // 임시 회원가입 함수
   const signupUser = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault(); // 폼 제출 기본 동작 방지
     if (isLoading) return;

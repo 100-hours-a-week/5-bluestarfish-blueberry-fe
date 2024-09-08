@@ -15,7 +15,8 @@ export const useSetUserInfo = () => {
       if (response.status === 200) {
         setUserId(response.data.data.id);
         setNickname(response.data.data.nickname);
-        setProfileImage(response.data.data.profile_image);
+        setProfileImage(response.data.data.profileImage);
+        console.log(response.data.data.profileImage);
         if (response.data.data.nickname === null) {
           alert("닉네임 설정을 위한 페이지로 이동합니다!");
           navigate("/setnickname");
@@ -55,7 +56,7 @@ export const useAuthCheck = () => {
         } else {
           setUserId(response.data.data.id);
           setNickname(response.data.data.nickname);
-          setProfileImage(response.data.data.profile_image);
+          setProfileImage(response.data.data.profileImage);
         }
       }
     } catch (error: any) {
