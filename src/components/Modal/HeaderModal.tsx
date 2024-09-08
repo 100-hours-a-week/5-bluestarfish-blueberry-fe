@@ -23,7 +23,6 @@ const HeaderModal: React.FC<HeaderModalProps> = ({ closeModal }) => {
       if (response.status === 204) {
         console.log(`로그아웃 성공!`);
         closeModal();
-      } else {
       }
     } catch (error: any) {
       if (error.response) {
@@ -46,28 +45,31 @@ const HeaderModal: React.FC<HeaderModalProps> = ({ closeModal }) => {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center"
-      onClick={closeModal} // 모달 밖 클릭 시 닫기
+    className="fixed inset-0 flex items-center justify-center bg-transparent"
+    onClick={closeModal} // 모달 밖 클릭 시 닫기
+  >
+    <div
+      className="absolute right-4 top-16 lg:right-24 w-[90%] max-w-[150px] h-[135px] text-black md:w-[150px] bg-transparent"
+      onClick={handleModalClick} // 모달 내부 클릭 시 닫기 방지
     >
-      <div
-        className="absolute right-4 top-16 lg:right-24 w-[90%] max-w-[150px] h-[135px] text-black shadow-lg md:w-[150px]"
-        onClick={handleModalClick}
+      <button
+        className="w-[140px] h-[42px] border-2 rounded-[10px] hover:text-[#eb4c64] hover:bg-[#ebeeff] bg-white"
+        onClick={mypage}
       >
-        <button className="w-[140px] h-[42px] border-2 rounded-[10px] hover:text-[#eb4c64] hover:bg-[#ebeeff] bg-white"
-        onClick={mypage}>
-          마이페이지
-        </button>
-        <button className="w-[140px] h-[42px] border-2 rounded-[10px] hover:text-[#eb4c64] hover:bg-[#ebeeff] hidden">
-          친구 관리
-        </button>
-        <button
-          className="w-[140px] h-[42px] border-2 rounded-[10px] hover:text-[#eb4c64] hover:bg-[#ebeeff] bg-white"
-          onClick={logout}
-        >
-          로그아웃
-        </button>
-      </div>
+        마이페이지
+      </button>
+      <button className="w-[140px] h-[42px] border-2 rounded-[10px] hover:text-[#eb4c64] hover:bg-[#ebeeff] hidden">
+        친구 관리
+      </button>
+      <button
+        className="w-[140px] h-[42px] border-2 rounded-[10px] hover:text-[#eb4c64] hover:bg-[#ebeeff] bg-white"
+        onClick={logout}
+      >
+        로그아웃
+      </button>
     </div>
+  </div>
+  
   );
 };
 
