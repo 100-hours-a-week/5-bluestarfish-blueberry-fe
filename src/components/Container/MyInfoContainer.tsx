@@ -227,7 +227,7 @@ const MyInfoContainer: React.FC = () => {
     }
 
     return (
-        <div className="container mx-auto flex flex-col items-center mt-24">
+        <div className="container mx-auto flex flex-col items-center mt-24 bg-transparent">
             <div className="w-full max-w-3xl">
                 <TabBar activeIndex={activeTab} setActiveIndex={setActiveTab} tabs={tabData} pageType="myInfo" />
             </div>
