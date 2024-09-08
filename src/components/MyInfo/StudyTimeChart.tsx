@@ -59,7 +59,7 @@ const StudyTimeChart = () => {
             <h2 className="text-lg mb-4 w-full text-left">나의 스터디 시간</h2>
 
             {/* 차트 */}
-            <div className="w-full max-w-3xl pt-10 shadow-lg rounded-lg">
+            <div className="w-full w-[1024px] pt-10 shadow-lg rounded-lg">
                 <div className="pl-10 pr-10">
                     <ResponsiveContainer width="100%" height={300}>
                         <BarChart
@@ -68,7 +68,20 @@ const StudyTimeChart = () => {
                         >
                             <XAxis dataKey="name" />
                             <YAxis />
-                            <Tooltip />
+                            <Tooltip
+                                formatter={(value: any) => {
+                                    // 주간과 월간에 따른 툴팁 메시지
+                                    return isWeekly
+                                        ? [`${value}시간`, "주간 누적 시간"]
+                                        : [`${value}시간`, "월간 누적 시간"];
+                                }}
+                                labelFormatter={(label: string) => {
+                                    // 주간/월간에 따른 X축 라벨 포맷
+                                    return isWeekly
+                                        ? `${label}주`  // 주간일 경우
+                                        : `${label}월`;  // 월간일 경우
+                                }}
+                            />
                             <Bar
                                 dataKey="시간"
                                 fill="#C6CFFF"

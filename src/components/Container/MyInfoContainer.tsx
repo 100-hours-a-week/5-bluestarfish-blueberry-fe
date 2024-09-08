@@ -8,6 +8,7 @@ import NicknameSection from "../MyInfo/NicknameSection";
 import PasswordSection from "../MyInfo/PasswordSection";
 import DeletePostModal from "../common/DeletePostModal";
 import StudyTimeChart from "../MyInfo/StudyTimeChart";
+import RecentStudyRooms from "../MyInfo/RecentStudyRooms";
 import { validateProfileImage, validateNickname, validateUserPassword, validatePasswordMatch } from "../../utils/validation";
 
 const tabData = [
@@ -228,8 +229,8 @@ const MyInfoContainer: React.FC = () => {
     }
 
     return (
-        <div className="container mx-auto flex flex-col items-center mt-24 bg-transparent">
-            <div className="w-full max-w-3xl">
+        <div className="container mx-auto flex flex-col items-center mt-24 w-full max-w-[1024px] bg-transparent">
+            <div className="w-full max-w-[75%]">
                 <TabBar activeIndex={activeTab} setActiveIndex={setActiveTab} tabs={tabData} pageType="myInfo" />
             </div>
     
@@ -339,10 +340,10 @@ const MyInfoContainer: React.FC = () => {
                 </div>
             ) : (
                 // "나의 스터디" 빈 화면
-                <div className="w-full max-w-3xl p-8 rounded-full flex flex-col items-center justify-center">
+                <div className="w-full max-w-[1024px] p-8 rounded-full flex flex-col items-center justify-center">
                     <div className="w-[100%] flex flex-col items-center">
-                        {/* <p>나의 스터디 시간과 스터디룸 목록이 여기에 표시됩니다.</p> */}
-                        <StudyTimeChart />
+                        <StudyTimeChart /> {/* Mock 데이터로 구현한 차트 */}
+                        <RecentStudyRooms /> {/* 우선은 현재 생성된 스터디룸을 불러오는 방식으로 구현. 실제로는 최근 참여한 스터디룸이 불러와져야 함 */}
                     </div>
                 </div>
             )}
