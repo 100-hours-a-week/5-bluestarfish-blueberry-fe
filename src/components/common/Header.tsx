@@ -36,7 +36,9 @@ const Header: React.FC = () => {
               alt="Logo"
               className="h-8 w-8"
             />
-            <span className="text-lg md:text-xl font-bold text-[#6D81D5]">blueberry</span>
+            <span className="text-lg md:text-xl font-bold text-[#6D81D5]">
+              blueberry
+            </span>
           </Link>
           <div className="relative w-full max-w-[740px] hidden">
             {/* 검색 바 숨김 처리 */}
