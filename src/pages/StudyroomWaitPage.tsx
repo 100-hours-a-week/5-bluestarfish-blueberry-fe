@@ -20,7 +20,7 @@ const StudyroomWaitPage: React.FC = () => {
       alert("인가되지 않은 접근입니다.");
       navigate("/");
     }
-  }, [location, navigate]);
+  }, [location]);
 
   return (
     <div>
