@@ -1,10 +1,12 @@
 import React, { useState, useEffect, ChangeEvent } from "react";
+import { useNavigate } from "react-router-dom";
 import TabBar from "../posts/TabBar";
 import axiosInstance from "../../utils/axiosInstance";
 import ToastNotification from "../common/ToastNotification";
 import ProfileSection from "../MyInfo/ProfileSection";
 import NicknameSection from "../MyInfo/NicknameSection";
 import PasswordSection from "../MyInfo/PasswordSection";
+import DeletePostModal from "../common/DeletePostModal";
 import { validateProfileImage, validateNickname, validateUserPassword, validatePasswordMatch } from "../../utils/validation";
 
 const tabData = [
@@ -45,8 +47,10 @@ const MyInfoContainer: React.FC = () => {
     const [isPasswordMatch, setIsPasswordMatch] = useState(false);
     const [isValidProfileImage, setIsValidProfileImage] = useState(true);
     const [isFormValid, setIsFormValid] = useState(false);
+    const [showDeleteModal, setShowWithdrawModal] = useState(false);
 
     const defaultProfileImage = `${process.env.PUBLIC_URL}/assets/images/gunssakdo.png`; // 기본 프로필 이미지 URL
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchCurrentUser = async () => {
@@ -196,16 +200,27 @@ const MyInfoContainer: React.FC = () => {
     const handleSaveClick = () => {
         if (isFormValid) {
             setShowProfileUpdateSuccessToast(true); // 수정 완료 토스트 메시지 띄우기
-        
+
             // 3초 뒤에 편집 모드를 종료
             setTimeout(() => {
                 setIsEditing(false); // 편집 모드 종료
                 setShowProfileUpdateSuccessToast(false); // 토스트 메시지 종료
             }, 3000);
-        
+
             // 실제 유저 정보 수정 로직이 들어갈 자리
-        }        
+        }
     };
+
+    const handleWithdraw = async () => {
+        try {
+          // 회원 탈퇴 로직이 들어갈 자리
+    
+          navigate("/");
+        } catch (error: unknown) {
+          console.error("회원 탈퇴 실패:", getErrorMessage(error));
+          alert("회원 탈퇴에 실패했습니다. 다시 시도해 주세요.");
+        }
+      };
 
     if (!currentUser) {
         return <div>Loading...</div>;
@@ -300,6 +315,7 @@ const MyInfoContainer: React.FC = () => {
 
                     {/* 버튼 섹션 */}
                     <div className="flex space-x-4">
+                        {/* <div className="flex justify-between w-full"> */}
                         {isEditing ? (
                             <>
                                 <button
@@ -317,12 +333,21 @@ const MyInfoContainer: React.FC = () => {
                                 </button>
                             </>
                         ) : (
-                            <button
-                                onClick={handleEditClick}
-                                className="bg-[#4659AA] text-white font-semibold px-6 py-2 rounded-full shadow-lg hover:bg-[#3b4a99]"
-                            >
-                                정보 수정
-                            </button>
+                            <>
+                                <button
+                                    onClick={() => setShowWithdrawModal(true)}
+                                    className="bg-red-500 text-white font-semibold px-6 py-2 rounded-full shadow-lg hover:bg-red-600"
+                                >
+                                    회원 탈퇴
+                                </button>
+                                <button
+                                    onClick={handleEditClick}
+                                    className="bg-[#4659AA] text-white font-semibold px-6 py-2 rounded-full shadow-lg hover:bg-[#3b4a99]"
+                                >
+                                    정보 수정
+                                </button>
+                            </>
+
                         )}
                     </div>
                 </div>
@@ -346,6 +371,14 @@ const MyInfoContainer: React.FC = () => {
                     message="수정 완료!"
                     isSuccess={true}
                     onClose={handleCloseProfileUpdateSuccessToast}
+                />
+            )}
+            {showDeleteModal && (
+                <DeletePostModal
+                    title="탈퇴하시겠습니까?"
+                    description="탈퇴 후 복구할 수 없습니다."
+                    onConfirm={handleWithdraw}
+                    onCancel={() => setShowWithdrawModal(false)}
                 />
             )}
         </div>
