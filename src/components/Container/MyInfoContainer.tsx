@@ -235,47 +235,8 @@ const MyInfoContainer: React.FC = () => {
     } else {
       setProfileImage(null);
     }
-
-    // if (profileImage) {
-    //   const validationError = validateProfileImage(profileImage); // 유효성 검사
-    //   console.log(validationError);
-    //   setProfileImageError(validationError);
-    //   setIsValidProfileImage(validationError === "통과"); // 유효성 검사 통과 여부 업데이트
-
-    //   if (validationError === "통과") {
-    //     // 유효성 검사를 통과한 경우 이미지를 미리보기로 업데이트
-    //     const reader = new FileReader();
-    //     reader.onloadend = () => {
-    //       setProfileImagePreview(reader.result as string); // 이미지를 미리보기로 업데이트
-    //     };
-    //     reader.readAsDataURL(profileImage); // 파일을 읽어서 base64 URL로 변환
-    //   } else {
-    //     // 유효성 검사를 통과하지 못한 경우 기존 프로필 이미지로 되돌림
-    //     setProfileImagePreview(
-    //       currentUser?.profileImage || defaultProfileImage
-    //     );
-    //   }
-    // } else {
-    //   // 파일이 선택되지 않았을 경우 기본 이미지로 설정
-    //   setProfileImagePreview(currentUser?.profileImage || defaultProfileImage);
-    //   setProfileImageError(""); // 파일이 없을 때 기본 헬퍼 텍스트로 설정
-    //   setIsValidProfileImage(true); // 유효성 검사 실패
-    // }
   };
 
-  const handleSaveClick = () => {
-    if (isFormValid) {
-      setShowProfileUpdateSuccessToast(true); // 수정 완료 토스트 메시지 띄우기
-
-      // 3초 뒤에 편집 모드를 종료
-      setTimeout(() => {
-        setIsEditing(false); // 편집 모드 종료
-        setShowProfileUpdateSuccessToast(false); // 토스트 메시지 종료
-      }, 3000);
-
-      // 실제 유저 정보 수정 로직이 들어갈 자리
-    }
-  };
   const patchUser = async () => {
     if (isLoading) return;
 
