@@ -44,7 +44,11 @@ const PasswordModal: React.FC<PasswordModalProps> = ({
       if (response.status === 200) {
         document.body.style.overflow = "auto";
         navigate(`/wait/${roomId}`, {
-          state: { authorized: true, needPassword: false, password: content },
+          state: {
+            authorized: true,
+            needPassword: true,
+            password: trimmedContent,
+          },
         });
         // 성공 처리
       }

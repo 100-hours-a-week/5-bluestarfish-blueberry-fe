@@ -312,7 +312,7 @@ const StudyRoomForm: React.FC<StudyRoomFormProps> = ({
         <input
           id="password"
           type="text"
-          maxLength={20}
+          maxLength={10}
           value={password}
           onChange={handlePasswordChange}
           placeholder="스터디룸 암호를 입력해주세요."

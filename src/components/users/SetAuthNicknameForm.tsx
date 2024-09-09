@@ -98,12 +98,17 @@ const SetAuthNicknameForm: React.FC = () => {
 
     try {
       setIsLoading(true);
+      const formData = new FormData();
+      if (nickname) {
+        formData.append("nickname", nickname);
+      }
       const response = await axiosInstance.patch(
         `${process.env.REACT_APP_API_URL}/api/v1/users/${userId}`,
+        formData,
         {
-          nickname: nickname,
-          profile_image: null,
-          password: null,
+          headers: {
+            "Content-Type": "multipart/form-data", // FormData 전송을 위한 Content-Type 설정
+          },
         }
       );
 

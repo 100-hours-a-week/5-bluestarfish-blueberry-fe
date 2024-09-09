@@ -52,6 +52,7 @@ const StudyroomContainer: React.FC = () => {
   const wsRef = useRef<WebSocket | null>(null);
   const participants: Record<string, Participant> = {};
   const [numUsers, setNumUsers] = useState<number>(0);
+  const location = useLocation();
 
   useEffect(() => {
     fetchStudyRoom();
@@ -113,8 +114,17 @@ const StudyroomContainer: React.FC = () => {
         if (wsRef.current) {
           wsRef.current.close();
         }
+
         if (localStreamRef.current) {
           localStreamRef.current.getTracks().forEach((track) => track.stop());
+        }
+
+        // WebRTC 피어 연결 종료
+        for (let key in participants) {
+          if (participants[key].rtcPeer) {
+            participants[key].rtcPeer.dispose();
+            participants[key].rtcPeer = null;
+          }
         }
       };
     }
@@ -157,6 +167,12 @@ const StudyroomContainer: React.FC = () => {
     }
   }, [wsRef.current]);
 
+  // useEffect(() => {
+  //   if (location.state && location.state.needPassword) {
+  //     setPassword(location.state.password);
+  //   }
+  // }, [location]);
+
   const exitStudyRoom = async () => {
     if (isLoading) return;
     try {
@@ -175,9 +191,19 @@ const StudyroomContainer: React.FC = () => {
       );
       if (response.status === 204) {
         console.log("204 No Content");
-        navigate(`/wait/${roomId}`, {
-          state: { authorized: true, needPassword: false },
-        });
+        if (location.state && location.state.needPassword) {
+          navigate(`/wait/${roomId}`, {
+            state: {
+              authorized: true,
+              needPassword: true,
+              password: location.state.password,
+            },
+          });
+        } else {
+          navigate(`/wait/${roomId}`, {
+            state: { authorized: true, needPassword: false },
+          });
+        }
       }
     } catch (error: any) {
       if (error.response) {
@@ -295,6 +321,12 @@ const StudyroomContainer: React.FC = () => {
     return () => {
       if (clientRef.current) {
         clientRef.current.deactivate();
+      }
+      if (wsRef.current) {
+        wsRef.current.close();
+      }
+      if (localStreamRef.current) {
+        localStreamRef.current.getTracks().forEach((track) => track.stop());
       }
     };
   }, []);
