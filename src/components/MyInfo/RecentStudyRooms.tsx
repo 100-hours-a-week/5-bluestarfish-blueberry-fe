@@ -62,16 +62,19 @@ const RecentAndMyStudyRooms: React.FC = () => {
         }
     };
 
-
-
     // 최근 방문한 스터디룸을 최대 10개 가져오는 함수
     const fetchRecentStudyRooms = async () => {
         try {
             setIsLoading(true);
-            const response = await axiosInstance.get(`${process.env.REACT_APP_API_URL}/api/v1/rooms`);
-
-            // response.data가 배열이므로 최대 10개만 slice로 가져오기
-            const recentRooms = response.data.slice(0, 10);
+            const response = await axiosInstance.get(
+                `${process.env.REACT_APP_API_URL}/api/v1/rooms`,
+                {
+                  params: {
+                    page: 0
+                  },
+                }
+              );
+            const recentRooms = response.data.data.content;
             setRecentStudyRooms(recentRooms);
         } catch (error) {
             setError("최근 방문한 스터디룸을 가져오는 데 실패했습니다.");
