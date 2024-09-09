@@ -80,9 +80,9 @@ const StudyroomWaitContainer: React.FC = () => {
 
   const exitWaitPage = () => {
     // 모든 미디어 스트림을 종료
-    if (stream.current) {
-      stream.current.getTracks().forEach((track) => track.stop());
-    }
+    // if (stream.current) {
+    //   stream.current.getTracks().forEach((track) => track.stop());
+    // }
     navigate("/");
   };
 

@@ -313,6 +313,12 @@ const StudyroomContainer: React.FC = () => {
       if (clientRef.current) {
         clientRef.current.deactivate();
       }
+      if (wsRef.current) {
+        wsRef.current.close();
+      }
+      if (localStreamRef.current) {
+        localStreamRef.current.getTracks().forEach((track) => track.stop());
+      }
     };
   }, []);
 
