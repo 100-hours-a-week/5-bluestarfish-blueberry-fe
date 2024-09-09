@@ -30,9 +30,10 @@ const StudyroomWaitContainer: React.FC = () => {
   }, [cameraEnabled, microphoneEnabled, permissionsChecked]);
 
   useEffect(() => {
-    if (location.state && location.state.password) {
+    if (location.state && location.state.needPassword) {
       setPassword(location.state.password);
     }
+    console.log(location.state.password);
   }, [location]);
 
   useEffect(() => {
@@ -79,9 +80,9 @@ const StudyroomWaitContainer: React.FC = () => {
 
   const exitWaitPage = () => {
     // 모든 미디어 스트림을 종료
-    if (stream.current) {
-      stream.current.getTracks().forEach((track) => track.stop());
-    }
+    // if (stream.current) {
+    //   stream.current.getTracks().forEach((track) => track.stop());
+    // }
     navigate("/");
   };
 
@@ -103,9 +104,19 @@ const StudyroomWaitContainer: React.FC = () => {
         }
       );
       if (response.status === 204) {
-        navigate(`/studyroom/${roomId}`, {
-          state: { authorized: true },
-        });
+        if (location.state && location.state.needPassword) {
+          navigate(`/studyroom/${roomId}`, {
+            state: {
+              authorized: true,
+              needPassword: true,
+              password: location.state.password,
+            },
+          });
+        } else {
+          navigate(`/studyroom/${roomId}`, {
+            state: { authorized: true, needPassword: false },
+          });
+        }
       }
     } catch (error: any) {
       if (error.response) {
