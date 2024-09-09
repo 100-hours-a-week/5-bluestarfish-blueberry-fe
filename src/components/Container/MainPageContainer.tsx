@@ -3,6 +3,7 @@ import Carousel from "../common/Carousel";
 import StudyroomTNContainer from "./StudyroomTNContainer";
 import QnAModal from "../Modal/QnAModal";
 import ToastNotification from "../common/ToastNotification";
+import RankingSlider from "../users/RankingSlider";
 
 const MainPageContainer: React.FC = () => {
   const [isQnAModalOpen, setQnAModalOpen] = useState(false);
@@ -33,6 +34,7 @@ const MainPageContainer: React.FC = () => {
     <div className="flex flex-col mt-[80px] items-center w-full bg-white">
       <Carousel />
       <div className="w-full max-w-[1024px] px-4">
+        <RankingSlider />
         <StudyroomTNContainer />
       </div>
       <div className="fixed right-4 bottom-4 p-4">

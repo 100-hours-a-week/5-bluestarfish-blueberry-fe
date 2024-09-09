@@ -175,7 +175,9 @@ const StudyroomContainer: React.FC = () => {
       );
       if (response.status === 204) {
         console.log("204 No Content");
-        navigate(`/wait/${roomId}`);
+        navigate(`/wait/${roomId}`, {
+          state: { authorized: true, needPassword: false },
+        });
       }
     } catch (error: any) {
       if (error.response) {
