@@ -34,6 +34,7 @@ const MyInfoContainer: React.FC = () => {
     const [nickname, setNickname] = useState<string>("");
     const [password, setPassword] = useState<string>("");
     const [confirmPassword, setConfirmPassword] = useState<string>("");
+    const [profileImage, setProfileImage] = useState<File | null>(null);
     const [profileImagePreview, setProfileImagePreview] = useState<string | null>(null); // 프로필 이미지 미리보기 상태
     const [nicknameHelperText, setNicknameHelperText] = useState<string>("");
     const [nicknameHelperTextColor, setNicknameHelperTextColor] = useState<string>("text-red-500");
@@ -50,6 +51,7 @@ const MyInfoContainer: React.FC = () => {
     const [isValidProfileImage, setIsValidProfileImage] = useState(true);
     const [isFormValid, setIsFormValid] = useState(false);
     const [showDeleteModal, setShowWithdrawModal] = useState(false);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
 
     const defaultProfileImage = `${process.env.PUBLIC_URL}/assets/images/gunssakdo.png`; // 기본 프로필 이미지 URL
     const navigate = useNavigate();
@@ -71,11 +73,47 @@ const MyInfoContainer: React.FC = () => {
         fetchCurrentUser();
     }, []);
 
+    // useEffect(() => {
+    //     const isFormValidNow = isValidNickname && isValidPassword && isPasswordMatch && isValidProfileImage;
+    //     console.log(isValidProfileImage, isValidNickname, isValidPassword, isPasswordMatch);
+    //     setIsFormValid(isFormValidNow);  // 유효성 검사 통과 여부 업데이트
+    // }, [isValidNickname, isValidPassword, isPasswordMatch, isValidProfileImage]);  // 의존성 배열에 유효성 검사 상태 추가
+
     useEffect(() => {
-        const isFormValidNow = isValidNickname && isValidPassword && isPasswordMatch && isValidProfileImage;
-        console.log(isValidProfileImage, isValidNickname, isValidPassword, isPasswordMatch);
-        setIsFormValid(isFormValidNow);  // 유효성 검사 통과 여부 업데이트
-    }, [isValidNickname, isValidPassword, isPasswordMatch, isValidProfileImage]);  // 의존성 배열에 유효성 검사 상태 추가
+        if (profileImage) {
+            const validationError = validateProfileImage(profileImage); // 유효성 검사
+            setProfileImageError(validationError);
+            setIsValidProfileImage(validationError === "통과"); // 유효성 검사 통과 여부 업데이트
+
+            if (validationError === "통과") {
+                // 유효성 검사를 통과한 경우 이미지를 미리보기로 업데이트
+                const reader = new FileReader();
+                reader.onloadend = () => {
+                    setProfileImagePreview(reader.result as string); // 이미지를 미리보기로 업데이트
+                };
+                reader.readAsDataURL(profileImage); // 파일을 읽어서 base64 URL로 변환
+            } else {
+                // 유효성 검사를 통과하지 못한 경우 기존 프로필 이미지로 되돌림
+                setProfileImagePreview(
+                    currentUser?.profileImage || defaultProfileImage
+                );
+            }
+        } else {
+            // 파일이 선택되지 않았을 경우 기본 이미지로 설정
+            setProfileImagePreview(currentUser?.profileImage || defaultProfileImage);
+            setProfileImageError(""); // 파일이 없을 때 기본 헬퍼 텍스트로 설정
+            setIsValidProfileImage(true); // 유효성 검사 실패
+        }
+    }, [profileImage]);
+
+    useEffect(() => {
+        const isFormValidNow =
+            isValidNickname &&
+            isValidPassword &&
+            isPasswordMatch &&
+            isValidProfileImage;
+        setIsFormValid(isFormValidNow); // 유효성 검사 통과 여부 업데이트
+    }, [isValidNickname, isValidPassword, isPasswordMatch, isValidProfileImage]); // 의존성 배열에 유효성 검사 상태 추가
 
 
     // 닉네임 중복 검사 함수
@@ -157,9 +195,14 @@ const MyInfoContainer: React.FC = () => {
     const handlePasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
         const newPassword = e.target.value;
         setPassword(newPassword);
-        const validationMessage = validateUserPassword(newPassword);
-        setPasswordError(validationMessage);
-        setIsValidPassword(validationMessage === "");
+        if (newPassword === "") {
+            setPasswordError("");
+            setIsValidPassword(true);
+        } else {
+            const validationMessage = validateUserPassword(newPassword);
+            setPasswordError(validationMessage);
+            setIsValidPassword(validationMessage === "");
+        }
     };
 
     const handleConfirmPasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -171,30 +214,10 @@ const MyInfoContainer: React.FC = () => {
     };
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files ? e.target.files[0] : null;
-
-        if (file) {
-            const validationError = validateProfileImage(file); // 유효성 검사
-            console.log(validationError);
-            setProfileImageError(validationError);
-            setIsValidProfileImage(validationError === "통과");  // 유효성 검사 통과 여부 업데이트
-
-            if (validationError === "통과") {
-                // 유효성 검사를 통과한 경우 이미지를 미리보기로 업데이트
-                const reader = new FileReader();
-                reader.onloadend = () => {
-                    setProfileImagePreview(reader.result as string); // 이미지를 미리보기로 업데이트
-                };
-                reader.readAsDataURL(file); // 파일을 읽어서 base64 URL로 변환
-            } else {
-                // 유효성 검사를 통과하지 못한 경우 기존 프로필 이미지로 되돌림
-                setProfileImagePreview(currentUser?.profileImage || defaultProfileImage);
-            }
+        if (e.target.files && e.target.files[0]) {
+            setProfileImage(e.target.files[0]);
         } else {
-            // 파일이 선택되지 않았을 경우 기본 이미지로 설정
-            setProfileImagePreview(currentUser?.profileImage || defaultProfileImage);
-            setProfileImageError(""); // 파일이 없을 때 기본 헬퍼 텍스트로 설정
-            setIsValidProfileImage(true); // 유효성 검사 실패
+            setProfileImage(null);
         }
     };
 
@@ -213,16 +236,54 @@ const MyInfoContainer: React.FC = () => {
         }
     };
 
+    const patchUser = async () => {
+        if (isLoading) return;
+
+        try {
+            setIsLoading(true);
+            const formData = new FormData(); // Boolean 값도 문자열로 변환
+            if (password) {
+                formData.append("password", password);
+            }
+            if (nickname) {
+                formData.append("nickname", nickname);
+            }
+            if (profileImage && profileImage !== undefined) {
+                formData.append("profileImage", profileImage); // 파일이 있는 경우에만 추가
+            }
+
+            const response = await axiosInstance.patch(
+                `${process.env.REACT_APP_API_URL}/api/v1/users/${currentUser.id}`,
+                formData,
+                {
+                    headers: {
+                        "Content-Type": "multipart/form-data", // FormData 전송을 위한 Content-Type 설정
+                    },
+                }
+            );
+            if (response.status === 204) {
+                console.log("204: No Content, 수정 완료");
+                setShowProfileUpdateSuccessToast(true);
+                navigate(0);
+            }
+        } catch (error) {
+            console.log(error);
+            alert("유저데이터 수정 실패");
+        } finally {
+            setIsLoading(false); // 로딩 종료
+        }
+    };
+
     const handleWithdraw = async () => {
         try {
-          // 회원 탈퇴 로직이 들어갈 자리
-    
-          navigate("/");
+            // 회원 탈퇴 로직이 들어갈 자리
+
+            navigate("/");
         } catch (error: unknown) {
-          console.error("회원 탈퇴 실패:", getErrorMessage(error));
-          alert("회원 탈퇴에 실패했습니다. 다시 시도해 주세요.");
+            console.error("회원 탈퇴 실패:", getErrorMessage(error));
+            alert("회원 탈퇴에 실패했습니다. 다시 시도해 주세요.");
         }
-      };
+    };
 
     if (!currentUser) {
         return <div>Loading...</div>;
@@ -233,7 +294,7 @@ const MyInfoContainer: React.FC = () => {
             <div className="w-full max-w-[75%]">
                 <TabBar activeIndex={activeTab} setActiveIndex={setActiveTab} tabs={tabData} pageType="myInfo" />
             </div>
-    
+
             {activeTab === 0 ? (
                 // "나의 정보" 화면
                 <div className="w-full max-w-3xl p-8 rounded-full flex flex-col items-center justify-center">
@@ -249,7 +310,7 @@ const MyInfoContainer: React.FC = () => {
                                 isEditing={isEditing}
                             />
                         </div>
-    
+
                         {/* 닉네임 섹션 */}
                         <NicknameSection
                             nickname={nickname}
@@ -261,7 +322,7 @@ const MyInfoContainer: React.FC = () => {
                             isEditing={isEditing}
                             currentUser={currentUser}
                         />
-    
+
                         {/* 이메일 */}
                         {!isEditing ? (
                             <div className="mb-8 w-full">
@@ -275,7 +336,7 @@ const MyInfoContainer: React.FC = () => {
                                 </span>
                             </div>
                         ) : <span></span>}
-    
+
                         {/* 스터디 누적 시간 */}
                         {!isEditing ? (
                             <div className="mb-8 w-full mb-[50px]">
@@ -289,7 +350,7 @@ const MyInfoContainer: React.FC = () => {
                                 </span>
                             </div>
                         ) : <span></span>}
-    
+
                         {/* 비밀번호 섹션 */}
                         <PasswordSection
                             password={password}
@@ -300,7 +361,7 @@ const MyInfoContainer: React.FC = () => {
                             confirmPasswordError={confirmPasswordError}
                             isEditing={isEditing}
                         />
-    
+
                         {/* 버튼 섹션 */}
                         <div className="flex space-x-4">
                             {isEditing ? (
@@ -312,9 +373,12 @@ const MyInfoContainer: React.FC = () => {
                                         취소
                                     </button>
                                     <button
-                                        onClick={handleSaveClick}
-                                        disabled={!isFormValid}
-                                        className={`px-6 py-2 mt-8 rounded-full shadow-lg font-semibold ${isFormValid ? 'bg-[#4659AA] text-white hover:bg-[#3b4a99]' : 'bg-gray-400 text-gray-300 cursor-not-allowed'}`}
+                                        onClick={patchUser}
+                                        disabled={!isFormValid && !isLoading} // 폼이 유효하지 않으면 버튼 비활성화
+                                        className={`px-6 py-2 mt-8 rounded-full shadow-lg font-semibold ${isFormValid || isLoading
+                                                ? "bg-[#4659AA] text-white hover:bg-[#3b4a99]"
+                                                : "bg-gray-400 text-gray-300 cursor-not-allowed"
+                                            }`}
                                     >
                                         수정완료
                                     </button>
@@ -348,7 +412,7 @@ const MyInfoContainer: React.FC = () => {
                     </div>
                 </div>
             )}
-    
+
             {/* Toast Notifications */}
             {showNicknameSuccessToast && (
                 <ToastNotification
@@ -381,7 +445,7 @@ const MyInfoContainer: React.FC = () => {
             )}
         </div>
     );
-    
+
 };
 
 export default MyInfoContainer;

@@ -1,5 +1,15 @@
 import React, { useState, useEffect } from "react";
 
+interface Rank {
+  rank: number;
+  nickname: string;
+  time: string;
+}
+
+type RankingSliderProps = {
+  rankingData: Rank[];
+};
+
 interface RankingData {
   rank: number;
   nickname: string;
@@ -17,7 +27,7 @@ const mockRankingData: RankingData[] = [
   },
 ];
 
-const RankingSlider: React.FC = () => {
+const RankingSlider: React.FC<RankingSliderProps> = ({ rankingData }) => {
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [isSliding, setIsSliding] = useState<boolean>(false);
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
@@ -29,7 +39,7 @@ const RankingSlider: React.FC = () => {
 
         setTimeout(() => {
           setCurrentIndex((prevIndex) =>
-            prevIndex === mockRankingData.length - 1 ? 0 : prevIndex + 1
+            prevIndex === rankingData.length - 1 ? 0 : prevIndex + 1
           );
           setIsSliding(false); // 슬라이딩 종료
         }, 500); // 0.5초 동안 애니메이션
@@ -40,9 +50,9 @@ const RankingSlider: React.FC = () => {
   }, [isExpanded]);
 
   const previousIndex =
-    currentIndex === 0 ? mockRankingData.length - 1 : currentIndex - 1;
-  const currentRanking = mockRankingData[currentIndex];
-  const previousRanking = mockRankingData[previousIndex];
+    currentIndex === 0 ? rankingData.length - 1 : currentIndex - 1;
+  const currentRanking = rankingData[currentIndex];
+  const previousRanking = rankingData[previousIndex];
 
   return (
     <div
@@ -114,7 +124,7 @@ const RankingSlider: React.FC = () => {
       {/* 확장 상태일 때 전체 데이터 렌더링 */}
       {isExpanded && (
         <div className="p-4">
-          {mockRankingData.map((ranking, index) => (
+          {rankingData.map((ranking, index) => (
             <div key={index} className="flex items-center w-full my-6">
               {/* 1위일 경우 트로피 이미지, 그렇지 않으면 빈 공간 */}
               {ranking.rank === 1 ? (
