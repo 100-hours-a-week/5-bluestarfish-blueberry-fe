@@ -74,7 +74,6 @@ const HeaderModal: React.FC<HeaderModalProps> = ({ closeModal }) => {
       </div>
     </div>
     // </div>
-
   );
 };
 

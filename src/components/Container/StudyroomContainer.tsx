@@ -32,7 +32,6 @@ const StudyroomContainer: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { roomId } = useParams<{ roomId: string }>();
   const clientRef = useRef<Client | null>(null);
-  const location = useLocation();
   const navigate = useNavigate();
   const {
     camEnabled,
@@ -177,7 +176,7 @@ const StudyroomContainer: React.FC = () => {
       if (response.status === 204) {
         console.log("204 No Content");
         navigate(`/wait/${roomId}`, {
-          state: { authorized: true },
+          state: { authorized: true, needPassword: false },
         });
       }
     } catch (error: any) {
@@ -454,6 +453,8 @@ const StudyroomContainer: React.FC = () => {
     for (const key in participants) {
       participants[key].dispose();
     }
+
+    navigate("/");
 
     wsRef.current?.close();
   };
