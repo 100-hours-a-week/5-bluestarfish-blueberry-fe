@@ -158,7 +158,9 @@ const RankingSlider: React.FC<RankingSliderProps> = ({ rankingData }) => {
         <img
           src={`${process.env.PUBLIC_URL}/assets/images/arrow.png`}
           alt="Expand/Collapse"
-          className="h-8 w-6 rounded-full cursor-pointer object-scale-down"
+          className={`h-8 w-6 rounded-full cursor-pointer object-scale-down ${
+            isExpanded ? "scale-y-[-1]" : ""
+          }`}
         />
       </button>
     </div>
