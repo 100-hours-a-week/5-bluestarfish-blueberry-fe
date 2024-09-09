@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axiosInstance from "../../utils/axiosInstance";
 import StudyroomMTN from "../rooms/StudyroomMTN";
+import PasswordModal from "../Modal/PasswordModal";
+import ToastNotification from "../common/ToastNotification";
 
 interface StudyRoom {
     id: number;
@@ -20,6 +22,16 @@ const RecentAndMyStudyRooms: React.FC = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [currentUserId, setCurrentUserId] = useState<number | null>(null);
+    const [isPasswordModalOpen, setPasswordModalOpen] = useState(false);
+    const [showToast, setShowToast] = useState(false);
+
+    useEffect(() => {
+        if (isPasswordModalOpen) {
+            document.body.style.overflow = "hidden";
+        } else {
+            document.body.style.overflow = "auto";
+        }
+    }, [isPasswordModalOpen]);
 
     useEffect(() => {
         const fetchCurrentUser = async () => {
@@ -69,11 +81,11 @@ const RecentAndMyStudyRooms: React.FC = () => {
             const response = await axiosInstance.get(
                 `${process.env.REACT_APP_API_URL}/api/v1/rooms`,
                 {
-                  params: {
-                    page: 0
-                  },
+                    params: {
+                        page: 0
+                    },
                 }
-              );
+            );
             const recentRooms = response.data.data.content;
             setRecentStudyRooms(recentRooms);
         } catch (error) {
@@ -85,7 +97,15 @@ const RecentAndMyStudyRooms: React.FC = () => {
     };
 
     const openQnAModal = () => {
-        console.log("모달을 열었습니다.");
+        setPasswordModalOpen(true);
+    };
+
+    const closeQnAModal = () => {
+        setPasswordModalOpen(false);
+    };
+
+    const handleCloseToast = () => {
+        setShowToast(false);
     };
 
     return (
@@ -146,6 +166,27 @@ const RecentAndMyStudyRooms: React.FC = () => {
                     <p className="w-full whitespace-nowrap">최근 방문한 스터디룸이 없습니다.</p>
                 )}
             </div>
+            {isPasswordModalOpen && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center">
+                    {/* 모달 배경 */}
+                    <div className="fixed inset-0 bg-black bg-opacity-50 pointer-events-none" />
+                    {/* 모달 내용 */}
+                    <div className="relative z-50">
+                        <PasswordModal
+                            roomId={clickedRoomId}
+                            closeModal={closeQnAModal}
+                            setShowToast={setShowToast}
+                        />
+                    </div>
+                </div>
+            )}
+            {showToast && (
+                <ToastNotification
+                    message="비밀번호가 틀렸습니다!"
+                    isSuccess={false}
+                    onClose={handleCloseToast}
+                />
+            )}
         </div>
     );
 };
