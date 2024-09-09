@@ -114,8 +114,17 @@ const StudyroomContainer: React.FC = () => {
         if (wsRef.current) {
           wsRef.current.close();
         }
+
         if (localStreamRef.current) {
           localStreamRef.current.getTracks().forEach((track) => track.stop());
+        }
+
+        // WebRTC 피어 연결 종료
+        for (let key in participants) {
+          if (participants[key].rtcPeer) {
+            participants[key].rtcPeer.dispose();
+            participants[key].rtcPeer = null;
+          }
         }
       };
     }
