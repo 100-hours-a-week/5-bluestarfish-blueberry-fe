@@ -301,7 +301,6 @@ const MyInfoContainer: React.FC = () => {
           },
         }
       );
-
       if (response.status === 204) {
         console.log("204: No Content, 수정 완료");
         setShowProfileUpdateSuccessToast(true);
