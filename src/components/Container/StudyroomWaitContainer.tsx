@@ -83,7 +83,7 @@ const StudyroomWaitContainer: React.FC = () => {
     // if (stream.current) {
     //   stream.current.getTracks().forEach((track) => track.stop());
     // }
-    navigate("/");
+    navigate(-1); // 이전 페이지로 이동
   };
 
   const enterStudyRoom = async () => {
