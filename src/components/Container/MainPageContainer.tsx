@@ -77,7 +77,7 @@ const MainPageContainer: React.FC = () => {
     <div className="flex flex-col mt-[80px] items-center w-full bg-white">
       <Carousel />
       <div className="w-full max-w-[1024px] px-4">
-        {rankingData.length && <RankingSlider rankingData={rankingData} />}
+        {rankingData.length > 0 && <RankingSlider rankingData={rankingData} />}
         <StudyroomTNContainer />
       </div>
       <div className="fixed right-4 bottom-4 p-4">
