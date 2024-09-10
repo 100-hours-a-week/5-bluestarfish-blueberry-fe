@@ -6,7 +6,7 @@ import ToastNotification from "../common/ToastNotification";
 import ProfileSection from "../MyInfo/ProfileSection";
 import NicknameSection from "../MyInfo/NicknameSection";
 import PasswordSection from "../MyInfo/PasswordSection";
-import DeletePostModal from "../common/DeletePostModal";
+import DeleteModal from "../common/DeleteModal";
 import StudyTimeChart from "../MyInfo/StudyTimeChart";
 import RecentAndMyStudyRooms from "../MyInfo/RecentStudyRooms";
 import { validateProfileImage, validateNickname, validateUserPassword, validatePasswordMatch } from "../../utils/validation";
@@ -436,7 +436,7 @@ const MyInfoContainer: React.FC = () => {
                 />
             )}
             {showDeleteModal && (
-                <DeletePostModal
+                <DeleteModal
                     title="탈퇴하시겠습니까?"
                     description="탈퇴 후 복구할 수 없습니다."
                     onConfirm={handleWithdraw}
