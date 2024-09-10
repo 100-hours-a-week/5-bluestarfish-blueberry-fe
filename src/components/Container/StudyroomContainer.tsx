@@ -113,6 +113,17 @@ const StudyroomContainer: React.FC = () => {
         console.error("WebSocket error: ", error);
       };
     }
+
+    // 핑퐁 START ----------------------------------------------------------
+    const interval = setInterval(() => {
+      const message = {
+        id: "pingPong",
+        message: "ping",
+      };
+      sendMessage(message);
+    }, 10000);
+    // 핑퐁 START ----------------------------------------------------------
+
     return () => {
       if (wsRef.current) {
         wsRef.current.close();
@@ -129,6 +140,11 @@ const StudyroomContainer: React.FC = () => {
           participants[key].rtcPeer = null;
         }
       }
+
+      // 핑퐁 START ----------------------------------------------------------
+      clearInterval(interval);
+      console.log("인터벌 정리됨");
+      // 핑퐁 END ----------------------------------------------------------
     };
   }, [permissionsChecked]);
 
@@ -162,17 +178,17 @@ const StudyroomContainer: React.FC = () => {
               }
             );
             break;
-
-          // 추가코드 START ---------------------------------------------------------
           case "isCamOn":
             controlCam(parsedMessage);
             break;
-
           case "isMicOn":
             controlMic(parsedMessage);
             break;
-          // 추가코드 END ---------------------------------------------------------
-
+          // 핑퐁 START ---------------------------------------------------------
+          case "pingPong":
+            console.log(parsedMessage);
+            break;
+          // 핑퐁 END ---------------------------------------------------------
           default:
             console.error("Unrecognized message", parsedMessage);
         }
