@@ -44,6 +44,10 @@ const HeaderModal: React.FC<HeaderModalProps> = ({ closeModal }) => {
     navigate("/mypage");
   };
 
+  const friend = async () => {
+    navigate("/friends/list");
+  };
+
   return (
     <div
       className="fixed inset-0 flex items-center justify-center bg-transparent"
@@ -62,7 +66,10 @@ const HeaderModal: React.FC<HeaderModalProps> = ({ closeModal }) => {
         >
           마이페이지
         </button>
-        <button className="w-[140px] h-[42px] border-2 rounded-[10px] hover:text-[#eb4c64] hover:bg-[#ebeeff] hidden">
+        <button
+          className="w-[140px] h-[42px] border-2 rounded-[10px] hover:text-[#eb4c64] hover:bg-[#ebeeff] bg-white"
+          onClick={friend}
+        >
           친구 관리
         </button>
         <button
