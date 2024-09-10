@@ -38,22 +38,20 @@ const NicknameSection: React.FC<NicknameSectionProps> = ({
             placeholder="새 닉네임을 입력하세요"
           />
           <p
-            className={`absolute text-xs italic mt-2 ${
-              nicknameError === "사용 가능한 닉네임입니다." ||
-              nicknameError === "기존 닉네임과 동일한 닉네임입니다."
+            className={`absolute text-xs italic mt-2 ${nicknameError === "사용 가능한 닉네임입니다." ||
+                nicknameError === "기존 닉네임과 동일한 닉네임입니다."
                 ? "text-blue-500"
                 : "text-red-500"
-            }`}
+              }`}
           >
             {nicknameError}
           </p>
           <button
-            className={`absolute right-2 top-1/2 transform -translate-y-1/2 font-bold py-1 px-2 rounded-full focus:outline-none ${
-              nicknameError === "" ||
-              nicknameError === "* 닉네임 중복 검사를 진행해주세요."
+            className={`absolute right-2 top-1/2 transform -translate-y-1/2 font-bold py-1 px-2 rounded-full focus:outline-none ${nicknameError === "" ||
+                nicknameError === "* 닉네임 중복 검사를 진행해주세요."
                 ? "text-[#6D81D5] hover:text-[#4659AA] cursor-pointer"
                 : "text-gray-400 cursor-not-allowed"
-            }`}
+              }`}
             type="button"
             onClick={handleIsNicknameAvailableButtonClick}
             disabled={
