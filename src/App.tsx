@@ -15,6 +15,7 @@ import RecruitStudyUpdatePage from "./pages/RecruitStudyUpdatePage";
 import StudyRoomsListPage from "./pages/StudyRoomsListPage";
 import SetAuthNicknamePage from "./pages/SetAuthNicknamePage";
 import MyInfoPage from "./pages/MyInfoPage";
+import FriendListPage from "./pages/FriendListPage";
 import Home from "./components/common/test/Test";
 
 function App() {
@@ -38,6 +39,7 @@ function App() {
         />
         <Route path="/setnickname" element={<SetAuthNicknamePage />} />
         <Route path="/rooms/list" element={<StudyRoomsListPage />} />
+        <Route path="/friends/list" element={<FriendListPage />} />
       </Routes>
     </BrowserRouter>
   );
