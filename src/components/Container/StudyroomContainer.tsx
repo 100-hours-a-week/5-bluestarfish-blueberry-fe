@@ -42,7 +42,7 @@ const StudyroomContainer: React.FC = () => {
     toggleSpeaker,
   } = useDeviceStore();
   const { userId, nickname, profileImage } = useLoginedUserStore();
-  const { users, addUser, updateUser, removeUser, setUsers } = useUserStore();
+  const { users, addUser, updateUser, removeUser } = useUserStore();
   const {
     curUsers,
     setRoomId,
@@ -78,7 +78,7 @@ const StudyroomContainer: React.FC = () => {
     };
 
     checkPermissions();
-  }, []);
+  });
 
   useEffect(() => {
     if (permissionsChecked) {
@@ -100,8 +100,8 @@ const StudyroomContainer: React.FC = () => {
   }, [camEnabled, micEnabled, speakerEnabled]);
 
   useEffect(() => {
-    if (permissionsChecked) {
-      // if (userId === 0) return;
+    if (permissionsChecked && userId) {
+      console.log(`UserId is ${userId}`);
       wsRef.current = new WebSocket(`${process.env.REACT_APP_SOCKET_RTC_URL}`);
 
       wsRef.current.onopen = () => {
@@ -125,12 +125,9 @@ const StudyroomContainer: React.FC = () => {
     // 핑퐁 START ----------------------------------------------------------
 
     return () => {
-      if (wsRef.current) {
-        wsRef.current.close();
-      }
-
       if (localStreamRef.current) {
         localStreamRef.current.getTracks().forEach((track) => track.stop());
+        localStreamRef.current = null;
       }
 
       // WebRTC 피어 연결 종료
@@ -141,12 +138,16 @@ const StudyroomContainer: React.FC = () => {
         }
       }
 
+      if (wsRef.current) {
+        wsRef.current.close();
+        wsRef.current = null;
+      }
+
       // 핑퐁 START ----------------------------------------------------------
-      clearInterval(interval);
-      console.log("인터벌 정리됨");
+      if (interval) clearInterval(interval);
       // 핑퐁 END ----------------------------------------------------------
     };
-  }, [permissionsChecked]);
+  }, [permissionsChecked, userId]);
 
   useEffect(() => {
     if (wsRef.current) {

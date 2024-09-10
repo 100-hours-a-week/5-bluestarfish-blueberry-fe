@@ -13,6 +13,7 @@ const StudyroomWaitContainer: React.FC = () => {
   const [cameraEnabled, setCameraEnabled] = useState<boolean>(false);
   const [microphoneEnabled, setMicrophoneEnabled] = useState<boolean>(false);
   const [permissionsChecked, setPermissionsChecked] = useState<boolean>(false);
+  const [isCamOffRoom, setIsCamOffRoom] = useState<boolean>(false);
   const {
     camEnabled,
     micEnabled,
@@ -79,10 +80,6 @@ const StudyroomWaitContainer: React.FC = () => {
   };
 
   const exitWaitPage = () => {
-    // 모든 미디어 스트림을 종료
-    // if (stream.current) {
-    //   stream.current.getTracks().forEach((track) => track.stop());
-    // }
     navigate("/");
   };
 
