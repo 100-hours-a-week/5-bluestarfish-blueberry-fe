@@ -5,12 +5,14 @@ import Sidebar from "../components/rooms/Sidebar";
 import { useAuthCheck } from "../utils/auth";
 import { useLocation, useNavigate } from "react-router-dom";
 import { usePreventRefresh } from "../utils/usePreventRefresh";
+import { useRoomStore } from "../store/roomStore";
 
 const StudyroomPage: React.FC = () => {
   usePreventRefresh();
   const { authCheck } = useAuthCheck();
   const location = useLocation();
   const navigate = useNavigate();
+  const { title } = useRoomStore();
 
   useEffect(() => {
     authCheck();
@@ -41,7 +43,7 @@ const StudyroomPage: React.FC = () => {
       >
         <div className="grid grid-cols-3 items-center p-[15px]">
           <div className="justify-self-start rounded-[20px] w-[172px] h-[51px] bg-[#6d81d5] text-white text-[20px] font-bold flex items-center justify-center">
-            방제
+            {title}
           </div>
           <div className="justify-self-center flex flex-row items-center gap-2">
             <img

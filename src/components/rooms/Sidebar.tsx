@@ -1,6 +1,7 @@
 import { useState } from "react";
 import HomeContainer from "../Container/HomeContainer";
 import ChatContainer from "../Container/ChatContainer";
+import { useRoomStore } from "../../store/roomStore";
 
 type SidebarProps = {
   toggleSidebar: () => void;
@@ -11,6 +12,7 @@ const Sidebar: React.FC<SidebarProps> = ({ toggleSidebar }) => {
   const handleButtonClick = (buttonName: string) => {
     setActiveButton(buttonName);
   };
+  const { curUsers } = useRoomStore();
 
   return (
     <div className="bg-white w-[400px] text-white fixed right-0 top-0 h-full shadow-lg">
@@ -28,7 +30,9 @@ const Sidebar: React.FC<SidebarProps> = ({ toggleSidebar }) => {
             alt="Exit"
             className="w-[31px] cursor-pointer"
           />
-          <p className="text-[20px] text-black font-bold text-shadow-lg">5</p>
+          <p className="text-[20px] text-black font-bold text-shadow-lg">
+            {curUsers}
+          </p>
         </div>
       </div>
       <div className="mt-12 flex justify-center gap-11">
