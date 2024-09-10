@@ -42,7 +42,7 @@ const StudyroomContainer: React.FC = () => {
     toggleSpeaker,
   } = useDeviceStore();
   const { userId, nickname, profileImage } = useLoginedUserStore();
-  const { users, addUser, updateUser, removeUser, setUsers } = useUserStore();
+  const { users, addUser, updateUser, removeUser } = useUserStore();
   const {
     curUsers,
     setRoomId,
@@ -78,7 +78,7 @@ const StudyroomContainer: React.FC = () => {
     };
 
     checkPermissions();
-  }, []);
+  });
 
   useEffect(() => {
     if (permissionsChecked) {
@@ -100,8 +100,8 @@ const StudyroomContainer: React.FC = () => {
   }, [camEnabled, micEnabled, speakerEnabled]);
 
   useEffect(() => {
-    if (permissionsChecked) {
-      // if (userId === 0) return;
+    if (permissionsChecked && userId) {
+      console.log(`UserId is ${userId}`);
       wsRef.current = new WebSocket(`${process.env.REACT_APP_SOCKET_RTC_URL}`);
 
       wsRef.current.onopen = () => {
@@ -113,13 +113,21 @@ const StudyroomContainer: React.FC = () => {
         console.error("WebSocket error: ", error);
       };
     }
-    return () => {
-      if (wsRef.current) {
-        wsRef.current.close();
-      }
 
+    // 핑퐁 START ----------------------------------------------------------
+    const interval = setInterval(() => {
+      const message = {
+        id: "pingPong",
+        message: "ping",
+      };
+      sendMessage(message);
+    }, 10000);
+    // 핑퐁 START ----------------------------------------------------------
+
+    return () => {
       if (localStreamRef.current) {
         localStreamRef.current.getTracks().forEach((track) => track.stop());
+        localStreamRef.current = null;
       }
 
       // WebRTC 피어 연결 종료
@@ -129,8 +137,17 @@ const StudyroomContainer: React.FC = () => {
           participants[key].rtcPeer = null;
         }
       }
+
+      if (wsRef.current) {
+        wsRef.current.close();
+        wsRef.current = null;
+      }
+
+      // 핑퐁 START ----------------------------------------------------------
+      if (interval) clearInterval(interval);
+      // 핑퐁 END ----------------------------------------------------------
     };
-  }, [permissionsChecked]);
+  }, [permissionsChecked, userId]);
 
   useEffect(() => {
     if (wsRef.current) {
@@ -162,17 +179,17 @@ const StudyroomContainer: React.FC = () => {
               }
             );
             break;
-
-          // 추가코드 START ---------------------------------------------------------
           case "isCamOn":
             controlCam(parsedMessage);
             break;
-
           case "isMicOn":
             controlMic(parsedMessage);
             break;
-          // 추가코드 END ---------------------------------------------------------
-
+          // 핑퐁 START ---------------------------------------------------------
+          case "pingPong":
+            console.log(parsedMessage);
+            break;
+          // 핑퐁 END ---------------------------------------------------------
           default:
             console.error("Unrecognized message", parsedMessage);
         }
