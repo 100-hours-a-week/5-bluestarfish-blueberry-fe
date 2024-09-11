@@ -74,8 +74,6 @@ class Participant {
     if (error) {
       return console.error("SDP offer error");
     }
-    console.log("Invoking SDP offer callback function");
-
     const msg = {
       id: "receiveVideoFrom",
       sender: this.name,
