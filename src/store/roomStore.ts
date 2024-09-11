@@ -1,28 +1,31 @@
 import { create } from "zustand";
 
-// User 인터페이스 정의
-interface User {
-  id: number;
-  nickname: string;
-  profileImage: string;
-  camEnabled: boolean;
-  micEnabled: boolean;
-  speakerEnabled: boolean;
-}
-
 // Zustand 스토어 인터페이스
 interface RoomStore {
   roomId: number;
-  users: User[];
+  title: string;
+  maxUsers: number;
+  curUsers: number;
+  camEnabled: boolean;
+  setRoomId: (roomId: number) => void;
+  setTitle: (title: string) => void;
+  setMaxUsers: (maxUsers: number) => void;
+  setCurUsers: (maxUsers: number) => void;
+  setCamEnabled: (camEnabled: boolean) => void;
 }
 
 // Zustand 스토어 생성
-export const useUserStore = create<RoomStore>((set) => ({
-  roomId: 0,
-  users: [], // 초기 상태는 빈 배열
+export const useRoomStore = create<RoomStore>((set) => ({
+  roomId: 0, // 초기 roomId
+  title: "", // 초기 방 제목
+  maxUsers: 0, // 초기 최대 인원 수
+  curUsers: 0,
+  camEnabled: true, // 기본 카메라 상태는 활성화 (true)
 
-  setUsers: (newUsers: User[]) =>
-    set(() => ({
-      users: newUsers, // 새로운 배열로 전체 users 덮어쓰기
-    })),
+  // 개별 상태 업데이트 메서드
+  setRoomId: (roomId: number) => set(() => ({ roomId })),
+  setTitle: (title: string) => set(() => ({ title })),
+  setMaxUsers: (maxUsers: number) => set(() => ({ maxUsers })),
+  setCurUsers: (curUsers: number) => set(() => ({ curUsers })),
+  setCamEnabled: (camEnabled: boolean) => set(() => ({ camEnabled })),
 }));
