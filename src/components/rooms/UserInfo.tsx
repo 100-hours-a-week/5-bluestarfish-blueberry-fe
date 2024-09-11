@@ -33,7 +33,7 @@ const UserInfo: React.FC<UserInfoProps> = ({
             src={
               camEnabled
                 ? `${process.env.PUBLIC_URL}/assets/images/camera.png`
-                : `${process.env.PUBLIC_URL}/assets/images/camera-slash.png`
+                : `${process.env.PUBLIC_URL}/assets/images/room-cam-off.png`
             }
             alt="camera"
             className="w-[20px]" // 크기 고정
@@ -45,10 +45,10 @@ const UserInfo: React.FC<UserInfoProps> = ({
             src={
               micEnabled
                 ? `${process.env.PUBLIC_URL}/assets/images/mic.png`
-                : `${process.env.PUBLIC_URL}/assets/images/mic-slash.png`
+                : `${process.env.PUBLIC_URL}/assets/images/room-mic-off.png`
             }
             alt="mic"
-            className="w-[15.62px]" // 크기 고정
+            className={micEnabled ? "w-[15.62px]" : "w-[18px]"} // 크기 고정
           />
         </button>
       </div>

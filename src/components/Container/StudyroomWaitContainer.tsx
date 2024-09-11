@@ -27,10 +27,6 @@ const StudyroomWaitContainer: React.FC = () => {
   const location = useLocation();
 
   useEffect(() => {
-    console.log(cameraEnabled, microphoneEnabled, permissionsChecked);
-  }, [cameraEnabled, microphoneEnabled, permissionsChecked]);
-
-  useEffect(() => {
     if (location.state && location.state.needPassword) {
       setPassword(location.state.password);
     }
@@ -101,6 +97,9 @@ const StudyroomWaitContainer: React.FC = () => {
         }
       );
       if (response.status === 204) {
+        if (stream.current) {
+          stream.current.getTracks().forEach((track) => track.stop());
+        }
         if (location.state && location.state.needPassword) {
           navigate(`/studyroom/${roomId}`, {
             state: {

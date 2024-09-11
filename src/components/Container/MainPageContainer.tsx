@@ -70,7 +70,9 @@ const MainPageContainer: React.FC = () => {
   }, [isQnAModalOpen]);
 
   useEffect(() => {
-    getUserRankingInfo();
+    if (userId) {
+      getUserRankingInfo();
+    }
   }, [userId]);
 
   return (

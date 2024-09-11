@@ -55,6 +55,8 @@ const StudyRoomForm: React.FC<StudyRoomFormProps> = ({
     (passwordError === "* 선택 사항" || passwordError === "통과");
 
   const [showToast, setShowToast] = useState(false);
+  const [showUnauthToast, setShowUnauthToast] = useState(false);
+  const [showForbiddenToast, setShowForbiddenToast] = useState(false);
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isCamEnabled, setIsCamEnabled] = useState<boolean>(true);
@@ -114,7 +116,14 @@ const StudyRoomForm: React.FC<StudyRoomFormProps> = ({
       } else {
         console.log(`${response.status}: 스터디룸 생성 실패`);
       }
-    } catch (error) {
+    } catch (error: any) {
+      if (error.response) {
+        if (error.response.status === 401) {
+          setShowUnauthToast(true);
+        } else if (error.response.status === 403) {
+          setShowForbiddenToast(true);
+        }
+      }
       console.error("스터디룸 생성 중 오류:", error);
     } finally {
       setIsLoading(false); // 로딩 상태 해제
@@ -124,6 +133,15 @@ const StudyRoomForm: React.FC<StudyRoomFormProps> = ({
   const handleCloseToast = () => {
     setShowToast(false);
     navigate("/");
+  };
+
+  const handleCloseUnauthToast = () => {
+    setShowUnauthToast(false);
+    navigate("/");
+  };
+
+  const handleCloseForbiddenToast = () => {
+    setShowForbiddenToast(false);
   };
 
   const handleSubmitClick = async (): Promise<void> => {
@@ -363,6 +381,20 @@ const StudyRoomForm: React.FC<StudyRoomFormProps> = ({
             message="생성 완료!"
             isSuccess={true}
             onClose={handleCloseToast}
+          />
+        )}
+        {showUnauthToast && (
+          <ToastNotification
+            message="인가되지 않은 요청입니다."
+            isSuccess={false}
+            onClose={handleCloseUnauthToast}
+          />
+        )}
+        {showForbiddenToast && (
+          <ToastNotification
+            message="5개 이상의 스터디룸을 생성할 수 없습니다."
+            isSuccess={false}
+            onClose={handleCloseForbiddenToast}
           />
         )}
       </div>
