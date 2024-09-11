@@ -5,7 +5,7 @@ import StudyHeader from "../StudyDetail/StudyHeader";
 import StudyContent from "../StudyDetail/StudyContent";
 import StudyRoomLink from "../StudyDetail/StudyRoomLink";
 import CommentSection from "../StudyDetail/CommentSection";
-import DeletePostModal from "../common/DeletePostModal";
+import DeleteModal from "../common/DeleteModal";
 import ToastNotification from "../common/ToastNotification";
 
 const RecruitStudyDetailContainer: React.FC = () => {
@@ -286,7 +286,7 @@ const RecruitStudyDetailContainer: React.FC = () => {
       </div>
 
       {showDeleteModal && (
-        <DeletePostModal
+        <DeleteModal
           title="게시글을 삭제하시겠습니까?"
           description="삭제된 게시글은 복구할 수 없습니다."
           onConfirm={handleDeletePost}

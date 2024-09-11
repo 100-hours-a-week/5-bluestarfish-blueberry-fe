@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axiosInstance from '../../utils/axiosInstance';
-import DeletePostModal from '../common/DeletePostModal';
+import DeleteModal from '../common/DeleteModal';
 
 // Comment 인터페이스: 각 댓글의 구조를 정의
 interface Comment {
@@ -214,7 +214,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({
 
       {/* 삭제 확인 모달 */}
       {showDeleteModal && (
-        <DeletePostModal
+        <DeleteModal
           title="댓글을 삭제하시겠습니까?"
           description="삭제된 댓글은 복구할 수 없습니다."
           onConfirm={handleDeleteConfirm}
