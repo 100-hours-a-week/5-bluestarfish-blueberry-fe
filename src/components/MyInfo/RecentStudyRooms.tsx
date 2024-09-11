@@ -25,7 +25,8 @@ const RecentAndMyStudyRooms: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
     const [currentUserId, setCurrentUserId] = useState<number | null>(null);
     const [isPasswordModalOpen, setPasswordModalOpen] = useState(false);
-    const [showToast, setShowToast] = useState(false);
+    const [showPasswordToast, setShowPasswordToast] = useState(false);
+    const [showDeleteStudyRoomToast, setShowDeleteStudyRoomToast] = useState(false);
     const [isDeleteModalOpen, setDeleteModalOpen] = useState(false); // 삭제 모달 상태
     const [selectedRoomId, setSelectedRoomId] = useState<number | null>(null); // 선택된 방 ID
     const navigate = useNavigate();
@@ -71,7 +72,7 @@ const RecentAndMyStudyRooms: React.FC = () => {
                 .slice(0, 10); // 최대 10개만 추출
 
             setMyStudyRooms(sortedRooms);
-            fetchMyStudyRooms(userId);
+            // fetchMyStudyRooms(userId);
         } catch (error) {
             setError("내가 만든 스터디룸을 가져오는 데 실패했습니다.");
             console.error(error);
@@ -110,8 +111,12 @@ const RecentAndMyStudyRooms: React.FC = () => {
         setPasswordModalOpen(false);
     };
 
-    const handleCloseToast = () => {
-        setShowToast(false);
+    const handleClosePasswordToast = () => {
+        setShowPasswordToast(false);
+    };
+
+    const handleCloseDeleteStudyRoomToast = () => {
+        setShowDeleteStudyRoomToast(false);
     };
 
     const enterRoom = (room: StudyRoom) => {
@@ -129,6 +134,7 @@ const RecentAndMyStudyRooms: React.FC = () => {
         try {
             await axiosInstance.delete(`${process.env.REACT_APP_API_URL}/api/v1/rooms/${roomId}`);
             setMyStudyRooms((prevRooms) => prevRooms.filter((room) => room.id !== roomId));
+            setShowDeleteStudyRoomToast(true);
         } catch (error) {
             console.error("스터디룸을 삭제하는 데 실패했습니다:", error);
         } finally {
@@ -231,16 +237,23 @@ const RecentAndMyStudyRooms: React.FC = () => {
                         <PasswordModal
                             roomId={clickedRoomId}
                             closeModal={closeQnAModal}
-                            setShowToast={setShowToast}
+                            setShowToast={setShowPasswordToast}
                         />
                     </div>
                 </div>
             )}
-            {showToast && (
+            {showPasswordToast && (
                 <ToastNotification
                     message="비밀번호가 틀렸습니다!"
                     isSuccess={false}
-                    onClose={handleCloseToast}
+                    onClose={handleClosePasswordToast}
+                />
+            )}
+            {showDeleteStudyRoomToast && (
+                <ToastNotification
+                    message="스터디룸 삭제 성공!"
+                    isSuccess={true}
+                    onClose={handleCloseDeleteStudyRoomToast}
                 />
             )}
             {/* 삭제 확인 모달 */}
