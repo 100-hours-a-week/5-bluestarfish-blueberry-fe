@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import DeleteModal from "../common/DeleteModal";
-import { friendsData, Friend } from "../../data/friendsData"; // 분리된 데이터 임포트
+import { friendsData, Friend } from "../../data/friendsData";
+import ToastNotification from "../common/ToastNotification";
 
 const FriendListContainer: React.FC = () => {
     const navigate = useNavigate();
     const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
     const [selectedFriendId, setSelectedFriendId] = useState<number | null>(null);
+    const [showDeleteFriendToast, setShowDeleteFriendToast] = useState(false);
     // 친구 데이터에서 isFriend가 true인 친구만 필터링
     const [friends, setFriends] = useState<Friend[]>(
         friendsData.filter((friend) => friend.isFriend)
@@ -24,10 +26,15 @@ const FriendListContainer: React.FC = () => {
             );
             setShowDeleteModal(false);
         }
+        setShowDeleteFriendToast(true);
     };
 
     const handleFindNewFriends = () => {
         navigate("/friends/search");
+    };
+
+    const handleCloseDeleteFriendToast = () => {
+        setShowDeleteFriendToast(false);
     };
 
     return (
@@ -97,6 +104,13 @@ const FriendListContainer: React.FC = () => {
                     description="삭제된 친구는 복구할 수 없습니다."
                     onConfirm={handleDeleteConfirm}
                     onCancel={() => setShowDeleteModal(false)}
+                />
+            )}
+            {showDeleteFriendToast && (
+                <ToastNotification
+                    message="친구 삭제 성공!"
+                    isSuccess={true}
+                    onClose={handleCloseDeleteFriendToast}
                 />
             )}
         </div>

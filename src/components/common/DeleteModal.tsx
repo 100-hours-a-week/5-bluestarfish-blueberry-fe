@@ -15,7 +15,7 @@ const DeleteModal: React.FC<DeletePostModalProps> = ({
 }) => {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="group select-none w-[300px] flex flex-col p-6 relative items-center justify-center bg-gray-800 border border-gray-800 shadow-lg rounded-2xl w-[27%]">
+      <div className="group select-none w-[350px] flex flex-col p-6 relative items-center justify-center bg-gray-800 border border-gray-800 shadow-lg rounded-2xl w-[27%]">
         <div className="text-center p-3 flex-auto justify-center">
           <svg
             fill="currentColor"
