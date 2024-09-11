@@ -43,10 +43,10 @@ const DeleteModal: React.FC<DeletePostModalProps> = ({
             취소
           </button>
           <button
-            className="bg-red-500 hover:bg-transparent px-5 ml-4 py-2 text-sm shadow-sm hover:shadow-lg font-medium tracking-wider border-2 border-red-500 hover:border-red-500 text-white hover:text-red-500 rounded-full transition ease-in duration-300"
+            className="bg-[#00A324] hover:bg-transparent px-5 ml-4 py-2 text-sm shadow-sm hover:shadow-lg font-medium tracking-wider border-2 border-[#00811C] hover:border-[#00A324] text-white hover:text-[#00A324] rounded-full transition ease-in duration-300"
             onClick={onConfirm}
           >
-            삭제
+            추가
           </button>
         </div>
       </div>

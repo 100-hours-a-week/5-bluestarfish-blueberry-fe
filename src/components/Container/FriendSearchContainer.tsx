@@ -5,7 +5,7 @@ import AddModal from "../common/AddModal";
 const FriendSearchContainer: React.FC = () => {
     const [searchTerm, setSearchTerm] = useState<string>(""); // 검색어 상태
     const [filteredFriends, setFilteredFriends] = useState<Friend[]>([]); // 필터링된 친구 목록
-    const [addedFriends, setAddedFriends] = useState<{ [key: number]: boolean }>({}); // 친구 추가 상태 관리
+    const [friends, setFriends] = useState<Friend[]>(friendsData); // 친구 목록 상태 관리
     const [showAddModal, setShowAddModal] = useState<boolean>(false);
     const [selectedFriendId, setSelectedFriendId] = useState<number | null>(null); // 선택된 친구 ID
 
@@ -18,11 +18,14 @@ const FriendSearchContainer: React.FC = () => {
     // 모달에서 추가 버튼을 눌렀을 때 호출되는 함수
     const handleAddConfirm = () => {
         if (selectedFriendId !== null) {
-            // 선택된 친구의 ID를 추가된 친구 목록에 업데이트
-            setAddedFriends((prevState) => ({
-                ...prevState,
-                [selectedFriendId]: true,
-            }));
+            // 선택된 친구의 isRequestSent 값을 true로 업데이트
+            setFriends((prevFriends) =>
+                prevFriends.map((friend) =>
+                    friend.id === selectedFriendId
+                        ? { ...friend, isRequestSent: true }
+                        : friend
+                )
+            );
             setShowAddModal(false); // 모달 닫기
         }
     };
@@ -32,12 +35,12 @@ const FriendSearchContainer: React.FC = () => {
         if (searchTerm.trim() === "") {
             setFilteredFriends([]); // 검색어가 없을 경우
         } else {
-            const searchResult = friendsData.filter((friend) =>
+            const searchResult = friends.filter((friend) =>
                 friend.name.toLowerCase().includes(searchTerm.toLowerCase())
             );
             setFilteredFriends(searchResult); // 필터링 결과 설정
         }
-    }, [searchTerm]);
+    }, [searchTerm, friends]);
 
     return (
         <div className="container mx-auto my-8 px-4 mt-32 w-[70%]">
@@ -82,6 +85,11 @@ const FriendSearchContainer: React.FC = () => {
                                     친구
                                 </div>
                             )}
+                            {friend.isRequestSent && (
+                                <div className="absolute top-2 left-2 bg-gray-400 text-white px-2 py-1 text-xs font-semibold rounded">
+                                    친구 요청
+                                </div>
+                            )}
                             {/* 프로필 사진과 이름 */}
                             <div className="p-4 flex flex-col items-center group-hover:hidden">
                                 <img
@@ -99,7 +107,7 @@ const FriendSearchContainer: React.FC = () => {
                                     <label className="bg-[#EBEEFF] text-gray-500 px-4 py-2 rounded-lg">
                                         친구
                                     </label>
-                                ) : addedFriends[friend.id] ? (
+                                ) : friend.isRequestSent ? (
                                     <button className="bg-[#6D81D5] text-white px-4 py-2 rounded-lg cursor-default">
                                         친구 요청 완료
                                     </button>

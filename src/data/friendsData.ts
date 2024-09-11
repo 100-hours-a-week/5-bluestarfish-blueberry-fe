@@ -3,7 +3,8 @@ export type Friend = {
     name: string;
     profileImage: string;
     studyTime: string;
-    isFriend: boolean; // 친구 여부를 나타내는 필드
+    isFriend: boolean; // 친구 여부
+    isRequestSent: boolean; // 친구 요청 여부
 };
 
 export const friendsData: Friend[] = [
@@ -13,6 +14,7 @@ export const friendsData: Friend[] = [
         profileImage: `${process.env.PUBLIC_URL}/assets/images/profile1.png`,
         studyTime: "10:45:20",
         isFriend: true,
+        isRequestSent: false,
     },
     {
         id: 2,
@@ -20,6 +22,7 @@ export const friendsData: Friend[] = [
         profileImage: `${process.env.PUBLIC_URL}/assets/images/profile2.png`,
         studyTime: "12:08:00",
         isFriend: true,
+        isRequestSent: false,
     },
     {
         id: 3,
@@ -27,6 +30,7 @@ export const friendsData: Friend[] = [
         profileImage: `${process.env.PUBLIC_URL}/assets/images/profile3.png`,
         studyTime: "10:45:20",
         isFriend: false,
+        isRequestSent: false,
     },
     {
         id: 4,
@@ -34,6 +38,7 @@ export const friendsData: Friend[] = [
         profileImage: `${process.env.PUBLIC_URL}/assets/images/profile4.png`,
         studyTime: "08:32:14",
         isFriend: true,
+        isRequestSent: false,
     },
     {
         id: 5,
@@ -41,5 +46,6 @@ export const friendsData: Friend[] = [
         profileImage: `${process.env.PUBLIC_URL}/assets/images/profile1.png`,
         studyTime: "08:32:14",
         isFriend: false,
+        isRequestSent: false,
     },
 ];
