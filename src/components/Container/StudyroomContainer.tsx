@@ -113,22 +113,7 @@ const StudyroomContainer: React.FC = () => {
         console.error("WebSocket error: ", error);
       };
     }
-      return () => {
-        if (wsRef.current) {
-          wsRef.current.close();
-        }
 
-        if (localStreamRef.current) {
-          localStreamRef.current.getTracks().forEach((track) => track.stop());
-        }
-
-        // WebRTC 피어 연결 종료
-        for (let key in participants) {
-          if (participants[key].rtcPeer) {
-            participants[key].rtcPeer.dispose();
-            participants[key].rtcPeer = null;
-          }
-        }
     // 핑퐁 START ----------------------------------------------------------
     const interval = setInterval(() => {
       const message = {
