@@ -45,7 +45,6 @@ const StudyroomContainer: React.FC = () => {
   }, [users]);
 
   useEffect(() => {
-    console.log("connection start");
     fetchStudyRoom();
     checkPermissions();
     return () => {
