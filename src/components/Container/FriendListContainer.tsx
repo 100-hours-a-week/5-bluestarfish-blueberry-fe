@@ -1,60 +1,39 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
-type Friend = {
-    id: number;
-    name: string;
-    profileImage: string;
-    studyTime: string;
-};
+import DeleteModal from "../common/DeleteModal";
+import { friendsData, Friend } from "../../data/friendsData"; // 분리된 데이터 임포트
 
 const FriendListContainer: React.FC = () => {
     const navigate = useNavigate();
-    const [friends, setFriends] = useState<Friend[]>([
-        {
-            id: 1,
-            name: "붕어빵 말티즈",
-            profileImage: `${process.env.PUBLIC_URL}/assets/images/profile1.png`,
-            studyTime: "10:45:20",
-        },
-        {
-            id: 2,
-            name: "루돌프 몰티즈",
-            profileImage: `${process.env.PUBLIC_URL}/assets/images/profile2.png`,
-            studyTime: "12:08:00",
-        },
-        {
-            id: 3,
-            name: "그냥 기요밍",
-            profileImage: `${process.env.PUBLIC_URL}/assets/images/profile3.png`,
-            studyTime: "10:45:20",
-        },
-        {
-            id: 4,
-            name: "생일 축하추카포",
-            profileImage: `${process.env.PUBLIC_URL}/assets/images/profile4.png`,
-            studyTime: "08:32:14",
-        },
-        {
-            id: 5,
-            name: "붕어빵 땡긴다",
-            profileImage: `${process.env.PUBLIC_URL}/assets/images/profile1.png`,
-            studyTime: "08:32:14",
-        },
-    ]);
+    const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
+    const [selectedFriendId, setSelectedFriendId] = useState<number | null>(null);
+    // 친구 데이터에서 isFriend가 true인 친구만 필터링
+    const [friends, setFriends] = useState<Friend[]>(
+        friendsData.filter((friend) => friend.isFriend)
+    );
 
     const handleDeleteFriend = (id: number) => {
-        setFriends((prevFriends) => prevFriends.filter((friend) => friend.id !== id));
+        setSelectedFriendId(id);
+        setShowDeleteModal(true);
+    };
+
+    const handleDeleteConfirm = () => {
+        if (selectedFriendId !== null) {
+            setFriends((prevFriends) =>
+                prevFriends.filter((friend) => friend.id !== selectedFriendId)
+            );
+            setShowDeleteModal(false);
+        }
     };
 
     const handleFindNewFriends = () => {
-        navigate("/search-friends"); // 친구 검색 페이지로 이동
+        navigate("/friends/search");
     };
 
     return (
         <div className="container mx-auto my-8 px-4 mt-32 w-[70%]">
-            {/* 친구 목록 상단: 제목과 새로운 친구 찾기 */}
-            <div className="flex justify-between items-center mb-6">
+            {/* 친구 목록 상단 */}
+            <div className="flex justify-between items-center mb-10">
                 <div className="flex items-center ml-3">
                     <img
                         src={`${process.env.PUBLIC_URL}/logo.png`}
@@ -65,7 +44,7 @@ const FriendListContainer: React.FC = () => {
                 </div>
                 <button
                     onClick={handleFindNewFriends}
-                    className="text-lg font-semibold flex items-center text-gray-600 px-4 py-2 rounded-lg hover:bg-[#EEEEFF]"
+                    className="text-lg font-semibold flex items-center text-gray-600 px-4 py-2 rounded-lg hover:bg-[#F8F8FF]"
                 >
                     <img
                         src={`${process.env.PUBLIC_URL}/assets/images/magnifier.png`}
@@ -82,7 +61,7 @@ const FriendListContainer: React.FC = () => {
                     friends.map((friend) => (
                         <div
                             key={friend.id}
-                            className="relative bg-white shadow-lg rounded-lg overflow-hidden h-[300px] w-full transform transition-transform duration-300 hover:scale-105 group z-0 hover:z-10"
+                            className={`relative bg-[#F8F8FF] shadow-lg rounded-lg overflow-hidden h-[300px] w-full transform transition-transform duration-300 hover:scale-105 group z-0 hover:z-10`}
                         >
                             {/* 프로필 사진과 이름 */}
                             <div className="p-4 flex flex-col items-center group-hover:hidden">
@@ -111,6 +90,15 @@ const FriendListContainer: React.FC = () => {
                 )}
             </div>
 
+            {/* 삭제 확인 모달 */}
+            {showDeleteModal && (
+                <DeleteModal
+                    title="친구를 삭제하시겠습니까?"
+                    description="삭제된 친구는 복구할 수 없습니다."
+                    onConfirm={handleDeleteConfirm}
+                    onCancel={() => setShowDeleteModal(false)}
+                />
+            )}
         </div>
     );
 };

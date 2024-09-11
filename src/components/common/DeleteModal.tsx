@@ -7,7 +7,7 @@ type DeletePostModalProps = {
   onCancel: () => void;
 };
 
-const DeletePostModal: React.FC<DeletePostModalProps> = ({
+const DeleteModal: React.FC<DeletePostModalProps> = ({
   title,
   description,
   onConfirm,
@@ -53,4 +53,4 @@ const DeletePostModal: React.FC<DeletePostModalProps> = ({
   );
 };
 
-export default DeletePostModal;
+export default DeleteModal;
