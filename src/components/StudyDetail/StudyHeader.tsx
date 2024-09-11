@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 const StudyHeader: React.FC<{
   study: any;
@@ -7,57 +7,78 @@ const StudyHeader: React.FC<{
   onCompleteRecruitment: () => void;
   onEditPost: () => void;
   onDeletePost: () => void;
-}> = ({ study, isRecruited, isAuthor, onCompleteRecruitment, onEditPost, onDeletePost }) => {
+}> = ({
+  study,
+  isRecruited,
+  isAuthor,
+  onCompleteRecruitment,
+  onEditPost,
+  onDeletePost,
+}) => {
   // 작성일을 포맷팅하여 'YYYY.MM.DD' 형식의 날짜 문자열로 변환
   const formattedDate = study?.createdAt
-    ? new Date(study.createdAt).toLocaleDateString('ko-KR', {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-    })
-    : '';
+    ? new Date(study.createdAt).toLocaleDateString("ko-KR", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+      })
+    : "";
 
   // 작성 시간을 포맷팅하여 'HH:MM' 형식의 시간 문자열로 변환
   const formattedTime = study?.createdAt
-    ? new Date(study.createdAt).toLocaleTimeString('ko-KR', {
-      hour: '2-digit',
-      minute: '2-digit',
-    })
-    : '';
-
-    console.log("study.createdAt:", study.createdAt);
-
-
-
+    ? new Date(study.createdAt).toLocaleTimeString("ko-KR", {
+        hour: "2-digit",
+        minute: "2-digit",
+      })
+    : "";
   return (
     <>
       {/* 게시글 제목과 모집 상태를 표시하는 헤더 부분 */}
       <div className="flex justify-between items-center mb-2">
         <h1 className="text-3xl font-bold mb-4 text-black">{study.title}</h1>
-        <div className={`px-4 py-2 rounded-full ${isRecruited ? 'bg-green-500 text-white' : 'bg-gray-500 text-white'}`}>
+        <div
+          className={`px-4 py-2 rounded-full ${
+            isRecruited ? "bg-green-500 text-white" : "bg-gray-500 text-white"
+          }`}
+        >
           {/* 모집 상태에 따라 '모집 중' 또는 '모집 완료'를 표시 */}
-          {isRecruited ? '모집 중' : '모집 완료'}
+          {isRecruited ? "모집 중" : "모집 완료"}
         </div>
       </div>
 
       {/* 작성자 정보와 캠 상태, 게시글 유형을 표시하는 부분 */}
       <div className="flex justify-between items-center mb-2 text-gray-600">
         <div className="flex items-center space-x-4">
-          <span className={`px-2 py-1 rounded-full ${study.type === 'FINDING_MEMBERS' ? 'bg-purple-200' : 'bg-blue-200'}`}>
+          <span
+            className={`px-2 py-1 rounded-full ${
+              study.type === "FINDING_MEMBERS" ? "bg-purple-200" : "bg-blue-200"
+            }`}
+          >
             {/* 게시글 유형에 따라 '멤버 찾기' 또는 '룸 찾기'를 표시 */}
-            {study.type === 'FINDING_MEMBERS' ? '멤버 찾기' : '룸 찾기'}
+            {study.type === "FINDING_MEMBERS" ? "멤버 찾기" : "룸 찾기"}
           </span>
           <div className="flex items-center space-x-1">
             <img
-              src={`${process.env.PUBLIC_URL}/assets/images/${study.postCamEnabled ? 'cam-on-icon-blue.png' : 'cam-off-icon-blue.png'}`}
-              alt={study.postCamEnabled ? '캠켜공' : '캠끄공'}
+              src={`${process.env.PUBLIC_URL}/assets/images/${
+                study.postCamEnabled
+                  ? "cam-on-icon-blue.png"
+                  : "cam-off-icon-blue.png"
+              }`}
+              alt={study.postCamEnabled ? "캠켜공" : "캠끄공"}
               className="h-5 w-5"
             />
             {/* 캠 상태에 따라 '캠켜공' 또는 '캠끄공'을 표시 */}
-            <span>{study.postCamEnabled ? '캠켜공' : '캠끄공'}</span>
+            <span>{study.postCamEnabled ? "캠켜공" : "캠끄공"}</span>
           </div>
           <div className="flex items-center space-x-1">
-            <img src={study.userResponse.profileImage || `${process.env.PUBLIC_URL}/assets/images/real_ian.png`} alt={study.userResponse.nickname} className="h-5 w-5 rounded-full" />
+            <img
+              src={
+                study.userResponse.profileImage ||
+                `${process.env.PUBLIC_URL}/assets/images/real_ian.png`
+              }
+              alt={study.userResponse.nickname}
+              className="h-5 w-5 rounded-full"
+            />
             {/* 작성자의 프로필 이미지와 닉네임을 표시 */}
             <span>{study.userResponse.nickname}</span>
           </div>
