@@ -16,7 +16,6 @@ export const useSetUserInfo = () => {
         setUserId(response.data.data.id);
         setNickname(response.data.data.nickname);
         setProfileImage(response.data.data.profileImage);
-        console.log(response.data.data.profileImage);
         if (response.data.data.nickname === null) {
           alert("닉네임 설정을 위한 페이지로 이동합니다!");
           navigate("/setnickname");
