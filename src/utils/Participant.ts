@@ -89,7 +89,7 @@ class Participant {
   }
 
   onIceCandidate(candidate: any): void {
-    console.log("Local candidate" + JSON.stringify(candidate));
+    // console.log("Local candidate" + JSON.stringify(candidate));
 
     const message = {
       id: "onIceCandidate",
@@ -101,7 +101,7 @@ class Participant {
   }
 
   dispose(): void {
-    console.log("Disposing participant " + this.name);
+    // console.log("Disposing participant " + this.name);
     if (this.rtcPeer) {
       this.rtcPeer.dispose();
     }
