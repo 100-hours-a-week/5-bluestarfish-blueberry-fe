@@ -65,6 +65,7 @@ const StudyroomContainer: React.FC = () => {
     usersRef.current = users; // users 상태가 변경될 때마다 usersRef 업데이트
   }, [users]);
 <<<<<<< HEAD
+<<<<<<< HEAD
   useEffect(() => {
     camEnabledRef.current = camEnabled;
   }, [camEnabled]);
@@ -76,6 +77,8 @@ const StudyroomContainer: React.FC = () => {
   }, [speakerEnabled]);
   const participants: Record<string, Participant> = {};
   const location = useLocation();
+=======
+>>>>>>> parent of 3bf0be9 (feat: timer)
 =======
 >>>>>>> parent of 3bf0be9 (feat: timer)
 
