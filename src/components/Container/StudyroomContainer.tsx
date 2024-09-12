@@ -66,6 +66,7 @@ const StudyroomContainer: React.FC = () => {
   }, [users]);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
   useEffect(() => {
     camEnabledRef.current = camEnabled;
   }, [camEnabled]);
@@ -77,6 +78,8 @@ const StudyroomContainer: React.FC = () => {
   }, [speakerEnabled]);
   const participants: Record<string, Participant> = {};
   const location = useLocation();
+=======
+>>>>>>> parent of 3bf0be9 (feat: timer)
 =======
 >>>>>>> parent of 3bf0be9 (feat: timer)
 =======
