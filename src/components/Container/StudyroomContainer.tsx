@@ -40,9 +40,22 @@ const StudyroomContainer: React.FC = () => {
   const participantsRef = useRef<Record<string, Participant>>({}); // Ref로 관리
   const usersRef = useRef(users); // users 상태를 유지하는 Ref
 
+  const camEnabledRef = useRef(camEnabled); // users 상태를 유지하는 Ref
+  const micEnabledRef = useRef(micEnabled); // users 상태를 유지하는 Ref
+  const speakerEnabledRef = useRef(speakerEnabled); // users 상태를 유지하는 Ref
+
   useEffect(() => {
     usersRef.current = users; // users 상태가 변경될 때마다 usersRef 업데이트
   }, [users]);
+  useEffect(() => {
+    camEnabledRef.current = camEnabled;
+  }, [camEnabled]);
+  useEffect(() => {
+    micEnabledRef.current = micEnabled;
+  }, [micEnabled]);
+  useEffect(() => {
+    speakerEnabledRef.current = speakerEnabled;
+  }, [speakerEnabled]);
 
   useEffect(() => {
     fetchStudyRoom();
