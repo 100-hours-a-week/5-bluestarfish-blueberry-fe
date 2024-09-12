@@ -61,13 +61,10 @@ const StudyroomContainer: React.FC = () => {
   const participantsRef = useRef<Record<string, Participant>>({}); // Ref로 관리
   const usersRef = useRef(users); // users 상태를 유지하는 Ref
 
-  const camEnabledRef = useRef(camEnabled); // users 상태를 유지하는 Ref
-  const micEnabledRef = useRef(micEnabled); // users 상태를 유지하는 Ref
-  const speakerEnabledRef = useRef(speakerEnabled); // users 상태를 유지하는 Ref
-
   useEffect(() => {
     usersRef.current = users; // users 상태가 변경될 때마다 usersRef 업데이트
   }, [users]);
+<<<<<<< HEAD
   useEffect(() => {
     camEnabledRef.current = camEnabled;
   }, [camEnabled]);
@@ -79,6 +76,8 @@ const StudyroomContainer: React.FC = () => {
   }, [speakerEnabled]);
   const participants: Record<string, Participant> = {};
   const location = useLocation();
+=======
+>>>>>>> parent of 3bf0be9 (feat: timer)
 
   useEffect(() => {
     fetchStudyRoom();
