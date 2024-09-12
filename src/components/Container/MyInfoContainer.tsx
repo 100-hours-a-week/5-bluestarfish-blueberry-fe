@@ -10,6 +10,7 @@ import DeleteModal from "../common/DeleteModal";
 import StudyTimeChart from "../MyInfo/StudyTimeChart";
 import RecentAndMyStudyRooms from "../MyInfo/RecentStudyRooms";
 import { validateProfileImage, validateNickname, validateUserPassword, validatePasswordMatch } from "../../utils/validation";
+import { useLoginedUserStore } from "../../store/store";
 
 const tabData = [
     { name: '나의 정보', icon: `${process.env.PUBLIC_URL}/assets/images/info-icon.png` },
@@ -52,6 +53,8 @@ const MyInfoContainer: React.FC = () => {
     const [isFormValid, setIsFormValid] = useState(false);
     const [showDeleteModal, setShowWithdrawModal] = useState(false);
     const [isLoading, setIsLoading] = useState<boolean>(false);
+    const { nickname: userNickname, setUserId, setNickname: setUserNickname, setProfileImage: setUserProfileImage } = useLoginedUserStore();
+    
 
     const defaultProfileImage = `${process.env.PUBLIC_URL}/assets/images/gunssakdo.png`; // 기본 프로필 이미지 URL
     const navigate = useNavigate();
@@ -72,12 +75,6 @@ const MyInfoContainer: React.FC = () => {
 
         fetchCurrentUser();
     }, []);
-
-    // useEffect(() => {
-    //     const isFormValidNow = isValidNickname && isValidPassword && isPasswordMatch && isValidProfileImage;
-    //     console.log(isValidProfileImage, isValidNickname, isValidPassword, isPasswordMatch);
-    //     setIsFormValid(isFormValidNow);  // 유효성 검사 통과 여부 업데이트
-    // }, [isValidNickname, isValidPassword, isPasswordMatch, isValidProfileImage]);  // 의존성 배열에 유효성 검사 상태 추가
 
     useEffect(() => {
         if (profileImage) {
@@ -276,14 +273,39 @@ const MyInfoContainer: React.FC = () => {
 
     const handleWithdraw = async () => {
         try {
-            // 회원 탈퇴 로직이 들어갈 자리
-
-            navigate("/");
-        } catch (error: unknown) {
-            console.error("회원 탈퇴 실패:", getErrorMessage(error));
-            alert("회원 탈퇴에 실패했습니다. 다시 시도해 주세요.");
+            // 회원 탈퇴 요청
+            const response = await axiosInstance.delete(
+                `${process.env.REACT_APP_API_URL}/api/v1/users/${currentUser.id}`
+            );
+    
+            if (response.status === 204) {
+                console.log("회원 탈퇴 성공!");
+    
+                // 로그아웃 처리를 통해 세션이나 토큰 정리
+                await axiosInstance.post(`${process.env.REACT_APP_API_URL}/api/v1/auth/logout`);
+    
+                // 로컬 상태 및 스토어에서 사용자 정보 초기화
+                setUserId(0);
+                setUserNickname("Guest");
+                setUserProfileImage("");
+    
+                // 로그인 페이지로 이동
+                navigate("/login");
+            }
+        } catch (error: any) {
+            if (error.response) {
+                if (error.response.status === 404) {
+                    console.error("404: ", `A user with ${currentUser.id} not found`);
+                } else if (error.response.status === 500) {
+                    console.error("500: ", "서버 에러");
+                }
+            } else {
+                console.error("회원 탈퇴 실패:", error.message);
+            }
+            console.error(error);
         }
     };
+    
 
     if (!currentUser) {
         return <div>Loading...</div>;

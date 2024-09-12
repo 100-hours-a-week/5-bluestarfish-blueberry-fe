@@ -14,25 +14,37 @@ const ToastNotification: React.FC<ToastNotificationProps> = ({ message, isSucces
 
   // 컴포넌트가 마운트될 때 실행되는 useEffect 훅
   useEffect(() => {
-    // 30ms마다 실행되는 타이머 설정
+    const totalDuration = 2000; // 2초로 변경
+    const progressInterval = totalDuration / 100; // progress가 1%씩 줄어드는 간격
+  
+    // progress를 감소시키는 타이머 설정
     const timer = setInterval(() => {
       setProgress((prev) => {
         if (prev > 0) {
-          return prev - 1;  // progress를 1씩 감소시킴
+          return prev - 1; // progress를 1%씩 감소
         } else {
-          clearInterval(timer);  // progress가 0이 되면 타이머를 중지
-          onClose();  // onClose 콜백 함수를 호출하여 알림을 닫음
-          return 0;  // progress를 0으로 설정
+          clearInterval(timer); // progress가 0이 되면 타이머 중지
+          return 0; // progress를 0으로 설정
         }
       });
-    }, 30);  // 30ms 간격으로 타이머 실행
-
-    // 컴포넌트가 언마운트되거나 progress가 0이 되면 타이머를 정리
-    return () => clearInterval(timer);
-  }, [onClose]);  // onClose가 변경될 때마다 useEffect 재실행
+    }, progressInterval); // 일정한 간격으로 progress 감소
+  
+    // 2초 후에 알림을 닫는 타이머 설정
+    const closeTimeout = setTimeout(() => {
+      onClose(); // 토스트 알림 닫기
+    }, totalDuration); // 2초 후에 실행
+  
+    // 컴포넌트가 언마운트되거나 타이머가 끝나면 타이머 정리
+    return () => {
+      clearInterval(timer);
+      clearTimeout(closeTimeout);
+    };
+  }, [onClose]);
+  
+  
 
   return (
-    <div className="fixed top-4 right-4 bg-white shadow-lg rounded-lg flex items-center p-4 w-72 z-[50]">
+    <div className="fixed top-4 right-4 bg-white shadow-lg rounded-lg flex items-center p-4 w-72 z-[200]">
       <div className="flex items-center">
         {/* 체크 아이콘 */}
         <div className="rounded-full w-8 h-8 flex items-center justify-center mr-3">

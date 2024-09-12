@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { friendsData, Friend } from "../../data/friendsData"; // 친구 데이터를 임포트
 import AddModal from "../common/AddModal";
+import ToastNotification from "../common/ToastNotification";
 
 const FriendSearchContainer: React.FC = () => {
     const [searchTerm, setSearchTerm] = useState<string>(""); // 검색어 상태
@@ -8,6 +9,7 @@ const FriendSearchContainer: React.FC = () => {
     const [friends, setFriends] = useState<Friend[]>(friendsData); // 친구 목록 상태 관리
     const [showAddModal, setShowAddModal] = useState<boolean>(false);
     const [selectedFriendId, setSelectedFriendId] = useState<number | null>(null); // 선택된 친구 ID
+    const [showAddFriendToast, setShowAddFriendToast] = useState(false);
 
     // 친구 추가 핸들러 (버튼 클릭 시 모달 표시)
     const handleAddFriend = (id: number) => {
@@ -27,6 +29,7 @@ const FriendSearchContainer: React.FC = () => {
                 )
             );
             setShowAddModal(false); // 모달 닫기
+            setShowAddFriendToast(true);
         }
     };
 
@@ -41,6 +44,10 @@ const FriendSearchContainer: React.FC = () => {
             setFilteredFriends(searchResult); // 필터링 결과 설정
         }
     }, [searchTerm, friends]);
+
+    const handleCloseAddFriendToast = () => {
+        setShowAddFriendToast(false);
+    };
 
     return (
         <div className="container mx-auto my-8 px-4 mt-32 w-[70%]">
@@ -134,6 +141,13 @@ const FriendSearchContainer: React.FC = () => {
                     description="요청을 철회할 수 없습니다."
                     onConfirm={handleAddConfirm} // 모달에서 확인 시 친구 추가
                     onCancel={() => setShowAddModal(false)} // 모달 닫기
+                />
+            )}
+            {showAddFriendToast && (
+                <ToastNotification
+                    message="친구 요청 성공!"
+                    isSuccess={true}
+                    onClose={handleCloseAddFriendToast}
                 />
             )}
         </div>
