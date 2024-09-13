@@ -25,7 +25,7 @@ const ChatContainer: React.FC<ChatContainerProps> = () => {
   const [content, setContent] = useState<string>("");
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const clientRef = useRef<Client | null>(null);
-  const { userId, nickname } = useLoginedUserStore();
+  const { userId, nickname, profileImage } = useLoginedUserStore();
 
   const getPreviousMessages = async () => {
     try {
@@ -113,6 +113,7 @@ const ChatContainer: React.FC<ChatContainerProps> = () => {
                   senderNickname={msg.senderNickname}
                   createdAt={msg.createdAt}
                   message={msg.message}
+                  // senderProfileImage={msg.senderProfileImage}
                   senderProfileImage=""
                 />
               ) : (

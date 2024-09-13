@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
-// import { useParams } from "react-router-dom";
 import StudyroomContainer from "../components/Container/StudyroomContainer";
 import Sidebar from "../components/rooms/Sidebar";
 import { useAuthCheck } from "../utils/auth";
 import { useLocation, useNavigate } from "react-router-dom";
 import { usePreventRefresh } from "../utils/usePreventRefresh";
 import { useRoomStore } from "../store/roomStore";
+import { useTimeStore } from "../store/timeStore";
 
 const StudyroomPage: React.FC = () => {
   usePreventRefresh();
@@ -13,14 +13,13 @@ const StudyroomPage: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { title } = useRoomStore();
+  const { time, goaltime } = useTimeStore();
 
   useEffect(() => {
     authCheck();
   }, []);
 
   useEffect(() => {
-    // state: { authorized: true, needPassword: false, password: content },
-    // 인가 여부 확인
     if (!location.state || !location.state.authorized) {
       alert("인가되지 않은 접근입니다.");
       navigate("/");
@@ -28,7 +27,6 @@ const StudyroomPage: React.FC = () => {
   }, [location]);
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  // const { roomId } = useParams<{ roomId: string }>(); // URL에서 roomId를 가져옴
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -56,7 +54,7 @@ const StudyroomPage: React.FC = () => {
                 공부 시간 / 목표 시간
               </p>
               <p className="text-white text-[20px] font-bold">
-                15:32:45 / 18:00:00
+                {time} / {goaltime}
               </p>
             </div>
             <img

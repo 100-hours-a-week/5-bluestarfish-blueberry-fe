@@ -7,6 +7,7 @@ import { useUserStore } from "../../store/userStore";
 import { useRoomStore } from "../../store/roomStore";
 import axiosInstance from "../../utils/axiosInstance";
 import { checkMediaPermissions } from "../../utils/checkMediaPermission";
+import { useTimeStore } from "../../store/timeStore";
 
 const StudyroomContainer: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -40,6 +41,9 @@ const StudyroomContainer: React.FC = () => {
   const participantsRef = useRef<Record<string, Participant>>({}); // Ref로 관리
   const usersRef = useRef(users); // users 상태를 유지하는 Ref
 
+  const { time, goaltime, setTime, setGoaltime, toggleIsRunning } =
+    useTimeStore();
+
   useEffect(() => {
     usersRef.current = users; // users 상태가 변경될 때마다 usersRef 업데이트
   }, [users]);
@@ -47,6 +51,7 @@ const StudyroomContainer: React.FC = () => {
   useEffect(() => {
     fetchStudyRoom();
     checkPermissions();
+    fetchUserTime();
     return () => {
       cleanupStream();
     };
@@ -233,6 +238,33 @@ const StudyroomContainer: React.FC = () => {
       }
     } finally {
       setIsLoading(false); // 로딩 종료
+    }
+  };
+
+  const fetchUserTime = async () => {
+    try {
+      const response = await axiosInstance.get(
+        `${process.env.REACT_APP_API_URL}/api/v1/users/${userId}/time`
+      );
+      if (response.status === 200) {
+        setTime(response.data.data.time);
+      }
+    } catch (error: any) {
+      if (error.response) {
+        if (error.response.status === 404) {
+          console.error(
+            "404 오류: ",
+            error.response.data.message || "해당 유저를 찾을 수 없습니다."
+          );
+        } else {
+          console.error(
+            `오류 발생 (${error.response.status}):`,
+            error.response.data.message || "서버 오류가 발생했습니다."
+          );
+        }
+      } else {
+        console.error("스터디룸 정보를 가져오는 중 오류 발생:", error.message);
+      }
     }
   };
 
