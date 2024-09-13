@@ -113,8 +113,8 @@ const ChatContainer: React.FC<ChatContainerProps> = () => {
                   senderNickname={msg.senderNickname}
                   createdAt={msg.createdAt}
                   message={msg.message}
-                  // senderProfileImage={msg.senderProfileImage}
-                  senderProfileImage=""
+                  senderProfileImage={msg.senderProfileImage}
+                  // senderProfileImage=""
                 />
               ) : (
                 <ChatStartMessage
@@ -122,7 +122,8 @@ const ChatContainer: React.FC<ChatContainerProps> = () => {
                   senderNickname={msg.senderNickname}
                   createdAt={msg.createdAt}
                   message={msg.message}
-                  senderProfileImage=""
+                  senderProfileImage={msg.senderProfileImage}
+                  // senderProfileImage=""
                 />
               )
             )}

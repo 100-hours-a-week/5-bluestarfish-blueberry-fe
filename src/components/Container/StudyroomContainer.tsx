@@ -22,7 +22,7 @@ const StudyroomContainer: React.FC = () => {
     toggleSpeaker,
   } = useDeviceStore();
   const { userId, nickname } = useLoginedUserStore();
-  const { users, addUser, updateUser, removeUser } = useUserStore();
+  const { users, setUsers, addUser, updateUser, removeUser } = useUserStore();
   const {
     curUsers,
     setRoomId,
@@ -219,6 +219,7 @@ const StudyroomContainer: React.FC = () => {
         setTitle(response.data.data.title);
         setMaxUsers(response.data.data.maxUsers);
         setCamEnabled(response.data.data.camEnabled);
+        setUsers([]);
       }
     } catch (error: any) {
       if (error.response) {
