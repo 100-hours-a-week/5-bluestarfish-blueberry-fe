@@ -18,6 +18,7 @@ import MyInfoPage from "./pages/MyInfoPage";
 import FriendListPage from "./pages/FriendListPage";
 import FriendSearchPage from "./pages/FriendSearchPage";
 import Home from "./components/common/test/Test";
+import NotificationComponent from "./components/notification/NotificationComponent";
 
 function App() {
   return (
@@ -43,6 +44,7 @@ function App() {
         <Route path="/friends/list" element={<FriendListPage />} />
         <Route path="/friends/search" element={<FriendSearchPage />} />
       </Routes>
+      <NotificationComponent />
     </BrowserRouter>
   );
 }
