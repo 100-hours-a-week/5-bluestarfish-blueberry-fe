@@ -33,16 +33,19 @@ const NotificationComponent: React.FC = () => {
                 {
                     withCredentials: true
                 }
-              );
+            );
 
             // SSE 연결이 열렸을 때 호출
             eventSource.onopen = async () => {
                 await console.log("sse opened!")
-              }
+            }
 
             // 'like' 이벤트 수신 시 호출
-            eventSource.addEventListener("like", (event) => {
-                console.log("like 이벤트 수신");
+            eventSource.addEventListener("notification", (event: any) => {
+                console.log("notification 이벤트 수신");
+                const data = JSON.parse(event.data);
+                console.log(data)
+                alert(data.comment.content);
                 // const data = JSON.parse(event.data); // 서버로부터 받은 데이터
                 // setLikes((prevLikes) => [...prevLikes, data]); // 받은 데이터를 상태에 추가
             });
@@ -71,14 +74,15 @@ const NotificationComponent: React.FC = () => {
     }, [currentUser]);
 
     return (
-        <div>
-            <h2>알림 (Likes)</h2>
-            <ul>
-                {likes.map((like, index) => (
-                    <li key={index}>{JSON.stringify(like)}</li>
-                ))}
-            </ul>
-        </div>
+        // <div>
+        //     <h2>알림 (Likes)</h2>
+        //     <ul>
+        //         {likes.map((like, index) => (
+        //             <li key={index}>{JSON.stringify(like)}</li>
+        //         ))}
+        //     </ul>
+        // </div>
+        <></>
     );
 };
 

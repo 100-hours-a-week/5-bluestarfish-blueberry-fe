@@ -63,13 +63,40 @@ const CommentSection: React.FC<CommentSectionProps> = ({
   };
 
   // 댓글 제출 시 호출되는 함수
-  const handleCommentSubmit = () => {
-    if (comment.trim()) {
-      onSubmitComment(comment.trim()); // 상위 컴포넌트에 댓글을 전달
-      setComment(''); // 댓글 입력란 초기화
-      setMention(null); // 멘션 초기화
+const handleCommentSubmit = async () => {
+  if (comment.trim()) {
+    onSubmitComment(comment.trim()); // 상위 컴포넌트에 댓글을 전달
+
+    // 만약 멘션된 사용자가 있다면 알림 전송
+    if (mention) {
+      try {
+        const mentionedComment = comments.find(
+          (c) => c.author === mention && c.userId !== currentUser?.id
+        );
+        
+        if (mentionedComment) {
+          const requestBody = {
+            receiverId: mentionedComment.userId,  // 멘션된 사용자 ID
+            notiType: "MENTION",  // 알림 타입: 댓글
+            notiStatus: "ACCEPTED",  // 상태: 수락됨
+            commentId: mentionedComment.id,  // 멘션된 댓글 ID
+            roomId: null  // 스터디룸 ID는 해당하지 않음
+          };
+          
+          // 알림 전송 요청
+          await axiosInstance.post(`${process.env.REACT_APP_API_URL}/api/v1/users/${currentUser.id}/notifications`, requestBody);
+          console.log('알림 전송 성공:', requestBody);
+        }
+      } catch (error) {
+        console.error('알림 전송 실패:', error);
+      }
     }
-  };
+
+    setComment(''); // 댓글 입력란 초기화
+    setMention(null); // 멘션 초기화
+    window.location.reload(); // 페이지 리로드
+  }
+};
 
   // 댓글을 클릭할 때 멘션을 처리하는 함수
   const handleMentionClick = (comment: Comment) => {
