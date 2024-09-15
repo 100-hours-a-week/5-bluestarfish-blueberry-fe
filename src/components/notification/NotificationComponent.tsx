@@ -45,7 +45,7 @@ const NotificationComponent: React.FC = () => {
                 console.log("notification 이벤트 수신");
                 const data = JSON.parse(event.data);
                 console.log(data)
-                alert(data.comment.content);
+                alert(data.sender.nickname + "님이 댓글에서 당신을 멘션했어요!");
                 // const data = JSON.parse(event.data); // 서버로부터 받은 데이터
                 // setLikes((prevLikes) => [...prevLikes, data]); // 받은 데이터를 상태에 추가
             });
