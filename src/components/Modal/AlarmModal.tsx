@@ -56,14 +56,14 @@ const AlarmModal: React.FC<AlarmModalProps> = ({ closeModal }) => {
         className="absolute right-32 mt-[75px] w-[250px] h-[270px] bg-white text-black text-[8px] rounded-[20px] shadow-lg p-2 space-y-1 overflow-y-auto"
         onClick={handleModalClick}
       >
-        <div className="flex items-center m-1 space-x-1">
+        <div className="flex items-center m-1 space-x-2 mt-2 mb-5">
           <img
             src={`${process.env.PUBLIC_URL}/assets/images/bell.png`}
             alt="알림 벨"
             aria-label="알림 벨 아이콘"
-            className="h-[10px] rounded-full cursor-pointer"
+            className="h-[17px] rounded-full cursor-pointer"
           />
-          <div className="text-[10px] font-bold">알림</div>
+          <div className="text-[17px] font-bold">알림</div>
         </div>
 
         {isLoading ? (
@@ -74,26 +74,35 @@ const AlarmModal: React.FC<AlarmModalProps> = ({ closeModal }) => {
           notifications.map((notification) => (
             <div
               key={notification.id}
-              className="flex w-full h-[42px] items-center justify-between bg-[#ebeeff] rounded-[10px] p-2"
+              className="flex w-full h-[50px] items-center justify-between bg-[#ebeeff] rounded-[10px] p-2 cursor-pointer"
             >
               <div className="flex items-center space-x-1">
-                <img
-                  src={`${process.env.PUBLIC_URL}/assets/images/profile-default-image.png`}
-                  alt="프로필 이미지"
-                  aria-label="프로필 이미지"
-                  className="h-[18.41px] rounded-full cursor-pointer"
-                />
+                {notification.notiType === 'MENTION' ?
+                  <>
+                    <img
+                      src={`${process.env.PUBLIC_URL}/assets/images/noti-mention.png`}
+                      alt="프로필 이미지"
+                      aria-label="프로필 이미지"
+                      className="h-[23px] rounded-full cursor-pointer mr-1"
+                    />
+                    <div className="flex flex-col">
+                      <div className="font-semibold text-[13px]">멘션한 사용자 닉네임</div>
+                      <div className="text-[12px]">{notification.notiType === 'MENTION' ? '멘션 댓글 내용' : ""}</div>
+                    </div>
+                  </>
+                  : ""
+                }
+
                 {/* <div>{notification.notiType === 'MENTION' ? `'${notification.sender.nickname}'님이 당신을 멘션했습니다.` : '알림 내용'}</div> */}
-                <div>{notification.notiType === 'MENTION' ? '멘션 알림!' : ""}</div>
               </div>
-              <div className="space-x-1 text-white text-[6px]">
+              {/* <div className="space-x-1 text-white text-[6px]">
                 <button className="w-[19px] h-[12px] bg-[#6d81d5] rounded-[5px]">
                   수락
                 </button>
                 <button className="w-[19px] h-[12px] bg-[#eb4c64] rounded-[5px]">
                   거절
                 </button>
-              </div>
+              </div> */}
             </div>
           ))
         )}
