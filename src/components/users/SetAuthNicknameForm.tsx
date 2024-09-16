@@ -25,10 +25,6 @@ const SetAuthNicknameForm: React.FC = () => {
   }, [nickname]);
 
   useEffect(() => {
-    console.log(userId);
-  }, [userId]);
-
-  useEffect(() => {
     if (isValidNickname && isValidConfirmNickname) setIsValid(true);
     else setIsValid(false);
   }, [isValidNickname, isValidConfirmNickname]);
