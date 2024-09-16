@@ -1,11 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import StudyroomContainer from "../components/Container/StudyroomContainer";
 import Sidebar from "../components/rooms/Sidebar";
 import { useAuthCheck } from "../utils/auth";
 import { useLocation, useNavigate } from "react-router-dom";
 import { usePreventRefresh } from "../utils/usePreventRefresh";
+import { useLoginedUserStore } from "../store/store";
 import { useRoomStore } from "../store/roomStore";
 import { useTimeStore } from "../store/timeStore";
+import { addOneSecondToTime } from "../utils/time";
+import axiosInstance from "../utils/axiosInstance";
 
 const StudyroomPage: React.FC = () => {
   usePreventRefresh();
@@ -13,11 +16,35 @@ const StudyroomPage: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { title } = useRoomStore();
-  const { time, goaltime } = useTimeStore();
+  const { time, goaltime, isRunning, setTime, setIsRunning } = useTimeStore();
+  const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
+  const { userId } = useLoginedUserStore();
 
   useEffect(() => {
     authCheck();
+    if (intervalId) {
+      stopTimer();
+    }
+    return () => {
+      // updateUserTime();
+      stopTimer();
+      setIsRunning(false);
+    };
   }, []);
+
+  useEffect(() => {
+    if (!isRunning) {
+      stopTimer();
+    }
+  }, [isRunning]);
+
+  useEffect(() => {
+    if (isRunning) {
+      startTimer();
+    } else {
+      stopTimer();
+    }
+  }, [isRunning]);
 
   useEffect(() => {
     if (!location.state || !location.state.authorized) {
@@ -30,6 +57,32 @@ const StudyroomPage: React.FC = () => {
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
+  };
+
+  const startTimer = () => {
+    if (!intervalId) {
+      const timerId = setInterval(() => {
+        setTime((prevTime) => addOneSecondToTime(prevTime)); // 이전 상태 기반으로 업데이트
+      }, 1000);
+      setIntervalId(timerId);
+    }
+  };
+
+  const stopTimer = () => {
+    if (intervalId) {
+      clearInterval(intervalId);
+      setIntervalId(null);
+    }
+  };
+
+  const updateUserTime = () => {
+    const requestBody = {
+      time: time,
+    };
+    axiosInstance.patch(
+      `${process.env.REACT_APP_API_URL}/api/v1/users/${userId}/time`,
+      requestBody
+    );
   };
 
   return (
