@@ -404,7 +404,6 @@ const StudyroomContainer: React.FC = () => {
     speakerEnabled: boolean;
   }) => {
     receiveVideo(request.name);
-
     addUser({
       id: request.userId,
       nickname: request.name,
@@ -437,6 +436,7 @@ const StudyroomContainer: React.FC = () => {
       (user) => user.id === result.userId
     );
 
+    console.log(result);
     if (existingUser) {
       updateUser(result.userId, {
         profileImage: result.profileImage,
@@ -484,7 +484,6 @@ const StudyroomContainer: React.FC = () => {
     participantsRef.current[nickname] = participant;
     setCurUsers(Object.keys(participantsRef.current).length);
     const video = participant.getVideoElement();
-
     const options = {
       localVideo: video,
       mediaConstraints: constraints,
@@ -499,19 +498,15 @@ const StudyroomContainer: React.FC = () => {
         ],
       },
     };
-
     participant.rtcPeer = new kurentoUtils.WebRtcPeer.WebRtcPeerSendonly(
       options,
       (error: any) => {
-        if (error) {
-          return console.error(error);
-        }
+        if (error) return console.error(error);
         participant.rtcPeer.generateOffer(
           participant.offerToReceiveVideo.bind(participant)
         );
       }
     );
-
     msg.data.forEach(receiveVideo);
   };
 
