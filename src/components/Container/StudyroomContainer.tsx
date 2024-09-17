@@ -656,7 +656,7 @@ const StudyroomContainer: React.FC = () => {
           <img
             src={`${process.env.PUBLIC_URL}/assets/images/exit-white.png`}
             alt="exit"
-            className="h-[26px] mb-[1px]"
+            className="h-[20px] mb-[9px]"
           />
         </button>
       </div>
