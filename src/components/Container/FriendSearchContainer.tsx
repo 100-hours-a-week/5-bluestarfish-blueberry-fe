@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axiosInstance from "../../utils/axiosInstance"; // axiosInstance를 사용한 API 요청
 import AddModal from "../common/AddModal";
 import ToastNotification from "../common/ToastNotification";
+import { useLoginedUserStore } from "../../store/store";
 
 interface Friend {
     id: number;
@@ -17,6 +18,7 @@ const FriendSearchContainer: React.FC = () => {
     const [showAddModal, setShowAddModal] = useState<boolean>(false);
     const [selectedFriendId, setSelectedFriendId] = useState<number | null>(null); // 선택된 친구 ID
     const [showAddFriendToast, setShowAddFriendToast] = useState(false);
+    const { nickname: currentUserNickname } = useLoginedUserStore();
 
     // 친구 추가 핸들러 (버튼 클릭 시 모달 표시)
     const handleAddFriend = (id: number) => {
@@ -45,7 +47,11 @@ const FriendSearchContainer: React.FC = () => {
             const response = await axiosInstance.get(`${process.env.REACT_APP_API_URL}/api/v1/users`, {
                 params: { keyword },
             });
-            setFilteredFriends(response.data.data); // 서버에서 받은 데이터를 설정
+            // 자기 자신을 검색 결과에서 제외
+            const filteredFriends = response.data.data.filter(
+                (friend: Friend) => friend.nickname !== currentUserNickname
+            );
+            setFilteredFriends(filteredFriends); // 필터링된 데이터를 설정
         } catch (error) {
             console.error("친구 검색에 실패했습니다:", error);
             setFilteredFriends([]); // 실패 시 빈 배열로 설정
