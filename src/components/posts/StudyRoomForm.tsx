@@ -322,9 +322,9 @@ const StudyRoomForm: React.FC<StudyRoomFormProps> = ({
           className="block text-gray-700 text-sm sm:text-base md:text-lg font-bold mb-2"
           htmlFor="password"
         >
-          암호 설정{" "}
+          암호 설정
           <span className="text-gray-400 text-xs pl-1">
-            ({Math.min(password.length, 20)} / 20)
+            ({Math.min(password.length, 10)} / 10)
           </span>
         </label>
         <input
