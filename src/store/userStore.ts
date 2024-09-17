@@ -20,10 +20,20 @@ interface UserStore {
 export const useUserStore = create<UserStore>((set) => ({
   users: [], // 초기값을 반드시 빈 배열로 설정
 
-  addUser: (user: User) =>
-    set((state) => ({
-      users: [...state.users, user],
-    })),
+  addUser: (newUser: User) =>
+    set((state) => {
+      const userExists = state.users.some((user) => user.id === newUser.id);
+
+      // 중복된 id가 없을 때만 사용자 추가
+      if (!userExists) {
+        return {
+          users: [...state.users, newUser],
+        };
+      }
+
+      // 중복된 경우 기존 상태 반환
+      return state;
+    }),
 
   updateUser: (id: number, updatedUser: Partial<User>) =>
     set((state) => ({

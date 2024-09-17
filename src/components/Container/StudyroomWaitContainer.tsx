@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import axiosInstance from "../../utils/axiosInstance";
 import { useDeviceStore, useLoginedUserStore } from "../../store/store";
 import { checkMediaPermissions } from "../../utils/checkMediaPermission";
@@ -9,9 +9,11 @@ const StudyroomWaitContainer: React.FC = () => {
   const { roomId } = useParams<{ roomId: string }>(); // URL에서 roomId를 가져옴
   const { userId } = useLoginedUserStore();
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [password, setPassword] = useState<string | null>(null);
   const [cameraEnabled, setCameraEnabled] = useState<boolean>(false);
   const [microphoneEnabled, setMicrophoneEnabled] = useState<boolean>(false);
   const [permissionsChecked, setPermissionsChecked] = useState<boolean>(false);
+  const [isCamOffRoom, setIsCamOffRoom] = useState<boolean>(false);
   const {
     camEnabled,
     micEnabled,
@@ -22,6 +24,14 @@ const StudyroomWaitContainer: React.FC = () => {
   } = useDeviceStore();
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const stream = useRef<MediaStream | null>(null);
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.state && location.state.needPassword) {
+      setPassword(location.state.password);
+    }
+    console.log(location.state.password);
+  }, [location]);
 
   useEffect(() => {
     const setupStream = async () => {
@@ -60,17 +70,12 @@ const StudyroomWaitContainer: React.FC = () => {
   const handleClick = () => {
     if (cameraEnabled && microphoneEnabled) {
       enterStudyRoom();
-      navigate(`/studyroom/${roomId}`);
     } else {
       navigate(0);
     }
   };
 
   const exitWaitPage = () => {
-    // 모든 미디어 스트림을 종료
-    // if (stream.current) {
-    //   stream.current.getTracks().forEach((track) => track.stop());
-    // }
     navigate("/");
   };
 
@@ -88,11 +93,26 @@ const StudyroomWaitContainer: React.FC = () => {
           speakerEnabled: speakerEnabled,
           goalTime: "14:30:30",
           dayTime: "15:30:30",
+          password: password,
         }
       );
       if (response.status === 204) {
-        console.log("204 No Content");
-        navigate(`/studyroom/${roomId}`);
+        if (stream.current) {
+          stream.current.getTracks().forEach((track) => track.stop());
+        }
+        if (location.state && location.state.needPassword) {
+          navigate(`/studyroom/${roomId}`, {
+            state: {
+              authorized: true,
+              needPassword: true,
+              password: location.state.password,
+            },
+          });
+        } else {
+          navigate(`/studyroom/${roomId}`, {
+            state: { authorized: true, needPassword: false },
+          });
+        }
       }
     } catch (error: any) {
       if (error.response) {

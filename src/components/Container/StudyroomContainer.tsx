@@ -1,37 +1,17 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { Client, IMessage } from "@stomp/stompjs";
-import SockJS from "sockjs-client";
+import { useNavigate, useParams } from "react-router-dom";
 import kurentoUtils from "kurento-utils";
 import Participant from "../../utils/Participant";
 import { useDeviceStore, useLoginedUserStore } from "../../store/store";
 import { useUserStore } from "../../store/userStore";
+import { useRoomStore } from "../../store/roomStore";
 import axiosInstance from "../../utils/axiosInstance";
 import { checkMediaPermissions } from "../../utils/checkMediaPermission";
-
-interface User {
-  id: number;
-  nickname: string;
-  profileImage: string;
-  camEnabled: boolean;
-  micEnabled: boolean;
-  speakerEnabled: boolean;
-}
-
-interface StudyRoom {
-  id: number;
-  title: string;
-  camEnabled: boolean;
-  maxUsers: number;
-  thumbnail: string;
-  users: { id: number; name: string }[];
-}
+import { useTimeStore } from "../../store/timeStore";
 
 const StudyroomContainer: React.FC = () => {
-  const [studyRoom, setStudyRoom] = useState<StudyRoom>(); // 추후에 설정값 반영하기
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { roomId } = useParams<{ roomId: string }>();
-  const clientRef = useRef<Client | null>(null);
   const navigate = useNavigate();
   const {
     camEnabled,
@@ -41,8 +21,16 @@ const StudyroomContainer: React.FC = () => {
     toggleMic,
     toggleSpeaker,
   } = useDeviceStore();
-  const { userId, nickname, profileImage } = useLoginedUserStore();
-  const { users, addUser, updateUser, setUsers } = useUserStore();
+  const { userId, nickname } = useLoginedUserStore();
+  const { users, setUsers, addUser, updateUser, removeUser } = useUserStore();
+  const {
+    curUsers,
+    setRoomId,
+    setTitle,
+    setMaxUsers,
+    setCurUsers,
+    setCamEnabled,
+  } = useRoomStore();
   const [cameraEnabled, setCameraEnabled] = useState<boolean>(false);
   const [microphoneEnabled, setMicrophoneEnabled] = useState<boolean>(false);
   const [permissionsChecked, setPermissionsChecked] = useState<boolean>(false);
@@ -50,30 +38,23 @@ const StudyroomContainer: React.FC = () => {
   const localStreamRef = useRef<MediaStream | null>(null);
   const localVideoRef = useRef<HTMLVideoElement | null>(null);
   const wsRef = useRef<WebSocket | null>(null);
-  const participants: Record<string, Participant> = {};
-  const [numUsers, setNumUsers] = useState<number>(0);
+  const participantsRef = useRef<Record<string, Participant>>({}); // Ref로 관리
+  const usersRef = useRef(users); // users 상태를 유지하는 Ref
+
+  const { time, goaltime, setTime, setGoaltime, toggleIsRunning } =
+    useTimeStore();
+
+  useEffect(() => {
+    usersRef.current = users; // users 상태가 변경될 때마다 usersRef 업데이트
+  }, [users]);
 
   useEffect(() => {
     fetchStudyRoom();
-  }, []);
-
-  useEffect(() => {
-    console.log(numUsers);
-  }, [numUsers]);
-
-  useEffect(() => {
-    console.log(cameraEnabled, microphoneEnabled, permissionsChecked);
-  }, [cameraEnabled, microphoneEnabled, permissionsChecked]);
-
-  useEffect(() => {
-    const checkPermissions = async () => {
-      const { camera, microphone } = await checkMediaPermissions();
-      setCameraEnabled(camera);
-      setMicrophoneEnabled(microphone);
-      setPermissionsChecked(true);
-    };
-
     checkPermissions();
+    fetchUserTime();
+    return () => {
+      cleanupStream();
+    };
   }, []);
 
   useEffect(() => {
@@ -82,22 +63,10 @@ const StudyroomContainer: React.FC = () => {
         navigate(-1);
       }
     }
-  }, [cameraEnabled, microphoneEnabled, permissionsChecked]);
-
-  useEffect(() => {
-    sendRoomControlUpdate({
-      id: userId,
-      nickname: nickname,
-      profileImage: profileImage,
-      camEnabled: camEnabled,
-      micEnabled: micEnabled,
-      speakerEnabled: speakerEnabled,
-    });
-  }, [camEnabled, micEnabled, speakerEnabled]);
+  }, [permissionsChecked]);
 
   useEffect(() => {
     if (permissionsChecked) {
-      // if (userId === 0) return;
       wsRef.current = new WebSocket(`${process.env.REACT_APP_SOCKET_RTC_URL}`);
 
       wsRef.current.onopen = () => {
@@ -108,23 +77,27 @@ const StudyroomContainer: React.FC = () => {
       wsRef.current.onerror = (error) => {
         console.error("WebSocket error: ", error);
       };
-
-      return () => {
-        if (wsRef.current) {
-          wsRef.current.close();
-        }
-        if (localStreamRef.current) {
-          localStreamRef.current.getTracks().forEach((track) => track.stop());
-        }
-      };
     }
+    // 핑퐁 START ----------------------------------------------------------
+    const interval = setInterval(() => {
+      const message = {
+        id: "pingPong",
+        message: "ping",
+      };
+      sendMessage(message);
+    }, 10000);
+    // 핑퐁 START ----------------------------------------------------------
+
+    return () => {
+      cleanupStream();
+      if (interval) clearInterval(interval);
+    };
   }, [permissionsChecked]);
 
   useEffect(() => {
     if (wsRef.current) {
       wsRef.current.onmessage = (message) => {
         const parsedMessage = JSON.parse(message.data);
-        console.info("Received message: " + message.data);
 
         switch (parsedMessage.id) {
           case "existingParticipants":
@@ -140,7 +113,7 @@ const StudyroomContainer: React.FC = () => {
             receiveVideoResponse(parsedMessage);
             break;
           case "iceCandidate":
-            participants[parsedMessage.name].rtcPeer.addIceCandidate(
+            participantsRef.current[parsedMessage.name].rtcPeer.addIceCandidate(
               parsedMessage.candidate,
               (error: any) => {
                 if (error) {
@@ -150,12 +123,52 @@ const StudyroomContainer: React.FC = () => {
               }
             );
             break;
+          case "isCamOn":
+            controlCam(parsedMessage);
+            break;
+          case "isMicOn":
+            controlMic(parsedMessage);
+            break;
+          case "pingPong":
+            break;
           default:
             console.error("Unrecognized message", parsedMessage);
         }
       };
     }
   }, [wsRef.current]);
+
+  const checkPermissions = async () => {
+    const { camera, microphone } = await checkMediaPermissions();
+    setCameraEnabled(camera);
+    setMicrophoneEnabled(microphone);
+    setPermissionsChecked(true);
+  };
+
+  const cleanupStream = () => {
+    Object.keys(participantsRef.current).forEach((key) => {
+      const participant = participantsRef.current[key];
+      if (participant.rtcPeer) {
+        participant.rtcPeer.dispose(); // 피어 객체 정리
+        participant.rtcPeer = null; // 피어 참조 제거
+        participant.dispose();
+      }
+    });
+
+    if (localStreamRef.current) {
+      localStreamRef.current.getTracks().forEach((track) => track.stop());
+      localStreamRef.current = null;
+    }
+
+    if (localVideoRef.current) {
+      localVideoRef.current.srcObject = null; // 비디오 엘리먼트에서 스트림 해제
+    }
+
+    if (wsRef.current) {
+      wsRef.current.close();
+      wsRef.current = null;
+    }
+  };
 
   const exitStudyRoom = async () => {
     if (isLoading) return;
@@ -174,8 +187,7 @@ const StudyroomContainer: React.FC = () => {
         }
       );
       if (response.status === 204) {
-        console.log("204 No Content");
-        navigate(`/wait/${roomId}`);
+        navigate(`/`);
       }
     } catch (error: any) {
       if (error.response) {
@@ -203,20 +215,11 @@ const StudyroomContainer: React.FC = () => {
         `${process.env.REACT_APP_API_URL}/api/v1/rooms/${roomId}`
       );
       if (response.status === 200) {
-        setStudyRoom(response.data); // userRooms 배열을 User 인터페이스에 맞게 변환
-
-        const usersArray = response.data.data.userRooms.map(
-          (userRoom: any) => ({
-            id: userRoom.userId,
-            nickname: userRoom.nickname,
-            profileImage: userRoom.profileImage || "", // null인 경우 빈 문자열로 대체
-            camEnabled: userRoom.camEnabled,
-            micEnabled: userRoom.micEnabled,
-            speakerEnabled: userRoom.speakerEnabled,
-          })
-        );
-
-        setUsers(usersArray); // 변환된 배열을 users로 설정
+        setRoomId(response.data.data.id);
+        setTitle(response.data.data.title);
+        setMaxUsers(response.data.data.maxUsers);
+        setCamEnabled(response.data.data.camEnabled);
+        setUsers([]);
       }
     } catch (error: any) {
       if (error.response) {
@@ -239,72 +242,52 @@ const StudyroomContainer: React.FC = () => {
     }
   };
 
-  useEffect(() => {
-    const socket = new SockJS(`${process.env.REACT_APP_SOCKET_STUDY_URL}`);
-    const client = new Client({
-      webSocketFactory: () => socket as WebSocket,
-      onConnect: () => {
-        if (!client || !roomId) return;
-
-        client.subscribe(`/rooms/${roomId}/management`, (message: IMessage) => {
-          const body = JSON.parse(message.body);
-          console.log(body);
-          body.id &&
-            updateUser(body.id, {
-              camEnabled: body.camEnabled,
-              micEnabled: body.micEnabled,
-              speakerEnabled: body.speakerEnabled,
-            });
-        });
-        client.subscribe(`/rooms/${roomId}/member`, (message: IMessage) => {
-          const body = JSON.parse(message.body);
-          console.log(body);
-          body.id &&
-            addUser({
-              id: body.id,
-              nickname: body.nickname,
-              profileImage: body.profileImage || "",
-              camEnabled: body.camEnabled,
-              micEnabled: body.micEnabled,
-              speakerEnabled: body.speakerEnabled,
-            });
-        });
-
-        client.publish({
-          destination: `/rooms/${roomId}/member`,
-          body: JSON.stringify({
-            id: userId,
-            nickname: nickname,
-            profileImage: "",
-            camEnabled: camEnabled,
-            micEnabled: micEnabled,
-            speakerEnabled: speakerEnabled,
-          }),
-        });
-      },
-      onStompError: (error) => {
-        console.error("Error: ", error);
-      },
-    });
-
-    client.activate();
-    clientRef.current = client;
-
-    return () => {
-      if (clientRef.current) {
-        clientRef.current.deactivate();
+  const fetchUserTime = async () => {
+    try {
+      const response = await axiosInstance.get(
+        `${process.env.REACT_APP_API_URL}/api/v1/users/${userId}/time`
+      );
+      if (response.status === 200) {
+        setTime(response.data.data.time);
       }
-    };
-  }, []);
-
-  const sendRoomControlUpdate = (update: User) => {
-    if (clientRef.current && clientRef.current.connected) {
-      clientRef.current.publish({
-        destination: `/rooms/${roomId}/management`,
-        body: JSON.stringify(update),
-      });
+    } catch (error: any) {
+      if (error.response) {
+        if (error.response.status === 404) {
+          console.error(
+            "404 오류: ",
+            error.response.data.message || "해당 유저를 찾을 수 없습니다."
+          );
+        } else {
+          console.error(
+            `오류 발생 (${error.response.status}):`,
+            error.response.data.message || "서버 오류가 발생했습니다."
+          );
+        }
+      } else {
+        console.error("스터디룸 정보를 가져오는 중 오류 발생:", error.message);
+      }
     }
   };
+
+  useEffect(() => {
+    const message = {
+      id: "isCamOn",
+      sender: nickname,
+      isCamOn: camEnabled,
+    };
+    sendMessage(message);
+    updateUser(userId, { camEnabled: camEnabled });
+  }, [camEnabled]);
+
+  useEffect(() => {
+    const message = {
+      id: "isMicOn",
+      sender: nickname,
+      isMicOn: micEnabled,
+    };
+    sendMessage(message);
+    updateUser(userId, { micEnabled: micEnabled });
+  }, [micEnabled]);
 
   const clickCamIcon = () => {
     if (localStreamRef.current) {
@@ -312,7 +295,6 @@ const StudyroomContainer: React.FC = () => {
         track.enabled = !camEnabled;
       });
       toggleCam();
-      // 비디오 요소 업데이트
       if (localVideoRef.current) {
         localVideoRef.current.srcObject = localStreamRef.current;
       }
@@ -333,13 +315,61 @@ const StudyroomContainer: React.FC = () => {
   const handleExitButton = async () => {
     leaveRoom();
     await exitStudyRoom();
+    cleanupStream();
+    navigate("/");
   };
 
-  // WebRTC functions
+  const controlCam = (parsedMessage: any) => {
+    const videoElement = document.getElementById(
+      `video-${parsedMessage.sender}`
+    );
+
+    if (videoElement) {
+      videoElement.style.visibility = parsedMessage.isCamOn
+        ? "visible"
+        : "hidden";
+    } else {
+      console.error(
+        `Video element with id video-${parsedMessage.sender} not found`
+      );
+    }
+
+    const userToUpdate = usersRef.current.find(
+      (user) => user.nickname === parsedMessage.sender
+    );
+
+    if (userToUpdate) {
+      updateUser(userToUpdate.id, { camEnabled: parsedMessage.isCamOn });
+    } else {
+      console.error(`User with nickname ${parsedMessage.sender} not found`);
+    }
+  };
+
+  const controlMic = (parsedMessage: any) => {
+    const videoElement = document.getElementById(
+      `video-${parsedMessage.sender}`
+    ) as HTMLVideoElement | null;
+
+    if (videoElement) {
+      videoElement.muted = !parsedMessage.isMicOn;
+    } else {
+      console.error(
+        `Video element with id video-${parsedMessage.sender} not found`
+      );
+    }
+    const userToUpdate = usersRef.current.find(
+      (user) => user.nickname === parsedMessage.sender
+    );
+
+    if (userToUpdate) {
+      updateUser(userToUpdate.id, { micEnabled: parsedMessage.isMicOn });
+    } else {
+      console.error(`User with nickname ${parsedMessage.sender} not found`);
+    }
+  };
 
   const sendMessage = (message: any) => {
     const jsonMessage = JSON.stringify(message);
-    console.log("Sending message: " + jsonMessage);
     wsRef.current?.send(jsonMessage);
   };
 
@@ -355,34 +385,84 @@ const StudyroomContainer: React.FC = () => {
 
     const message = {
       id: "joinRoom",
+      userId: userId,
       name: nickname,
       room: roomId,
+      camEnabled: camEnabled,
+      micEnabled: micEnabled,
+      speakerEnabled: speakerEnabled,
     };
     sendMessage(message);
   };
 
-  const onNewParticipant = (request: { name: string }) => {
+  const onNewParticipant = (request: {
+    userId: number;
+    profileImage: string;
+    name: string;
+    camEnabled: boolean;
+    micEnabled: boolean;
+    speakerEnabled: boolean;
+  }) => {
     receiveVideo(request.name);
+    addUser({
+      id: request.userId,
+      nickname: request.name,
+      profileImage: request.profileImage,
+      camEnabled: request.camEnabled,
+      micEnabled: request.micEnabled,
+      speakerEnabled: request.speakerEnabled,
+    });
   };
 
-  const receiveVideoResponse = (result: { name: string; sdpAnswer: any }) => {
-    participants[result.name].rtcPeer.processAnswer(
-      result.sdpAnswer,
-      (error: any) => {
+  const receiveVideoResponse = (result: {
+    userId: number;
+    profileImage: string;
+    name: string;
+    camEnabled: boolean;
+    micEnabled: boolean;
+    speakerEnabled: boolean;
+    sdpAnswer: any;
+  }) => {
+    const participant = participantsRef.current[result.name];
+    if (participant) {
+      participant.rtcPeer.processAnswer(result.sdpAnswer, (error: any) => {
         if (error) {
-          console.error(error);
+          console.error("Error processing SDP answer:", error);
         }
-      }
+      });
+    }
+
+    const existingUser = usersRef.current.find(
+      (user) => user.id === result.userId
     );
+
+    console.log(result);
+    if (existingUser) {
+      updateUser(result.userId, {
+        profileImage: result.profileImage,
+        nickname: result.name,
+        camEnabled: result.camEnabled,
+        micEnabled: result.micEnabled,
+        speakerEnabled: result.speakerEnabled,
+      });
+    } else {
+      addUser({
+        id: result.userId,
+        profileImage: result.profileImage,
+        nickname: result.name,
+        camEnabled: result.camEnabled,
+        micEnabled: result.micEnabled,
+        speakerEnabled: result.speakerEnabled,
+      });
+    }
   };
 
   const stop = () => {
-    console.log("Stopping WebRTC communication");
-
-    for (const key in participants) {
-      if (participants[key].rtcPeer) {
-        participants[key].rtcPeer.dispose();
-        participants[key].rtcPeer = null;
+    for (const key in participantsRef.current) {
+      const participant = participantsRef.current[key];
+      if (participant.rtcPeer) {
+        participant.rtcPeer.dispose();
+        participant.rtcPeer = null;
       }
     }
 
@@ -400,15 +480,11 @@ const StudyroomContainer: React.FC = () => {
         },
       },
     };
-    console.log(`${nickname} registered in room`);
-
     const participant = new Participant(nickname, nickname, sendMessage);
-    participants[nickname] = participant;
-    //useState로 값을 업데이트하면 에러가 발생
-    setNumUsers(Object.keys(participants).length);
+    participantsRef.current[nickname] = participant;
+    setCurUsers(Object.keys(participantsRef.current).length);
     const video = participant.getVideoElement();
-
-    var options = {
+    const options = {
       localVideo: video,
       mediaConstraints: constraints,
       onicecandidate: participant.onIceCandidate.bind(participant),
@@ -422,49 +498,38 @@ const StudyroomContainer: React.FC = () => {
         ],
       },
     };
-
     participant.rtcPeer = new kurentoUtils.WebRtcPeer.WebRtcPeerSendonly(
       options,
       (error: any) => {
-        if (error) {
-          return console.error(error);
-        }
+        if (error) return console.error(error);
         participant.rtcPeer.generateOffer(
           participant.offerToReceiveVideo.bind(participant)
         );
       }
     );
-
-    participant.rtcPeer.getLocalStream((stream: MediaStream) => {
-      localStreamRef.current = stream;
-      if (!stream) {
-        console.error("Failed to get local stream");
-      }
-    });
-
     msg.data.forEach(receiveVideo);
   };
 
   const leaveRoom = () => {
     sendMessage({ id: "leaveRoom" });
-
-    for (const key in participants) {
-      participants[key].dispose();
-    }
-
-    navigate("/");
+    Object.keys(participantsRef.current).forEach((key) => {
+      const participant = participantsRef.current[key];
+      if (participant.rtcPeer) {
+        participant.rtcPeer.dispose();
+        participant.rtcPeer = null;
+        participant.dispose();
+      }
+    });
 
     wsRef.current?.close();
   };
 
   const receiveVideo = (sender: string) => {
     const participant = new Participant(nickname, sender, sendMessage);
-    participants[sender] = participant;
+    participantsRef.current[sender] = participant;
     const video = participant.getVideoElement();
-
-    //useState로 값을 업데이트하면 에러가 발생
-    setNumUsers(Object.keys(participants).length);
-    var options = {
+    setCurUsers(Object.keys(participantsRef.current).length);
+    const options = {
       remoteVideo: video,
       onicecandidate: participant.onIceCandidate.bind(participant),
       configuration: {
@@ -492,23 +557,30 @@ const StudyroomContainer: React.FC = () => {
   };
 
   const onParticipantLeft = (request: { name: string }) => {
-    console.log("Participant " + request.name + " left");
-    var participant = participants[request.name];
+    const participant = participantsRef.current[request.name];
 
-    // 추가 코드
     if (participant !== undefined) {
+      participant.rtcPeer.dispose();
+      participant.rtcPeer = null;
       participant.dispose();
-      delete participants[request.name];
+      delete participantsRef.current[request.name];
     }
 
-    //useState로 값을 업데이트하면 에러가 발생
-    setNumUsers(Object.keys(participants).length);
+    const userToRemove = usersRef.current.find(
+      (user) => user.nickname === request.name
+    );
+
+    if (userToRemove) {
+      removeUser(userToRemove.id);
+    }
+
+    setCurUsers(Object.keys(participantsRef.current).length);
   };
 
   return (
     <div className="w-full flex flex-col items-center justify-center p-4">
       <span id="numUsers" className="text-white">
-        {numUsers}
+        {curUsers}
       </span>
       <div>
         <div

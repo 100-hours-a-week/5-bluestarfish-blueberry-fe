@@ -55,6 +55,8 @@ const StudyRoomForm: React.FC<StudyRoomFormProps> = ({
     (passwordError === "* 선택 사항" || passwordError === "통과");
 
   const [showToast, setShowToast] = useState(false);
+  const [showUnauthToast, setShowUnauthToast] = useState(false);
+  const [showForbiddenToast, setShowForbiddenToast] = useState(false);
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isCamEnabled, setIsCamEnabled] = useState<boolean>(true);
@@ -63,25 +65,48 @@ const StudyRoomForm: React.FC<StudyRoomFormProps> = ({
     setIsCamEnabled(category !== "캠끄공");
   }, [category]);
 
+  // 토스트 닫기 핸들러를 `useEffect`를 사용하여 안전하게 호출
+  useEffect(() => {
+    if (showToast) {
+      const timer = setTimeout(() => {
+        setShowToast(false);
+        navigate("/"); // 토스트가 닫힐 때 안전하게 상태 업데이트
+      }, 3000); // 3초 후에 토스트를 닫고 페이지 이동
+
+      return () => clearTimeout(timer); // 타이머 클린업
+    }
+  }, [showToast, navigate]);
+
   // 스터디룸 생성 요청 함수
   const createStudyRooms = async (): Promise<void> => {
     if (isLoading || !userId) return;
-
     const trimmedTitle = studyRoomName.trim();
-
     try {
       setIsLoading(true);
 
+      // FormData 객체 생성
+      const formData = new FormData();
+
+      // 일반 데이터 추가
+      formData.append("userId", userId.toString()); // 숫자를 문자열로 변환
+      formData.append("title", trimmedTitle);
+      formData.append("maxUsers", String(maxUsers)); // 숫자는 문자열로 변환하여 전송
+      formData.append("camEnabled", String(isCamEnabled)); // Boolean 값도 문자열로 변환
+      formData.append("password", password || ""); // 비밀번호 없을 경우 빈 문자열
+      formData.append("description", description || ""); // 설명 없을 경우 빈 문자열
+
+      // 파일 추가 (null일 경우 제외)
+      if (thumbnail) {
+        formData.append("thumbnail", thumbnail); // 파일이 있는 경우에만 추가
+      }
+
       const response = await axiosInstance.post(
         `${process.env.REACT_APP_API_URL}/api/v1/rooms`,
+        formData, // FormData 객체 전송
         {
-          userId: userId,
-          title: trimmedTitle,
-          maxUsers: maxUsers,
-          camEnabled: isCamEnabled,
-          thumbnail: null,
-          password: password,
-          description: description,
+          headers: {
+            "Content-Type": "multipart/form-data", // FormData 전송을 위한 Content-Type 설정
+          },
         }
       );
 
@@ -91,7 +116,14 @@ const StudyRoomForm: React.FC<StudyRoomFormProps> = ({
       } else {
         console.log(`${response.status}: 스터디룸 생성 실패`);
       }
-    } catch (error) {
+    } catch (error: any) {
+      if (error.response) {
+        if (error.response.status === 401) {
+          setShowUnauthToast(true);
+        } else if (error.response.status === 403) {
+          setShowForbiddenToast(true);
+        }
+      }
       console.error("스터디룸 생성 중 오류:", error);
     } finally {
       setIsLoading(false); // 로딩 상태 해제
@@ -103,7 +135,15 @@ const StudyRoomForm: React.FC<StudyRoomFormProps> = ({
     navigate("/");
   };
 
-  // 이 부분에서 createStudyRooms를 호출하도록 수정합니다.
+  const handleCloseUnauthToast = () => {
+    setShowUnauthToast(false);
+    navigate("/");
+  };
+
+  const handleCloseForbiddenToast = () => {
+    setShowForbiddenToast(false);
+  };
+
   const handleSubmitClick = async (): Promise<void> => {
     await createStudyRooms(); // 비동기 함수 호출
   };
@@ -225,8 +265,9 @@ const StudyRoomForm: React.FC<StudyRoomFormProps> = ({
         </div>
         {categoryError && (
           <p
-            className={`text-xs italic mt-1 ${categoryError === "통과" ? "text-blue-500" : "text-red-500"
-              }`}
+            className={`text-xs italic mt-1 ${
+              categoryError === "통과" ? "text-blue-500" : "text-red-500"
+            }`}
           >
             {categoryError}
           </p>
@@ -234,7 +275,7 @@ const StudyRoomForm: React.FC<StudyRoomFormProps> = ({
       </div>
 
       {/* 대표 이미지 업로드 */}
-      <div className="mb-5 relative relative px-5">
+      <div className="mb-5 relative px-5">
         <label
           className="block text-gray-700 text-sm sm:text-base md:text-lg font-bold mb-2"
           htmlFor="thumbnail"
@@ -276,7 +317,7 @@ const StudyRoomForm: React.FC<StudyRoomFormProps> = ({
       </div>
 
       {/* 암호 설정 */}
-      <div className="mb-4 relative relative px-5">
+      <div className="mb-4 relative px-5">
         <label
           className="block text-gray-700 text-sm sm:text-base md:text-lg font-bold mb-2"
           htmlFor="password"
@@ -289,7 +330,7 @@ const StudyRoomForm: React.FC<StudyRoomFormProps> = ({
         <input
           id="password"
           type="text"
-          maxLength={20}
+          maxLength={10}
           value={password}
           onChange={handlePasswordChange}
           placeholder="스터디룸 암호를 입력해주세요."
@@ -307,12 +348,12 @@ const StudyRoomForm: React.FC<StudyRoomFormProps> = ({
       </div>
 
       {/* 스터디 소개 */}
-      <div className="mb-4 relative relative px-5">
+      <div className="mb-4 relative px-5">
         <label
           className="block text-gray-700 text-sm sm:text-base md:text-lg font-bold mb-2"
           htmlFor="description"
         >
-          스터디 소개{" "}
+          스터디 소개
           <span className="text-gray-400 text-xs pl-1">
             ({Math.min(description.length, 100)} / 100)
           </span>
@@ -340,6 +381,20 @@ const StudyRoomForm: React.FC<StudyRoomFormProps> = ({
             message="생성 완료!"
             isSuccess={true}
             onClose={handleCloseToast}
+          />
+        )}
+        {showUnauthToast && (
+          <ToastNotification
+            message="인가되지 않은 요청입니다."
+            isSuccess={false}
+            onClose={handleCloseUnauthToast}
+          />
+        )}
+        {showForbiddenToast && (
+          <ToastNotification
+            message="5개 이상의 스터디룸을 생성할 수 없습니다."
+            isSuccess={false}
+            onClose={handleCloseForbiddenToast}
           />
         )}
       </div>

@@ -1,22 +1,88 @@
-import React, { useState, useEffect } from "react";
-// import { useParams } from "react-router-dom";
+import React, { useState, useEffect, useRef } from "react";
 import StudyroomContainer from "../components/Container/StudyroomContainer";
 import Sidebar from "../components/rooms/Sidebar";
 import { useAuthCheck } from "../utils/auth";
+import { useLocation, useNavigate } from "react-router-dom";
 import { usePreventRefresh } from "../utils/usePreventRefresh";
+import { useLoginedUserStore } from "../store/store";
+import { useRoomStore } from "../store/roomStore";
+import { useTimeStore } from "../store/timeStore";
+import { addOneSecondToTime } from "../utils/time";
+import axiosInstance from "../utils/axiosInstance";
 
 const StudyroomPage: React.FC = () => {
   usePreventRefresh();
   const { authCheck } = useAuthCheck();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { title } = useRoomStore();
+  const { time, goaltime, isRunning, setTime, setIsRunning } = useTimeStore();
+  const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
+  const { userId } = useLoginedUserStore();
 
   useEffect(() => {
     authCheck();
+    if (intervalId) {
+      stopTimer();
+    }
+    return () => {
+      // updateUserTime();
+      stopTimer();
+      setIsRunning(false);
+    };
   }, []);
+
+  useEffect(() => {
+    if (!isRunning) {
+      stopTimer();
+    }
+  }, [isRunning]);
+
+  useEffect(() => {
+    if (isRunning) {
+      startTimer();
+    } else {
+      stopTimer();
+    }
+  }, [isRunning]);
+
+  useEffect(() => {
+    if (!location.state || !location.state.authorized) {
+      alert("인가되지 않은 접근입니다.");
+      navigate("/");
+    }
+  }, [location]);
+
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  // const { roomId } = useParams<{ roomId: string }>(); // URL에서 roomId를 가져옴
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
+  };
+
+  const startTimer = () => {
+    if (!intervalId) {
+      const timerId = setInterval(() => {
+        setTime((prevTime) => addOneSecondToTime(prevTime)); // 이전 상태 기반으로 업데이트
+      }, 1000);
+      setIntervalId(timerId);
+    }
+  };
+
+  const stopTimer = () => {
+    if (intervalId) {
+      clearInterval(intervalId);
+      setIntervalId(null);
+    }
+  };
+
+  const updateUserTime = () => {
+    const requestBody = {
+      time: time,
+    };
+    axiosInstance.patch(
+      `${process.env.REACT_APP_API_URL}/api/v1/users/${userId}/time`,
+      requestBody
+    );
   };
 
   return (
@@ -28,7 +94,7 @@ const StudyroomPage: React.FC = () => {
       >
         <div className="grid grid-cols-3 items-center p-[15px]">
           <div className="justify-self-start rounded-[20px] w-[172px] h-[51px] bg-[#6d81d5] text-white text-[20px] font-bold flex items-center justify-center">
-            방제
+            {title}
           </div>
           <div className="justify-self-center flex flex-row items-center gap-2">
             <img
@@ -41,7 +107,7 @@ const StudyroomPage: React.FC = () => {
                 공부 시간 / 목표 시간
               </p>
               <p className="text-white text-[20px] font-bold">
-                15:32:45 / 18:00:00
+                {time} / {goaltime}
               </p>
             </div>
             <img
