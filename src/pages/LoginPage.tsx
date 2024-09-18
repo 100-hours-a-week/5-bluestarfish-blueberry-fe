@@ -10,7 +10,6 @@ type LoginPageProps = {};
 const LoginPage: React.FC<LoginPageProps> = () => {
   const { loginCheck } = useLoginCheck();
   useEffect(() => {
-    console.log(true);
     loginCheck();
   }, []);
   return (
