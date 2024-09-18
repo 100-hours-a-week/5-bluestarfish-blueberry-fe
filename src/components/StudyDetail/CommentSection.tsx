@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axiosInstance from '../../utils/axiosInstance';
 import DeleteModal from '../common/DeleteModal';
+import { useLocation } from 'react-router-dom'; // URL 해시 사용을 위해 useLocation 추가
 
 // Comment 인터페이스: 각 댓글의 구조를 정의
 interface Comment {
@@ -36,7 +37,10 @@ const CommentSection: React.FC<CommentSectionProps> = ({
   const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false); // 삭제 모달 표시 여부
   const [selectedCommentId, setSelectedCommentId] = useState<number | null>(null); // 삭제할 댓글 ID
   const [mention, setMention] = useState<string | null>(null); // 멘션된 사용자 이름
+  const location = useLocation(); // URL 해시를 가져옴
 
+  // 특정 댓글을 강조 표시하기 위한 상태
+  const [highlightedCommentId, setHighlightedCommentId] = useState<number | null>(null);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
   // 댓글 입력 시 호출되는 함수
@@ -63,11 +67,38 @@ const CommentSection: React.FC<CommentSectionProps> = ({
   };
 
   // 댓글 제출 시 호출되는 함수
-  const handleCommentSubmit = () => {
+  const handleCommentSubmit = async () => {
     if (comment.trim()) {
       onSubmitComment(comment.trim()); // 상위 컴포넌트에 댓글을 전달
+
+      // 멘션된 사용자가 있다면 알림 전송
+      if (mention) {
+        try {
+          const mentionedComment = comments.find(
+            (c) => c.author === mention && c.userId !== currentUser?.id
+          );
+
+          if (mentionedComment) {
+            const requestBody = {
+              receiverId: mentionedComment.userId,  // 멘션된 사용자 ID
+              notiType: "MENTION",  // 알림 타입: 댓글
+              notiStatus: "ACCEPTED",  // 상태: 수락됨
+              commentId: mentionedComment.id,  // 멘션된 댓글 ID
+              roomId: null  // 스터디룸 ID는 해당하지 않음
+            };
+
+            // 알림 전송 요청
+            await axiosInstance.post(`${process.env.REACT_APP_API_URL}/api/v1/users/${currentUser.id}/notifications`, requestBody);
+            console.log('알림 전송 성공:', requestBody);
+          }
+        } catch (error) {
+          console.error('알림 전송 실패:', error);
+        }
+      }
+
       setComment(''); // 댓글 입력란 초기화
       setMention(null); // 멘션 초기화
+      window.location.reload(); // 페이지 리로드
     }
   };
 
@@ -109,6 +140,29 @@ const CommentSection: React.FC<CommentSectionProps> = ({
       }
     }
   };
+
+  // URL 해시로부터 댓글 ID를 가져와 해당 댓글을 강조
+  useEffect(() => {
+    // 페이지가 처음 로드되었을 때도 스크롤을 실행하기 위해 확인
+    if (location.hash && comments.length > 0) { // comments가 로드된 후 스크롤
+      const commentIdFromHash = parseInt(location.hash.replace("#comment-", ""), 10);
+      setHighlightedCommentId(commentIdFromHash);
+  
+      // 댓글 요소로 스크롤
+      const commentElement = document.getElementById(`comment-${commentIdFromHash}`);
+      if (commentElement) {
+        const elementPosition = commentElement.getBoundingClientRect().top + window.pageYOffset;
+        const offset = 100; // 상단 여백
+  
+        window.scrollTo({
+          top: elementPosition - offset, // 요소의 위치에서 오프셋만큼 뺀 값으로 스크롤
+          behavior: 'smooth',
+        });
+      }
+    }
+  }, [location.hash, comments]); // comments 배열을 의존성에 추가하여 댓글이 로드된 후 스크롤 실행
+  
+
 
   // 스크롤 이벤트를 감지하여 화면에 보이는 댓글 수를 증가시키는 함수
   useEffect(() => {
@@ -159,8 +213,8 @@ const CommentSection: React.FC<CommentSectionProps> = ({
         {/* 댓글 등록 버튼 */}
         <button
           className={`absolute -bottom-10 right-2 py-1 px-3 rounded-full shadow-md ${isRecruited
-              ? 'bg-[#E0E7FF] text-[#4659AA] hover:bg-[#6D81D5] hover:text-white'
-              : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+            ? 'bg-[#E0E7FF] text-[#4659AA] hover:bg-[#6D81D5] hover:text-white'
+            : 'bg-gray-300 text-gray-500 cursor-not-allowed'
             }`}
           onClick={handleCommentSubmit}
           disabled={!isRecruited} // 모집이 완료된 경우 버튼 비활성화
@@ -174,7 +228,9 @@ const CommentSection: React.FC<CommentSectionProps> = ({
         {comments.slice(0, visibleComments).map((comment, index) => (
           <div
             key={`${comment.id}-${index}`} // id와 index를 결합하여 고유한 키 생성
-            className="bg-white border border-gray-300 p-4 rounded-lg mb-2"
+            className={`bg-white border border-gray-300 p-4 rounded-lg mb-2`}
+            style={highlightedCommentId === comment.id ? { backgroundColor: '#EEEEFF' } : {}} // 사용자 정의 색상
+            id={`comment-${comment.id}`} // 댓글에 ID 설정
             onClick={() => handleMentionClick(comment)}
           >
             <div className="flex items-center justify-between mb-2">
@@ -210,7 +266,6 @@ const CommentSection: React.FC<CommentSectionProps> = ({
           </div>
         ))}
       </div>
-
 
       {/* 삭제 확인 모달 */}
       {showDeleteModal && (

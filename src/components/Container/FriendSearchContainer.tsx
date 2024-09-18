@@ -1,15 +1,24 @@
 import React, { useState, useEffect } from "react";
-import { friendsData, Friend } from "../../data/friendsData"; // 친구 데이터를 임포트
+import axiosInstance from "../../utils/axiosInstance"; // axiosInstance를 사용한 API 요청
 import AddModal from "../common/AddModal";
 import ToastNotification from "../common/ToastNotification";
+import { useLoginedUserStore } from "../../store/store";
+
+interface Friend {
+    id: number;
+    profileImage: string;
+    nickname: string;
+    time: string,
+    isFriend: boolean;
+}
 
 const FriendSearchContainer: React.FC = () => {
     const [searchTerm, setSearchTerm] = useState<string>(""); // 검색어 상태
     const [filteredFriends, setFilteredFriends] = useState<Friend[]>([]); // 필터링된 친구 목록
-    const [friends, setFriends] = useState<Friend[]>(friendsData); // 친구 목록 상태 관리
     const [showAddModal, setShowAddModal] = useState<boolean>(false);
     const [selectedFriendId, setSelectedFriendId] = useState<number | null>(null); // 선택된 친구 ID
     const [showAddFriendToast, setShowAddFriendToast] = useState(false);
+    const { nickname: currentUserNickname } = useLoginedUserStore();
 
     // 친구 추가 핸들러 (버튼 클릭 시 모달 표시)
     const handleAddFriend = (id: number) => {
@@ -20,8 +29,7 @@ const FriendSearchContainer: React.FC = () => {
     // 모달에서 추가 버튼을 눌렀을 때 호출되는 함수
     const handleAddConfirm = () => {
         if (selectedFriendId !== null) {
-            // 선택된 친구의 isRequestSent 값을 true로 업데이트
-            setFriends((prevFriends) =>
+            setFilteredFriends((prevFriends) =>
                 prevFriends.map((friend) =>
                     friend.id === selectedFriendId
                         ? { ...friend, isRequestSent: true }
@@ -33,17 +41,31 @@ const FriendSearchContainer: React.FC = () => {
         }
     };
 
-    // 검색어가 변경될 때마다 친구 목록을 필터링
+    // 닉네임을 통한 친구 검색
+    const fetchFriends = async (keyword: string) => {
+        try {
+            const response = await axiosInstance.get(`${process.env.REACT_APP_API_URL}/api/v1/users`, {
+                params: { keyword },
+            });
+            // 자기 자신을 검색 결과에서 제외
+            const filteredFriends = response.data.data.filter(
+                (friend: Friend) => friend.nickname !== currentUserNickname
+            );
+            setFilteredFriends(filteredFriends); // 필터링된 데이터를 설정
+        } catch (error) {
+            console.error("친구 검색에 실패했습니다:", error);
+            setFilteredFriends([]); // 실패 시 빈 배열로 설정
+        }
+    };
+
+    // 검색어가 변경될 때마다 API 요청
     useEffect(() => {
         if (searchTerm.trim() === "") {
-            setFilteredFriends([]); // 검색어가 없을 경우
+            setFilteredFriends([]); // 검색어가 없을 경우 초기화
         } else {
-            const searchResult = friends.filter((friend) =>
-                friend.name.toLowerCase().includes(searchTerm.toLowerCase())
-            );
-            setFilteredFriends(searchResult); // 필터링 결과 설정
+            fetchFriends(searchTerm); // 검색어로 친구 검색
         }
-    }, [searchTerm, friends]);
+    }, [searchTerm]);
 
     const handleCloseAddFriendToast = () => {
         setShowAddFriendToast(false);
@@ -92,25 +114,30 @@ const FriendSearchContainer: React.FC = () => {
                                     친구
                                 </div>
                             )}
-                            {friend.isRequestSent && (
+                            {/* {friend.isRequestSent && (
                                 <div className="absolute top-2 left-2 bg-gray-400 text-white px-2 py-1 text-xs font-semibold rounded">
                                     친구 요청
                                 </div>
-                            )}
+                            )} */}
                             {/* 프로필 사진과 이름 */}
                             <div className="p-4 flex flex-col items-center group-hover:hidden">
                                 <img
-                                    src={friend.profileImage}
-                                    alt={friend.name}
-                                    className="w-20 h-20 rounded-full mt-12 mb-20"
+                                    src={friend.profileImage || `${process.env.PUBLIC_URL}/assets/images/profile1.png`}
+                                    alt={friend.nickname}
+                                    className="w-20 h-20 rounded-full mt-12 mb-20 object-contain"
+                                    onError={(e) => { /* 이미지가 안 뜬 경우 기본 이미지 표시 */
+                                        e.currentTarget.src = `${process.env.PUBLIC_URL}/assets/images/profile1.png`;
+                                    }}
                                 />
-                                <h2 className="text-lg font-bold text-gray-700">{friend.name}</h2>
+                                <h2 className="text-lg font-bold text-gray-700">
+                                    {friend.nickname}
+                                </h2>
                             </div>
                             {/* 마우스 호버 시 나타나는 정보 */}
                             <div className="absolute inset-0 bg-white p-4 flex flex-col items-center justify-center text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                <h2 className="text-lg font-bold text-gray-700 mb-2">{friend.name}</h2>
-                                <p className="text-gray-500 mb-4">스터디 시간: {friend.studyTime}</p>
-                                {friend.isFriend ? (
+                                <h2 className="text-lg font-bold text-gray-700 mb-2">{friend.nickname}</h2>
+                                <p className="text-gray-500 mb-4">스터디 시간: {friend.time}</p>
+                                {/* {friend.isFriend ? (
                                     <label className="bg-[#EBEEFF] text-gray-500 px-4 py-2 rounded-lg">
                                         친구
                                     </label>
@@ -118,6 +145,18 @@ const FriendSearchContainer: React.FC = () => {
                                     <button className="bg-[#6D81D5] text-white px-4 py-2 rounded-lg cursor-default">
                                         친구 요청 완료
                                     </button>
+                                ) : (
+                                    <button
+                                        onClick={() => handleAddFriend(friend.id)}
+                                        className="bg-[#47DB68] text-white px-4 py-2 rounded-lg hover:bg-[#00A324]"
+                                    >
+                                        친구 추가
+                                    </button>
+                                )} */}
+                                {friend.isFriend ? (
+                                    <label className="bg-[#EBEEFF] text-gray-500 px-4 py-2 rounded-lg">
+                                        친구
+                                    </label>
                                 ) : (
                                     <button
                                         onClick={() => handleAddFriend(friend.id)}

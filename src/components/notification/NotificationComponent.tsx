@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import axiosInstance from "../../utils/axiosInstance";
 import { EventSourcePolyfill } from 'event-source-polyfill';
+import AlarmToastNotification from "../common/AlarmToastNotification";
 
 const NotificationComponent: React.FC = () => {
     const [likes, setLikes] = useState<any[]>([]); // 'like' 이벤트 데이터를 저장할 상태
     const [currentUser, setCurrentUser] = useState<any | null>(null);
+    const [showMentionNotiToast, setShowMentionNotiToast] = useState(false);
 
     useEffect(() => {
         const fetchCurrentUser = async () => {
@@ -33,16 +35,22 @@ const NotificationComponent: React.FC = () => {
                 {
                     withCredentials: true
                 }
-              );
+            );
 
             // SSE 연결이 열렸을 때 호출
             eventSource.onopen = async () => {
                 await console.log("sse opened!")
-              }
+            }
 
             // 'like' 이벤트 수신 시 호출
-            eventSource.addEventListener("like", (event) => {
-                console.log("like 이벤트 수신");
+            eventSource.addEventListener("notification", (event: any) => {
+                console.log("notification 이벤트 수신");
+                const data = JSON.parse(event.data);
+                console.log(data)
+                // alert(data.sender.nickname + "님이 댓글에서 당신을 멘션했어요!");
+                if (data != "CONNECTED") {
+                    setShowMentionNotiToast(true);
+                }
                 // const data = JSON.parse(event.data); // 서버로부터 받은 데이터
                 // setLikes((prevLikes) => [...prevLikes, data]); // 받은 데이터를 상태에 추가
             });
@@ -70,15 +78,24 @@ const NotificationComponent: React.FC = () => {
         }
     }, [currentUser]);
 
+    const handleCloseMentionNotiToast = () => {
+        setShowMentionNotiToast(false);
+    };
+
     return (
-        <div>
-            <h2>알림 (Likes)</h2>
-            <ul>
-                {likes.map((like, index) => (
-                    <li key={index}>{JSON.stringify(like)}</li>
-                ))}
-            </ul>
-        </div>
+        // <div>
+        //     <h2>알림 (Likes)</h2>
+        //     <ul>
+        //         {likes.map((like, index) => (
+        //             <li key={index}>{JSON.stringify(like)}</li>
+        //         ))}
+        //     </ul>
+        // </div>
+        <>
+            {showMentionNotiToast && (
+                <AlarmToastNotification sender="발신자" message="멘션 알림!" notiType="MENTION" onClose={handleCloseMentionNotiToast} />
+            )}
+        </>
     );
 };
 
