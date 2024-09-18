@@ -101,7 +101,6 @@ const StudyroomTNContainer: React.FC<StudyroomTNContainerProps> = ({
     } else if (selectedCategory === "캠끄공") {
       filtered = filtered.filter((room) => !room.camEnabled);
     }
-
     setFilteredRooms(filtered);
   };
 

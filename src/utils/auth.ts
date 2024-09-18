@@ -79,12 +79,14 @@ export const useAuthCheck = () => {
 
 //사용자 정보 호출 및 인가 처리
 export const useLoginCheck = () => {
+  const navigate = useNavigate();
   const loginCheck = async () => {
     try {
       const response = await axiosInstance.get(
         `${process.env.REACT_APP_API_URL}/api/v1/users/whoami`
       );
       if (response.status === 200) {
+        navigate("/");
         return true;
       }
     } catch (error: any) {
