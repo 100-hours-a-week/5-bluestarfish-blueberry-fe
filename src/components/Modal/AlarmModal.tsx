@@ -1,39 +1,40 @@
-import React, { useEffect, useState } from "react";
-import axiosInstance from "../../utils/axiosInstance"; // axiosInstance 가져오기
+import React, { useEffect, useState, useRef } from "react";
+import axiosInstance from "../../utils/axiosInstance";
 import { useLoginedUserStore } from "../../store/store";
+import { useNavigate, useLocation } from "react-router-dom"; // useNavigate, useLocation 가져오기
 
 type AlarmModalProps = {
   closeModal: () => void;
 };
 
 const AlarmModal: React.FC<AlarmModalProps> = ({ closeModal }) => {
-  const { userId } = useLoginedUserStore(); // 로그인한 사용자 정보 가져오기
-  const [notifications, setNotifications] = useState<any[]>([]); // 알림 데이터를 저장할 상태
-  const [isLoading, setIsLoading] = useState<boolean>(true); // 로딩 상태
+  const { userId } = useLoginedUserStore();
+  const [notifications, setNotifications] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const navigate = useNavigate(); // useNavigate 사용
 
-  // 알림 데이터를 API로부터 가져오는 함수
   const fetchNotifications = async () => {
     try {
       const response = await axiosInstance.get(`${process.env.REACT_APP_API_URL}/api/v1/users/${userId}/notifications`);
-      setNotifications(response.data.data); // 가져온 알림 데이터를 상태에 저장
+      setNotifications(response.data.data);
     } catch (error) {
       console.error("알림 데이터를 가져오는 데 실패했습니다:", error);
     } finally {
-      setIsLoading(false); // 로딩 완료
+      setIsLoading(false);
     }
   };
 
   useEffect(() => {
     if (userId) {
-      fetchNotifications(); // 모달이 열릴 때 알림 데이터 가져오기
+      fetchNotifications();
     }
   }, [userId]);
 
   const handleModalClick = (e: React.MouseEvent) => {
-    e.stopPropagation(); // 모달 안쪽 클릭 시 이벤트 전파 막기
+    e.stopPropagation();
   };
 
-  // ESC 키로 모달 닫기 기능 추가
+  // ESC 키로 모달 닫기 기능
   useEffect(() => {
     const handleEscape = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
@@ -47,10 +48,17 @@ const AlarmModal: React.FC<AlarmModalProps> = ({ closeModal }) => {
     };
   }, [closeModal]);
 
+  // 알림 클릭 시 게시글로 이동
+  const handleNotificationClick = (notification: any) => {
+    if (notification.notiType === 'MENTION') {
+      navigate(`/recruit/${notification.comment.post.id}#comment-${notification.comment.id}`); // 게시글로 이동하면서 해시를 통해 댓글로 이동
+    }
+  };
+
   return (
     <div
       className="fixed inset-0 z-50"
-      onClick={closeModal} // 모달 밖 클릭 시 닫기
+      onClick={closeModal}
     >
       <div
         className="absolute right-32 mt-[75px] w-[250px] h-[270px] bg-white text-black text-[8px] rounded-[20px] shadow-lg p-2 space-y-1 overflow-y-auto"
@@ -67,17 +75,18 @@ const AlarmModal: React.FC<AlarmModalProps> = ({ closeModal }) => {
         </div>
 
         {isLoading ? (
-          <div>로딩 중...</div> // 로딩 중 표시
+          <div>로딩 중...</div>
         ) : notifications.length === 0 ? (
-          <div>알림이 없습니다.</div> // 알림이 없는 경우
+          <div>알림이 없습니다.</div>
         ) : (
           notifications.map((notification) => (
             <div
               key={notification.id}
               className="flex w-full h-[50px] items-center justify-between bg-[#ebeeff] rounded-[10px] p-2 cursor-pointer"
+              onClick={() => handleNotificationClick(notification)} // 알림 클릭 시 게시글 이동
             >
               <div className="flex items-center space-x-1">
-                {notification.notiType === 'MENTION' ?
+                {notification.notiType === 'MENTION' ? (
                   <>
                     <img
                       src={`${process.env.PUBLIC_URL}/assets/images/noti-mention.png`}
@@ -86,23 +95,12 @@ const AlarmModal: React.FC<AlarmModalProps> = ({ closeModal }) => {
                       className="h-[23px] rounded-full cursor-pointer mr-1"
                     />
                     <div className="flex flex-col">
-                      <div className="font-semibold text-[13px]">멘션한 사용자 닉네임</div>
-                      <div className="text-[12px]">{notification.notiType === 'MENTION' ? '멘션 댓글 내용' : ""}</div>
+                      <div className="font-semibold text-[13px]">{notification.sender.nickname}</div>
+                      <div className="text-[12px]">{notification.comment.content}</div>
                     </div>
                   </>
-                  : ""
-                }
-
-                {/* <div>{notification.notiType === 'MENTION' ? `'${notification.sender.nickname}'님이 당신을 멘션했습니다.` : '알림 내용'}</div> */}
+                ) : null}
               </div>
-              {/* <div className="space-x-1 text-white text-[6px]">
-                <button className="w-[19px] h-[12px] bg-[#6d81d5] rounded-[5px]">
-                  수락
-                </button>
-                <button className="w-[19px] h-[12px] bg-[#eb4c64] rounded-[5px]">
-                  거절
-                </button>
-              </div> */}
             </div>
           ))
         )}
