@@ -45,7 +45,7 @@ const Timer: React.FC<TimerProps> = () => {
           />
         </button>
         <div
-          // onClick={handleTimerToggle} // 버튼 클릭 시 타이머 토글
+          onClick={handleTimerToggle} // 버튼 클릭 시 타이머 토글
           className="flex rounded-full bg-[#4659aa] w-[30px] h-[30px] items-center justify-center shadow-lg cursor-pointer"
         >
           <img
