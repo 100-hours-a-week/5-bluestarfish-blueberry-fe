@@ -13,8 +13,12 @@ const UserInfo: React.FC<UserInfoProps> = ({
   camEnabled,
   micEnabled,
 }) => {
+  const openDetailModal = () => {};
   return (
-    <div className="flex flex-row items-center w-[390px] h-[50px] rounded-[10px] p-3 bg-[#EBEEFF] justify-between text-black font-bold text-[13px] shadow-lg">
+    <div
+      onClick={openDetailModal}
+      className="flex flex-row items-center w-[390px] h-[50px] rounded-[10px] p-3 bg-[#EBEEFF] justify-between text-black font-bold text-[13px] shadow-lg"
+    >
       <div className="flex gap-2">
         <img
           src={

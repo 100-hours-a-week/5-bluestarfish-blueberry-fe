@@ -9,11 +9,6 @@ const Timer: React.FC<TimerProps> = () => {
   const { userId } = useLoginedUserStore();
   const { time, goaltime, isRunning, setTime, setGoaltime, toggleIsRunning } =
     useTimeStore();
-  const timeRef = useRef(time); // time을 Ref로 관리
-
-  useEffect(() => {
-    timeRef.current = time;
-  }, [time]);
 
   const handleTimerToggle = () => {
     toggleIsRunning();

@@ -16,24 +16,28 @@ const StudyroomPage: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { title } = useRoomStore();
-  const { time, goaltime, isRunning, setTime, setIsRunning } = useTimeStore();
-  const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
+  const { time, goaltime, isRunning, setTime } = useTimeStore();
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const { userId } = useLoginedUserStore();
+  const timeRef = useRef(time); // time을 Ref로 관리
 
   useEffect(() => {
-    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
-      event.preventDefault(); // 기본 동작 방지
-      stopTimer(); // 페이지가 닫히거나 새로고침될 때 타이머를 중지
-      event.returnValue = ""; // 사용자에게 경고 메시지 표시 (브라우저에 따라 달라질 수 있음)
-    };
+    timeRef.current = time;
+  }, [time]);
+
+  useEffect(() => {
+    // const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+    //   event.preventDefault(); // 기본 동작 방지
+    //   stopTimer(); // 페이지가 닫히거나 새로고침될 때 타이머를 중지
+    //   event.returnValue = ""; // 사용자에게 경고 메시지 표시 (브라우저에 따라 달라질 수 있음)
+    // };
     authCheck();
-    if (intervalId) {
-      stopTimer();
-    }
-    window.addEventListener("beforeunload", handleBeforeUnload);
+    // window.addEventListener("beforeunload", handleBeforeUnload);
     return () => {
+      stopTimer();
       updateUserTime();
-      window.removeEventListener("beforeunload", handleBeforeUnload);
+      // updateUserTime();
+      // window.removeEventListener("beforeunload", handleBeforeUnload);
     };
   }, []);
 
@@ -59,25 +63,24 @@ const StudyroomPage: React.FC = () => {
   };
 
   const startTimer = () => {
-    if (!intervalId) {
-      const timerId = setInterval(() => {
-        setTime((prevTime) => addOneSecondToTime(prevTime)); // 이전 상태 기반으로 업데이트
-      }, 1000);
-      setIntervalId(timerId);
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
     }
+
+    intervalRef.current = setInterval(() => {
+      setTime((prevTime) => addOneSecondToTime(prevTime));
+    }, 1000);
   };
 
   const stopTimer = () => {
-    if (intervalId) {
-      clearInterval(intervalId);
-      setIntervalId(null);
-    }
+    clearInterval(intervalRef.current as NodeJS.Timeout);
   };
 
   const updateUserTime = () => {
     const requestBody = {
-      time: time,
+      time: timeRef.current,
     };
+    // console.log(timeRef.current);
     axiosInstance.patch(
       `${process.env.REACT_APP_API_URL}/api/v1/users/${userId}/time`,
       requestBody
@@ -125,11 +128,7 @@ const StudyroomPage: React.FC = () => {
             </button>
           )}
         </div>
-        <StudyroomContainer
-          intervalId={intervalId}
-          stopTimer={stopTimer}
-          updateUserTime={updateUserTime}
-        />
+        <StudyroomContainer />
       </div>
       {isSidebarOpen && <Sidebar toggleSidebar={toggleSidebar}></Sidebar>}
     </div>
