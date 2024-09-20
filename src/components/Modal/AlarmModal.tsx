@@ -16,7 +16,8 @@ const AlarmModal: React.FC<AlarmModalProps> = ({ closeModal }) => {
   const fetchNotifications = async () => {
     try {
       const response = await axiosInstance.get(`${process.env.REACT_APP_API_URL}/api/v1/users/${userId}/notifications`);
-      setNotifications(response.data.data);
+      // 알림 데이터를 최신순으로 정렬
+      setNotifications(response.data.data.reverse());
     } catch (error) {
       console.error("알림 데이터를 가져오는 데 실패했습니다:", error);
     } finally {
