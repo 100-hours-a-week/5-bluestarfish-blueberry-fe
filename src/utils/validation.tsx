@@ -33,9 +33,13 @@ export const validateStudyFormInputs = (
   }
   if (!title) {
     titleHelperText = "제목을 입력하세요.";
+  } else if (title.length < 5) {
+    titleHelperText = "제목은 최소 5글자 이상이어야 합니다.";
   }
   if (!content) {
     contentHelperText = "내용을 입력하세요.";
+  } else if (content.length < 5) {
+    contentHelperText = "내용은 최소 5글자 이상이어야 합니다.";
   }
   if (selectedStudy === null) {
     studyHelperText = "나의 스터디를 선택하세요.";

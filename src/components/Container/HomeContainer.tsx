@@ -1,12 +1,20 @@
 import Timer from "../rooms/Timer";
 import React, { useState } from "react";
 import UserInfoContainer from "./UserInfoContainer";
+import InviteUserModal from "../Modal/InviteUserModal";
 
 type HomeContainerProps = {};
 
 const HomeContainer: React.FC<HomeContainerProps> = () => {
   const [isInviteModalOpen, setIsInviteModalOpen] = useState<boolean>(false);
-  const openInviteModal = () => {};
+
+  const openInviteModal = () => {
+    setIsInviteModalOpen(true);
+  };
+
+  const closeInviteModal = () => {
+    setIsInviteModalOpen(false);
+  };
 
   return (
     <div className="m-2 flex flex-col h-full">
@@ -36,6 +44,7 @@ const HomeContainer: React.FC<HomeContainerProps> = () => {
           </div>
         </div>
       </div>
+      {isInviteModalOpen && <InviteUserModal closeModal={closeInviteModal} />}
     </div>
   );
 };

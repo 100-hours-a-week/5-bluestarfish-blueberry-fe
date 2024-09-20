@@ -17,7 +17,11 @@ const ChatEndMessage: React.FC<ChatEndMessageProps> = ({
         <div className="w-10 rounded-full">
           <img
             alt="Tailwind CSS chat bubble component"
-            src={`${process.env.PUBLIC_URL}/assets/images/profile-default-image.png`}
+            src={
+              senderProfileImage
+                ? senderProfileImage
+                : `${process.env.PUBLIC_URL}/assets/images/profile-default-image.png`
+            }
           />
         </div>
       </div>
