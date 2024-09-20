@@ -6,8 +6,7 @@ import { useTimeStore } from "../../store/timeStore";
 type TimerProps = {};
 
 const Timer: React.FC<TimerProps> = () => {
-  const { userId } = useLoginedUserStore();
-  const { time, goaltime, isRunning, setTime, setGoaltime, toggleIsRunning } =
+  const { time, goaltime, isRunning, setTime, toggleIsRunning } =
     useTimeStore();
 
   const handleTimerToggle = () => {

@@ -80,7 +80,7 @@ const StudyroomPage: React.FC = () => {
     const requestBody = {
       time: timeRef.current,
     };
-    // console.log(timeRef.current);
+    console.log(timeRef.current, time);
     axiosInstance.patch(
       `${process.env.REACT_APP_API_URL}/api/v1/users/${userId}/time`,
       requestBody
