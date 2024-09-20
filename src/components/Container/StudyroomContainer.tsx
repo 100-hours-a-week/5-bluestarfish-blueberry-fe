@@ -9,17 +9,9 @@ import axiosInstance from "../../utils/axiosInstance";
 import { checkMediaPermissions } from "../../utils/checkMediaPermission";
 import { useTimeStore } from "../../store/timeStore";
 
-interface StudyroomContainerProps {
-  intervalId: NodeJS.Timeout | null;
-  stopTimer: () => void;
-  updateUserTime: () => void;
-}
+interface StudyroomContainerProps {}
 
-const StudyroomContainer: React.FC<StudyroomContainerProps> = ({
-  intervalId,
-  stopTimer,
-  updateUserTime,
-}) => {
+const StudyroomContainer: React.FC<StudyroomContainerProps> = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { roomId } = useParams<{ roomId: string }>();
   const navigate = useNavigate();
@@ -51,8 +43,7 @@ const StudyroomContainer: React.FC<StudyroomContainerProps> = ({
   const participantsRef = useRef<Record<string, Participant>>({}); // Ref로 관리
   const usersRef = useRef(users); // users 상태를 유지하는 Ref
 
-  const { time, goaltime, setTime, setGoaltime, toggleIsRunning } =
-    useTimeStore();
+  const { setTime } = useTimeStore();
   const [isRegister, setIsRegister] = useState<boolean>(false);
 
   useEffect(() => {
@@ -85,7 +76,6 @@ const StudyroomContainer: React.FC<StudyroomContainerProps> = ({
         register(); // WebSocket이 OPEN 상태가 된 후 register 호출
         setIsRegister(true);
       };
-
       wsRef.current.onerror = (error) => {
         console.error("WebSocket error: ", error);
       };
@@ -199,8 +189,8 @@ const StudyroomContainer: React.FC<StudyroomContainerProps> = ({
         }
       );
       if (response.status === 204) {
-        stopTimer();
-        updateUserTime();
+        // updateUserTime();
+        // stopTimer();
         navigate(`/`);
       }
     } catch (error: any) {
