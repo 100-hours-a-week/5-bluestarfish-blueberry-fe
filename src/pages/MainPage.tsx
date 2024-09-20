@@ -4,6 +4,7 @@ import MainPageContainer from "../components/Container/MainPageContainer";
 import Footer from "../components/common/Footer";
 import { useSetUserInfo } from "../utils/auth";
 import { useEffect } from "react";
+import NotificationComponent from "../components/notification/NotificationComponent";
 
 type MainPageProps = {};
 
