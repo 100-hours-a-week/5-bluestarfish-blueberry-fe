@@ -18,15 +18,11 @@ const SetAuthNicknameForm: React.FC = () => {
   const [showNicknameSuccessToast, setShowNicknameSuccessToast] =
     useState(false);
   const [showNicknameErrorToast, setShowNicknameErrorToast] = useState(false);
-  const { userId } = useLoginedUserStore();
+  const { userId, setUserId } = useLoginedUserStore();
 
   useEffect(() => {
     checkNickname();
   }, [nickname]);
-
-  useEffect(() => {
-    console.log(userId);
-  }, [userId]);
 
   useEffect(() => {
     if (isValidNickname && isValidConfirmNickname) setIsValid(true);
@@ -69,6 +65,33 @@ const SetAuthNicknameForm: React.FC = () => {
         setShowNicknameErrorToast(true);
       }
     }
+  };
+
+  const logout = async () => {
+    try {
+      const response = await axiosInstance.post(
+        `${process.env.REACT_APP_API_URL}/api/v1/auth/logout`
+      );
+
+      if (response.status === 204) {
+        console.log(`로그아웃 성공!`);
+      }
+    } catch (error: any) {
+      if (error.response) {
+        if (error.response.status === 401) {
+          console.error("401: ", "Unauthorized");
+        }
+      } else {
+        console.error("로그아웃 응답을 받아오는 중 오류 발생:", error.message);
+      }
+      console.error(error);
+    }
+    setUserId(0);
+  };
+
+  const handleClickText = async () => {
+    await logout();
+    navigate("/");
   };
 
   const handleNicknameChange = (nickname: string) => {
@@ -139,7 +162,6 @@ const SetAuthNicknameForm: React.FC = () => {
       <h2 className="text-[25px] font-bold text-gray-800 mb-6 text-center">
         카카오 회원 닉네임 설정
       </h2>
-      {/* 구분선 */}
       <hr className="my-6 border-gray-300 w-[60%]" />
       <div className="relative mb-6 mt-6">
         <input
@@ -177,7 +199,7 @@ const SetAuthNicknameForm: React.FC = () => {
       </div>
       <form className="w-[300px] h-[200px] mb-20" onSubmit={changeUserNickname}>
         {/* 로그인 버튼 */}
-        <div className="flex justify-center">
+        <div className="flex flex-col items-center justify-center gap-5">
           <button
             className={`relative h-[40px] ${
               isValid
@@ -190,6 +212,9 @@ const SetAuthNicknameForm: React.FC = () => {
               가입하기
             </span>
           </button>
+          <p onClick={handleClickText} className="cursor-pointer">
+            메인페이지로 이동하기
+          </p>
         </div>
       </form>{" "}
       {showNicknameSuccessToast && (

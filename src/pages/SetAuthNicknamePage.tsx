@@ -13,7 +13,7 @@ const SetAuthNicknamePage: React.FC = () => {
     <div className="flex flex-col min-h-screen bg-white">
       <BasicHeader />
       <div className="flex-grow flex items-center justify-center">
-        <div className="bg-white shadow-lg rounded-lg overflow-hidden max-w-md w-full h-[590px]">
+        <div className="bg-white shadow-lg rounded-lg overflow-hidden max-w-md w-full h-[490px]">
           <SetAuthNicknameForm />
         </div>
       </div>

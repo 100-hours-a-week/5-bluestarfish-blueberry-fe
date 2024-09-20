@@ -7,6 +7,8 @@ const NotificationComponent: React.FC = () => {
     const [likes, setLikes] = useState<any[]>([]); // 'like' 이벤트 데이터를 저장할 상태
     const [currentUser, setCurrentUser] = useState<any | null>(null);
     const [showMentionNotiToast, setShowMentionNotiToast] = useState(false);
+    const [showFriendNotiToast, setShowFriendNotiToast] = useState(false);
+    const [mentionMessage, setMentionMessage] = useState("");
 
     useEffect(() => {
         const fetchCurrentUser = async () => {
@@ -42,18 +44,26 @@ const NotificationComponent: React.FC = () => {
                 await console.log("sse opened!")
             }
 
-            // 'like' 이벤트 수신 시 호출
+            // 'notification' 이벤트 수신 시 호출
             eventSource.addEventListener("notification", (event: any) => {
                 console.log("notification 이벤트 수신");
                 const data = JSON.parse(event.data);
-                console.log(data)
-                // alert(data.sender.nickname + "님이 댓글에서 당신을 멘션했어요!");
-                if (data != "CONNECTED") {
-                    setShowMentionNotiToast(true);
+                console.log(data);
+
+                // 데이터의 receiver와 comment가 존재하는지 확인
+                if (data.receiver && data.receiver.nickname && data.comment && data.comment.content) {
+                    setMentionMessage('@' + data.receiver.nickname + ' ' + data.comment.content);
+
+                    if (data.notiType === "MENTION") {
+                        setShowMentionNotiToast(true);
+                    } else if (data.notiType === "FRIEND") {
+                        setShowFriendNotiToast(true);
+                    }
+                } else {
+                    console.error("Invalid data structure:", data);
                 }
-                // const data = JSON.parse(event.data); // 서버로부터 받은 데이터
-                // setLikes((prevLikes) => [...prevLikes, data]); // 받은 데이터를 상태에 추가
             });
+
 
             // SSE 연결 상태 및 에러 처리
             eventSource.onerror = (error) => {
@@ -82,18 +92,17 @@ const NotificationComponent: React.FC = () => {
         setShowMentionNotiToast(false);
     };
 
+    const handleCloseFriendNotiToast = () => {
+        setShowFriendNotiToast(false);
+    };
+
     return (
-        // <div>
-        //     <h2>알림 (Likes)</h2>
-        //     <ul>
-        //         {likes.map((like, index) => (
-        //             <li key={index}>{JSON.stringify(like)}</li>
-        //         ))}
-        //     </ul>
-        // </div>
         <>
             {showMentionNotiToast && (
-                <AlarmToastNotification sender="발신자" message="멘션 알림!" notiType="MENTION" onClose={handleCloseMentionNotiToast} />
+                <AlarmToastNotification sender="발신자" message={mentionMessage} notiType="MENTION" onClose={handleCloseMentionNotiToast} />
+            )}
+            {showFriendNotiToast && (
+                <AlarmToastNotification sender="발신자" message="친구 추가 알림!" notiType="FRIEND" onClose={handleCloseFriendNotiToast} />
             )}
         </>
     );

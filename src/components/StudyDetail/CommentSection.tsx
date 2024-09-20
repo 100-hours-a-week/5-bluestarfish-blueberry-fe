@@ -67,40 +67,45 @@ const CommentSection: React.FC<CommentSectionProps> = ({
   };
 
   // 댓글 제출 시 호출되는 함수
-  const handleCommentSubmit = async () => {
+  const handleCommentSubmit = async () => {   
     if (comment.trim()) {
-      onSubmitComment(comment.trim()); // 상위 컴포넌트에 댓글을 전달
+      const currentCommentId = await onSubmitComment(comment.trim()); // 상위 컴포넌트에 댓글을 전달하고 생성된 댓글 ID를 받아옴
 
-      // 멘션된 사용자가 있다면 알림 전송
-      if (mention) {
-        try {
-          const mentionedComment = comments.find(
-            (c) => c.author === mention && c.userId !== currentUser?.id
-          );
+      if (currentCommentId !== null) {
+        // 멘션된 사용자가 있다면 알림 전송
+        if (mention) {
+          try {
+            const mentionedComment = comments.find(
+              (c) => c.author === mention && c.userId !== currentUser?.id
+            );
 
-          if (mentionedComment) {
-            const requestBody = {
-              receiverId: mentionedComment.userId,  // 멘션된 사용자 ID
-              notiType: "MENTION",  // 알림 타입: 댓글
-              notiStatus: "ACCEPTED",  // 상태: 수락됨
-              commentId: mentionedComment.id,  // 멘션된 댓글 ID
-              roomId: null  // 스터디룸 ID는 해당하지 않음
-            };
+            if (mentionedComment) {
+              const requestBody = {
+                receiverId: mentionedComment.userId,  // 멘션된 사용자 ID
+                notiType: "MENTION",  // 알림 타입: 멘션
+                notiStatus: "ACCEPTED",  // 상태: 수락됨
+                commentId: currentCommentId,  // **생성된 댓글 ID를 사용**
+                roomId: null  // 스터디룸 ID는 해당하지 않음
+              };
 
-            // 알림 전송 요청
-            await axiosInstance.post(`${process.env.REACT_APP_API_URL}/api/v1/users/${currentUser.id}/notifications`, requestBody);
-            console.log('알림 전송 성공:', requestBody);
+              // 알림 전송 요청
+              await axiosInstance.post(`${process.env.REACT_APP_API_URL}/api/v1/users/${currentUser.id}/notifications`, requestBody);
+              console.log('알림 전송 성공:', requestBody);
+            }
+          } catch (error) {
+            console.error('알림 전송 실패:', error);
           }
-        } catch (error) {
-          console.error('알림 전송 실패:', error);
         }
-      }
 
-      setComment(''); // 댓글 입력란 초기화
-      setMention(null); // 멘션 초기화
-      window.location.reload(); // 페이지 리로드
+        setComment(''); // 댓글 입력란 초기화
+        setMention(null); // 멘션 초기화
+        // window.location.reload(); // 페이지 리로드
+      } else {
+        console.error('댓글 ID를 가져오는 데 실패했습니다.');
+      }
     }
   };
+
 
   // 댓글을 클릭할 때 멘션을 처리하는 함수
   const handleMentionClick = (comment: Comment) => {
@@ -147,13 +152,13 @@ const CommentSection: React.FC<CommentSectionProps> = ({
     if (location.hash && comments.length > 0) { // comments가 로드된 후 스크롤
       const commentIdFromHash = parseInt(location.hash.replace("#comment-", ""), 10);
       setHighlightedCommentId(commentIdFromHash);
-  
+
       // 댓글 요소로 스크롤
       const commentElement = document.getElementById(`comment-${commentIdFromHash}`);
       if (commentElement) {
         const elementPosition = commentElement.getBoundingClientRect().top + window.pageYOffset;
         const offset = 100; // 상단 여백
-  
+
         window.scrollTo({
           top: elementPosition - offset, // 요소의 위치에서 오프셋만큼 뺀 값으로 스크롤
           behavior: 'smooth',
@@ -161,7 +166,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({
       }
     }
   }, [location.hash, comments]); // comments 배열을 의존성에 추가하여 댓글이 로드된 후 스크롤 실행
-  
+
 
 
   // 스크롤 이벤트를 감지하여 화면에 보이는 댓글 수를 증가시키는 함수

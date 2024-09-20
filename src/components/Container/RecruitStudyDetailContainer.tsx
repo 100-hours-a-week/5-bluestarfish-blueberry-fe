@@ -138,15 +138,15 @@ const RecruitStudyDetailContainer: React.FC = () => {
     }
   };
 
-  const handleCommentSubmit = async (comment: string) => {
+  const handleCommentSubmit = async (comment: string): Promise<number | null> => {
     if (!comment.trim()) {
       alert("댓글을 입력해주세요.");
-      return;
+      return null;
     }
 
     if (!currentUser) {
       alert("로그인이 필요합니다.");
-      return;
+      return null;
     }
 
     try {
@@ -163,20 +163,26 @@ const RecruitStudyDetailContainer: React.FC = () => {
         requestBody
       );
 
-      if (response.status === 201) {
+      if (response.status === 201 && response.data) {
+        const createdCommentId = response.data.data.id; // 생성된 댓글 ID 가져옴
         setComments([]); // 기존 댓글 초기화
         setPage(0); // 페이지 초기화
         await fetchComments(0); // 첫 페이지 댓글 다시 로드
         setPage(1); // 페이지를 1로 설정
         setMentionId(null);
+
+        return createdCommentId; // 생성된 댓글 ID 반환
       } else {
         alert("댓글 작성에 실패했습니다.");
+        return null;
       }
-    } catch (error: unknown) {
+    } catch (error) {
       console.error("댓글 작성 실패:", getErrorMessage(error));
       alert("댓글 작성에 실패했습니다. 다시 시도해 주세요.");
+      return null;
     }
   };
+
 
   const handleCloseToast = () => {
     setShowToast(false);
