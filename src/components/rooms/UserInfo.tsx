@@ -45,7 +45,7 @@ const UserInfo: React.FC<UserInfoProps> = ({
           <p>{nickname}</p>
         </div>
         <div className="flex gap-4">
-          <button className="">
+          <div className="">
             {/* 카메라 상태에 따라 camera-on 또는 camera-off 이미지 렌더링 */}
             <img
               src={
@@ -56,8 +56,8 @@ const UserInfo: React.FC<UserInfoProps> = ({
               alt="camera"
               className="w-[20px]" // 크기 고정
             />
-          </button>
-          <button className="">
+          </div>
+          <div className="">
             {/* 마이크 상태에 따라 mic-on 또는 mic-off 이미지 렌더링 */}
             <img
               src={
@@ -68,7 +68,7 @@ const UserInfo: React.FC<UserInfoProps> = ({
               alt="mic"
               className={micEnabled ? "w-[15.62px]" : "w-[18px]"} // 크기 고정
             />
-          </button>
+          </div>
         </div>
       </div>
       {isDetailModalOpen && (
