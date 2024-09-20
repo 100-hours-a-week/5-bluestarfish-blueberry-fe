@@ -27,8 +27,8 @@ const Sidebar: React.FC<SidebarProps> = ({ toggleSidebar }) => {
         <div className="flex items-end gap-1">
           <img
             src={`${process.env.PUBLIC_URL}/assets/images/people.png`}
-            alt="Exit"
-            className="w-[31px] cursor-pointer"
+            alt="People"
+            className="w-[31px]"
           />
           <p className="text-[20px] text-black font-bold text-shadow-lg">
             {curUsers}
