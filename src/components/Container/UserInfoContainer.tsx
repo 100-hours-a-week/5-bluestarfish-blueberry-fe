@@ -10,6 +10,7 @@ const UserInfoContainer: React.FC = () => {
       {users.map((user) => (
         <UserInfo
           key={user.id} // 각 UserInfo 컴포넌트에 고유한 key 값 추가
+          studyRoomUserId={user.id}
           nickname={user.nickname}
           profileImage={user.profileImage}
           camEnabled={user.camEnabled}
