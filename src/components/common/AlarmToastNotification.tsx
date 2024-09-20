@@ -52,6 +52,9 @@ const AlarmToastNotification: React.FC<ToastNotificationProps> = ({ sender, mess
             {notiType === "MENTION" &&
                 <img src={`${process.env.PUBLIC_URL}/assets/images/noti-mention.png`} alt="Mention" className="w-7 h-7" />
             }
+            {notiType === "FRIEND" &&
+                <img src={`${process.env.PUBLIC_URL}/assets/images/noti-friend.png`} alt="Friend" className="w-7 h-7" />
+            }
           {/* {notiType === "MENTION" ? (
             <img src={`${process.env.PUBLIC_URL}/assets/images/noti-mention.png`} alt="Mention" className="w-7 h-7" />
           ) : (
