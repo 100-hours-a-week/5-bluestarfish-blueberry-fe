@@ -56,6 +56,49 @@ const AlarmModal: React.FC<AlarmModalProps> = ({ closeModal }) => {
     }
   };
 
+  const handleAcceptFriendRequest = async (notiId: number) => {
+    try {
+      if (notiId !== null) {
+        // 1. 현재 사용자의 알림 리스트를 조회
+        const response = await axiosInstance.get(
+          `${process.env.REACT_APP_API_URL}/api/v1/users/${userId}/notifications`
+        );
+
+        const notifications = response.data.data;
+
+        // 2. notiId에 해당하는 알림 찾기
+        const notification = notifications.find(
+          (noti: any) => noti.id === notiId && noti.notiType === "FRIEND" && noti.notiStatus === "PENDING"
+        );
+
+        if (!notification) {
+          console.error("해당 알림을 찾을 수 없습니다.");
+          return;
+        }
+
+        const senderId = notification.sender.id; // 친구 요청을 보낸 사용자 ID
+
+        // 3. 친구 요청을 수락하는 API 요청
+        const requestBody = {
+          receiverId: senderId, // 요청을 보낸 사용자를 친구로 추가
+          notiType: "FRIEND",
+          notiStatus: "ACCEPTED",
+          commentId: null,
+          roomId: null
+        };
+
+        // 친구 요청 수락을 POST 요청으로 전송
+        await axiosInstance.patch(`${process.env.REACT_APP_API_URL}/api/v1/users/${userId}/notifications/${notiId}`, requestBody);
+
+        alert('친구 요청 수띾!');
+        // setShowAddModal(false); // 모달 닫기
+        // setShowAddFriendToast(true); // 토스트 메시지 표시
+      }
+    } catch (error) {
+      console.error('친구 요청 수락 실패:', error);
+    }
+  };
+
   return (
     <div
       className="fixed inset-0 z-50"
@@ -122,7 +165,7 @@ const AlarmModal: React.FC<AlarmModalProps> = ({ closeModal }) => {
                     {/* 오른쪽: 수락 및 거절 버튼 */}
                     <div className="ml-auto flex space-x-2">
                       <button
-                        // onClick={() => handleAcceptFriendRequest(notification.id)}
+                        onClick={() => handleAcceptFriendRequest(notification.id)}
                         className="bg-green-500 text-white px-2 py-1 rounded-md text-xs hover:bg-green-600"
                       >
                         수락
