@@ -586,9 +586,6 @@ const StudyroomContainer: React.FC<StudyroomContainerProps> = () => {
 
   return (
     <div className="w-full flex flex-col items-center justify-center p-4">
-      <span id="numUsers" className="text-white">
-        {curUsers}
-      </span>
       <div>
         <div
           id="container"
