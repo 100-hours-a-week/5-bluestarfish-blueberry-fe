@@ -33,7 +33,7 @@ const NotificationComponent: React.FC = () => {
 
             const yourToken = localStorage.getItem('Authorization');
             const eventSource = new EventSourcePolyfill(
-                `${process.env.REACT_APP_API_URL}/api/v1/users/notification/subscribe/${currentUser.id}`,
+                `${process.env.REACT_APP_API_URL}/api/v1/users/notifications/subscribe/${currentUser.id}`,
                 {
                     withCredentials: true
                 }
@@ -52,7 +52,7 @@ const NotificationComponent: React.FC = () => {
 
                 // 데이터의 receiver와 comment가 존재하는지 확인
                 if (data.receiver && data.receiver.nickname && data.comment && data.comment.content) {
-                    setMentionMessage('@' + data.receiver.nickname + ' ' + data.comment.content);
+                    setMentionMessage(data.comment.content);
 
                     if (data.notiType === "MENTION") {
                         setShowMentionNotiToast(true);
