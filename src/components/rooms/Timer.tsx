@@ -6,14 +6,8 @@ import { useTimeStore } from "../../store/timeStore";
 type TimerProps = {};
 
 const Timer: React.FC<TimerProps> = () => {
-  const { userId } = useLoginedUserStore();
-  const { time, goaltime, isRunning, setTime, setGoaltime, toggleIsRunning } =
+  const { time, goaltime, isRunning, setTime, toggleIsRunning } =
     useTimeStore();
-  const timeRef = useRef(time); // time을 Ref로 관리
-
-  useEffect(() => {
-    timeRef.current = time;
-  }, [time]);
 
   const handleTimerToggle = () => {
     toggleIsRunning();
@@ -45,7 +39,7 @@ const Timer: React.FC<TimerProps> = () => {
           />
         </button>
         <div
-          // onClick={handleTimerToggle} // 버튼 클릭 시 타이머 토글
+          onClick={handleTimerToggle} // 버튼 클릭 시 타이머 토글
           className="flex rounded-full bg-[#4659aa] w-[30px] h-[30px] items-center justify-center shadow-lg cursor-pointer"
         >
           <img

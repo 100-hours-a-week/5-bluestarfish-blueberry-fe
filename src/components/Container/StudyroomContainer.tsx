@@ -9,7 +9,9 @@ import axiosInstance from "../../utils/axiosInstance";
 import { checkMediaPermissions } from "../../utils/checkMediaPermission";
 import { useTimeStore } from "../../store/timeStore";
 
-const StudyroomContainer: React.FC = () => {
+interface StudyroomContainerProps {}
+
+const StudyroomContainer: React.FC<StudyroomContainerProps> = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { roomId } = useParams<{ roomId: string }>();
   const navigate = useNavigate();
@@ -41,8 +43,8 @@ const StudyroomContainer: React.FC = () => {
   const participantsRef = useRef<Record<string, Participant>>({}); // Ref로 관리
   const usersRef = useRef(users); // users 상태를 유지하는 Ref
 
-  const { time, goaltime, setTime, setGoaltime, toggleIsRunning } =
-    useTimeStore();
+  const { setTime } = useTimeStore();
+  const [isRegister, setIsRegister] = useState<boolean>(false);
 
   useEffect(() => {
     usersRef.current = users; // users 상태가 변경될 때마다 usersRef 업데이트
@@ -72,8 +74,8 @@ const StudyroomContainer: React.FC = () => {
       wsRef.current.onopen = () => {
         console.log("WebSocket connection established");
         register(); // WebSocket이 OPEN 상태가 된 후 register 호출
+        setIsRegister(true);
       };
-
       wsRef.current.onerror = (error) => {
         console.error("WebSocket error: ", error);
       };
@@ -187,6 +189,8 @@ const StudyroomContainer: React.FC = () => {
         }
       );
       if (response.status === 204) {
+        // updateUserTime();
+        // stopTimer();
         navigate(`/`);
       }
     } catch (error: any) {
@@ -248,7 +252,8 @@ const StudyroomContainer: React.FC = () => {
         `${process.env.REACT_APP_API_URL}/api/v1/users/${userId}/time`
       );
       if (response.status === 200) {
-        setTime(response.data.data.time);
+        setTime(() => response.data.data.time);
+        console.log("TIme is", response.data.data);
       }
     } catch (error: any) {
       if (error.response) {
@@ -270,24 +275,28 @@ const StudyroomContainer: React.FC = () => {
   };
 
   useEffect(() => {
-    const message = {
-      id: "isCamOn",
-      sender: nickname,
-      isCamOn: camEnabled,
-    };
-    sendMessage(message);
-    updateUser(userId, { camEnabled: camEnabled });
-  }, [camEnabled]);
+    if (isRegister) {
+      const message = {
+        id: "isCamOn",
+        sender: nickname,
+        isCamOn: camEnabled,
+      };
+      sendMessage(message);
+      updateUser(userId, { camEnabled: camEnabled });
+    }
+  }, [camEnabled, isRegister]);
 
   useEffect(() => {
-    const message = {
-      id: "isMicOn",
-      sender: nickname,
-      isMicOn: micEnabled,
-    };
-    sendMessage(message);
-    updateUser(userId, { micEnabled: micEnabled });
-  }, [micEnabled]);
+    if (isRegister) {
+      const message = {
+        id: "isMicOn",
+        sender: nickname,
+        isMicOn: micEnabled,
+      };
+      sendMessage(message);
+      updateUser(userId, { micEnabled: micEnabled });
+    }
+  }, [micEnabled, isRegister]);
 
   const clickCamIcon = () => {
     if (localStreamRef.current) {
@@ -435,8 +444,6 @@ const StudyroomContainer: React.FC = () => {
     const existingUser = usersRef.current.find(
       (user) => user.id === result.userId
     );
-
-    console.log(result);
     if (existingUser) {
       updateUser(result.userId, {
         profileImage: result.profileImage,
