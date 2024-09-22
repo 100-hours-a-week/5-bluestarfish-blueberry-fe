@@ -27,3 +27,4 @@ yarn-error.log*
 # Ignore .env and any files starting with .env
 .env
 .env.*
+# git rm --cached .env.development
