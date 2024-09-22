@@ -16,8 +16,12 @@ const AlarmModal: React.FC<AlarmModalProps> = ({ closeModal }) => {
   const fetchNotifications = async () => {
     try {
       const response = await axiosInstance.get(`${process.env.REACT_APP_API_URL}/api/v1/users/${userId}/notifications`);
-      // 알림 데이터를 최신순으로 정렬
-      setNotifications(response.data.data.reverse());
+      // FRIEND 타입이면서 ACCEPTED 상태인 알림을 숨기고 나머지를 표시
+      const filteredNotifications = response.data.data.filter(
+        (notification: any) =>
+          !(notification.notiType === "FRIEND" && notification.notiStatus === "ACCEPTED")
+      );
+      setNotifications(filteredNotifications.reverse()); // 최신 알림이 위로 오도록 정렬
     } catch (error) {
       console.error("알림 데이터를 가져오는 데 실패했습니다:", error);
     } finally {
@@ -58,46 +62,54 @@ const AlarmModal: React.FC<AlarmModalProps> = ({ closeModal }) => {
 
   const handleAcceptFriendRequest = async (notiId: number) => {
     try {
-      if (notiId !== null) {
-        // 1. 현재 사용자의 알림 리스트를 조회
-        const response = await axiosInstance.get(
-          `${process.env.REACT_APP_API_URL}/api/v1/users/${userId}/notifications`
-        );
+        if (notiId !== null) {
+            // 1. 현재 사용자의 알림 리스트를 조회
+            const response = await axiosInstance.get(
+                `${process.env.REACT_APP_API_URL}/api/v1/users/${userId}/notifications`
+            );
 
-        const notifications = response.data.data;
+            const notifications = response.data.data;
 
-        // 2. notiId에 해당하는 알림 찾기
-        const notification = notifications.find(
-          (noti: any) => noti.id === notiId && noti.notiType === "FRIEND" && noti.notiStatus === "PENDING"
-        );
+            // 2. notiId에 해당하는 알림 찾기
+            const notification = notifications.find(
+                (noti: any) => noti.id === notiId && noti.notiType === "FRIEND" && noti.notiStatus === "PENDING"
+            );
 
-        if (!notification) {
-          console.error("해당 알림을 찾을 수 없습니다.");
-          return;
+            if (!notification) {
+                console.error("해당 알림을 찾을 수 없습니다.");
+                return;
+            }
+
+            const senderId = notification.sender.id; // 친구 요청을 보낸 사용자 ID
+
+            // 3. 친구 요청을 수락하는 API 요청
+            const requestBody = {
+                receiverId: senderId, // 요청을 보낸 사용자를 친구로 추가
+                notiType: "FRIEND",
+                notiStatus: "ACCEPTED",
+                commentId: null,
+                roomId: null
+            };
+
+            // 친구 요청 수락을 PATCH 요청으로 전송
+            await axiosInstance.patch(`${process.env.REACT_APP_API_URL}/api/v1/users/${userId}/notifications/${notiId}`, requestBody);
+
+            // 4. 친구 요청 수락 후 일정 시간 대기 (서버에서 상태를 업데이트할 시간)
+            // await new Promise((resolve) => setTimeout(resolve, 500)); // 500ms 대기 (서버 처리 시간을 고려)
+
+            // 5. 친구 요청이 수락된 알림을 삭제
+            // await axiosInstance.delete(`${process.env.REACT_APP_API_URL}/api/v1/users/${userId}/notifications/${notiId}`);
+
+            // 6. 알림 리스트에서 해당 알림을 제거하여 화면에서 갱신
+            fetchNotifications();
+
+            alert('친구 요청 수락!');
         }
-
-        const senderId = notification.sender.id; // 친구 요청을 보낸 사용자 ID
-
-        // 3. 친구 요청을 수락하는 API 요청
-        const requestBody = {
-          receiverId: senderId, // 요청을 보낸 사용자를 친구로 추가
-          notiType: "FRIEND",
-          notiStatus: "ACCEPTED",
-          commentId: null,
-          roomId: null
-        };
-
-        // 친구 요청 수락을 POST 요청으로 전송
-        await axiosInstance.patch(`${process.env.REACT_APP_API_URL}/api/v1/users/${userId}/notifications/${notiId}`, requestBody);
-
-        alert('친구 요청 수띾!');
-        // setShowAddModal(false); // 모달 닫기
-        // setShowAddFriendToast(true); // 토스트 메시지 표시
-      }
     } catch (error) {
-      console.error('친구 요청 수락 실패:', error);
+        console.error('친구 요청 수락 실패:', error);
     }
-  };
+};
+
 
   return (
     <div
