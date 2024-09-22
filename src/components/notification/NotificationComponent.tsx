@@ -4,12 +4,13 @@ import { EventSourcePolyfill } from 'event-source-polyfill';
 import AlarmToastNotification from "../common/AlarmToastNotification";
 
 const NotificationComponent: React.FC = () => {
-    const [likes, setLikes] = useState<any[]>([]); // 'like' 이벤트 데이터를 저장할 상태
     const [currentUser, setCurrentUser] = useState<any | null>(null);
     const [showMentionNotiToast, setShowMentionNotiToast] = useState(false);
     const [showFriendNotiToast, setShowFriendNotiToast] = useState(false);
+    const [showAcceptFriendNotiToast, setShowAcceptFriendNotiToast] = useState(false);
     const [mentionMessage, setMentionMessage] = useState("");
     const [friendMessage, setFriendMessage] = useState("");
+    const [acceptFriendMessage, setAcceptFriendMessage] = useState("");
 
     useEffect(() => {
         const fetchCurrentUser = async () => {
@@ -69,6 +70,9 @@ const NotificationComponent: React.FC = () => {
                 } else if (data.notiType === "FRIEND") {
                     setFriendMessage(data.sender.nickname + '님이 친구 요청을 보냈어요!');
                     setShowFriendNotiToast(true);
+                } else if (data === "ACCEPTED") {
+                    setAcceptFriendMessage('친구가 되었어요!'); // 닉네임이 들어가야 함
+                    setShowAcceptFriendNotiToast(true);
                 }
             });
 
@@ -104,6 +108,10 @@ const NotificationComponent: React.FC = () => {
         setShowFriendNotiToast(false);
     };
 
+    const handleCloseAcceptFriendNotiToast = () => {
+        setShowAcceptFriendNotiToast(false);
+    };
+
     return (
         <>
             {showMentionNotiToast && (
@@ -111,6 +119,9 @@ const NotificationComponent: React.FC = () => {
             )}
             {showFriendNotiToast && (
                 <AlarmToastNotification sender="발신자" message={friendMessage} notiType="FRIEND" onClose={handleCloseFriendNotiToast} />
+            )}
+            {showAcceptFriendNotiToast && (
+                <AlarmToastNotification sender="발신자" message={acceptFriendMessage} notiType="FRIEND" onClose={handleCloseAcceptFriendNotiToast} />
             )}
         </>
     );
