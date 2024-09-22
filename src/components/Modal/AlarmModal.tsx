@@ -13,16 +13,18 @@ const AlarmModal: React.FC<AlarmModalProps> = ({ closeModal }) => {
   const [notifications, setNotifications] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [showAcceptFriendNotiToast, setShowAcceptFriendNotiToast] = useState(false);
+  const [showDeclineFriendNotiToast, setShowDeclineFriendNotiToast] = useState(false);
   const [acceptFriendMessage, setAcceptFriendMessage] = useState("");
+  const [declineFriendMessage, setDeclineFriendMessage] = useState("");
   const navigate = useNavigate(); // useNavigate 사용
 
   const fetchNotifications = async () => {
     try {
       const response = await axiosInstance.get(`${process.env.REACT_APP_API_URL}/api/v1/users/${userId}/notifications`);
-      // FRIEND 타입이면서 ACCEPTED 상태인 알림을 숨기고 나머지를 표시
+      // FRIEND 타입이면서 ACCEPTED, DECLINED 상태인 알림을 숨기고 나머지를 표시
       const filteredNotifications = response.data.data.filter(
         (notification: any) =>
-          !(notification.notiType === "FRIEND" && notification.notiStatus === "ACCEPTED")
+          !((notification.notiType === "FRIEND" && notification.notiStatus === "ACCEPTED") || (notification.notiType === "FRIEND" && notification.notiStatus === "DECLINED"))
       );
       setNotifications(filteredNotifications.reverse()); // 최신 알림이 위로 오도록 정렬
     } catch (error) {
@@ -44,6 +46,10 @@ const AlarmModal: React.FC<AlarmModalProps> = ({ closeModal }) => {
 
   const handleCloseAcceptFriendNotiToast = () => {
     setShowAcceptFriendNotiToast(false);
+  };
+
+  const handleCloseDeclineFriendNotiToast = () => {
+    setShowDeclineFriendNotiToast(false);
   };
 
   // ESC 키로 모달 닫기 기능
@@ -113,6 +119,52 @@ const AlarmModal: React.FC<AlarmModalProps> = ({ closeModal }) => {
         // alert('친구 요청 수락!');
         setAcceptFriendMessage(notification.sender.nickname + '님과 친구가 되었어요!');
         setShowAcceptFriendNotiToast(true);
+      }
+    } catch (error) {
+      console.error('친구 요청 수락 실패:', error);
+    }
+  };
+
+  const handleDeclineFriendRequest = async (notiId: number) => {
+    try {
+      if (notiId !== null) {
+        // 1. 현재 사용자의 알림 리스트를 조회
+        const response = await axiosInstance.get(
+          `${process.env.REACT_APP_API_URL}/api/v1/users/${userId}/notifications`
+        );
+
+        const notifications = response.data.data;
+
+        // 2. notiId에 해당하는 알림 찾기
+        const notification = notifications.find(
+          (noti: any) => noti.id === notiId && noti.notiType === "FRIEND" && noti.notiStatus === "PENDING"
+        );
+
+        if (!notification) {
+          console.error("해당 알림을 찾을 수 없습니다.");
+          return;
+        }
+
+        const senderId = notification.sender.id; // 친구 요청을 보낸 사용자 ID
+
+        // 3. 친구 요청을 수락하는 API 요청
+        const requestBody = {
+          receiverId: senderId, // 요청을 보낸 사용자를 친구로 추가
+          notiType: "FRIEND",
+          notiStatus: "DECLINED",
+          commentId: null,
+          roomId: null
+        };
+
+        // 친구 요청 수락을 PATCH 요청으로 전송
+        await axiosInstance.patch(`${process.env.REACT_APP_API_URL}/api/v1/users/${userId}/notifications/${notiId}`, requestBody);
+
+        // 알림 리스트에서 해당 알림을 제거하여 화면에서 갱신
+        fetchNotifications();
+
+        // alert('친구 요청 거절!');
+        setDeclineFriendMessage(notification.sender.nickname + '님의 친구 요청을 거절했어요!');
+        setShowDeclineFriendNotiToast(true);
       }
     } catch (error) {
       console.error('친구 요청 수락 실패:', error);
@@ -192,7 +244,7 @@ const AlarmModal: React.FC<AlarmModalProps> = ({ closeModal }) => {
                         수락
                       </button>
                       <button
-                        // onClick={() => handleRejectFriendRequest(notification.id)}
+                        onClick={() => handleDeclineFriendRequest(notification.id)}
                         className="bg-red-500 text-white px-2 py-1 rounded-md text-xs hover:bg-red-600"
                       >
                         거절
@@ -207,6 +259,9 @@ const AlarmModal: React.FC<AlarmModalProps> = ({ closeModal }) => {
       </div>
       {showAcceptFriendNotiToast && (
         <AlarmToastNotification sender="발신자" message={acceptFriendMessage} notiType="FRIEND" onClose={handleCloseAcceptFriendNotiToast} />
+      )}
+      {showDeclineFriendNotiToast && (
+        <AlarmToastNotification sender="발신자" message={declineFriendMessage} notiType="FRIEND" onClose={handleCloseDeclineFriendNotiToast} />
       )}
     </div>
   );
