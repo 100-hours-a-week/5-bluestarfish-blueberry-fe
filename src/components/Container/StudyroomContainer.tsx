@@ -56,6 +56,9 @@ const StudyroomContainer: React.FC<StudyroomContainerProps> = () => {
     fetchUserTime();
     return () => {
       cleanupStream();
+      leaveRoom();
+      exitStudyRoom();
+      cleanupStream();
     };
   }, []);
 
@@ -322,9 +325,6 @@ const StudyroomContainer: React.FC<StudyroomContainerProps> = () => {
   };
 
   const handleExitButton = async () => {
-    leaveRoom();
-    await exitStudyRoom();
-    cleanupStream();
     navigate("/");
   };
 

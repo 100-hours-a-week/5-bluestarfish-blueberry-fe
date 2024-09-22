@@ -41,6 +41,11 @@ const ChatContainer: React.FC<ChatContainerProps> = () => {
       console.error("채팅 데이터를 가져오는 중 오류 발생:", error);
     }
   };
+
+  useEffect(() => {
+    console.log(messages);
+  }, [messages]);
+
   useEffect(() => {
     getPreviousMessages();
     const socket = new SockJS(`${process.env.REACT_APP_SOCKET_URL}`);

@@ -20,6 +20,7 @@ const StudyroomPage: React.FC = () => {
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const { userId } = useLoginedUserStore();
   const timeRef = useRef(time); // time을 Ref로 관리
+  // const friendsRef = useRef<Friend[]>([]);
 
   useEffect(() => {
     timeRef.current = time;
