@@ -63,6 +63,18 @@ const StudyroomContainer: React.FC<StudyroomContainerProps> = () => {
   }, []);
 
   useEffect(() => {
+    const handleUnload = () => {
+      exitStudyRoom();
+    };
+
+    window.addEventListener("unload", handleUnload);
+
+    return () => {
+      window.removeEventListener("unload", handleUnload);
+    };
+  }, []);
+
+  useEffect(() => {
     if (permissionsChecked) {
       if (!cameraEnabled || !microphoneEnabled) {
         navigate(-1);
@@ -192,8 +204,6 @@ const StudyroomContainer: React.FC<StudyroomContainerProps> = () => {
         }
       );
       if (response.status === 204) {
-        // updateUserTime();
-        // stopTimer();
         navigate(`/`);
       }
     } catch (error: any) {
