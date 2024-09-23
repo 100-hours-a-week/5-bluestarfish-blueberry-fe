@@ -69,11 +69,13 @@ const NotificationComponent: React.FC = () => {
                     setMentionMessage(data.comment.content);
                     setMentionSenderNickname(data.sender.nickname);
                     setShowMentionNotiToast(true);
-                } else if (data.notiType === "FRIEND") {
+                } else if (data.notiType === "FRIEND" && data.notiStatus === "PENDING") {
                     setFriendMessage(data.sender.nickname + '님이 친구 요청을 보냈어요!');
                     setShowFriendNotiToast(true);
-                } else if (data === "ACCEPTED") {
-                    setAcceptFriendMessage('친구가 되었어요!'); // 닉네임이 들어가야 함
+                } else if (data.notiStatus === "ACCEPTED") {
+                    console.log('받은 데이터: ', data);
+                    // setAcceptFriendMessage('친구가 되었어요!'); // 닉네임이 들어가야 함
+                    setAcceptFriendMessage(`${data.receiver.nickname}님과 친구가 되었어요!`);
                     setShowAcceptFriendNotiToast(true);
                 }
             });
