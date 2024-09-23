@@ -43,10 +43,6 @@ const ChatContainer: React.FC<ChatContainerProps> = () => {
   };
 
   useEffect(() => {
-    console.log(messages);
-  }, [messages]);
-
-  useEffect(() => {
     getPreviousMessages();
     const socket = new SockJS(`${process.env.REACT_APP_SOCKET_URL}`);
     const client = new Client({
@@ -107,7 +103,10 @@ const ChatContainer: React.FC<ChatContainerProps> = () => {
 
   return (
     <div className="m-2 flex flex-col h-full">
-      <div className="grow overflow-y-auto h-[550px] p-2">
+      <div
+        className="flex flex-col grow overflow-y-auto p-2"
+        style={{ height: "calc(100vh - 220px)" }}
+      >
         {Array.isArray(messages) &&
           messages
             .filter((msg) => msg.senderId)
