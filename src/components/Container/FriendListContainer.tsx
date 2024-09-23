@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import DeleteModal from "../common/DeleteModal";
 import ToastNotification from "../common/ToastNotification";
 import axiosInstance from "../../utils/axiosInstance";
+import { useLoginedUserStore } from "../../store/store";
 
 type Friend = {
     id: number;
@@ -13,26 +14,84 @@ type Friend = {
 };
 
 const FriendListContainer: React.FC = () => {
+    const { userId } = useLoginedUserStore();
     const navigate = useNavigate();
     const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
     const [selectedFriendId, setSelectedFriendId] = useState<number | null>(null);
     const [showDeleteFriendToast, setShowDeleteFriendToast] = useState(false);
     const [friends, setFriends] = useState<Friend[]>([]);
 
+    // 친구 삭제 핸들러
     const handleDeleteFriend = (id: number) => {
         setSelectedFriendId(id);
         setShowDeleteModal(true);
     };
 
-    const handleDeleteConfirm = () => {
-        if (selectedFriendId !== null) {
+    // 친구 삭제 확인 로직
+const handleDeleteConfirm = async () => {
+    if (selectedFriendId !== null) {
+        try {
+            // 1. 현재 사용자의 알림 리스트를 조회
+            const response = await axiosInstance.get(
+                `${process.env.REACT_APP_API_URL}/api/v1/users/${userId}/notifications`
+            );
+
+            const notifications = response.data.data;
+
+            // 2. 친구 되어있는 사용자와 관련된 알림 찾기
+            let notification = notifications.find(
+                (noti: any) => noti.sender.id === selectedFriendId && noti.notiType === "FRIEND" && noti.notiStatus === "ACCEPTED"
+            );
+
+            // 3. 만약 사용자의 알림 리스트에서 해당 알림을 찾지 못했다면, 상대방의 알림 리스트 조회
+            if (!notification) {
+                console.warn("해당 친구와 관련된 알림을 찾을 수 없습니다. 상대방의 알림 리스트를 조회합니다.");
+
+                const friendResponse = await axiosInstance.get(
+                    `${process.env.REACT_APP_API_URL}/api/v1/users/${selectedFriendId}/notifications`
+                );
+
+                const friendNotifications = friendResponse.data.data;
+
+                // 4. 상대방의 알림 리스트에서 본인이 보낸 FRIEND, ACCEPTED 알림 찾기
+                notification = friendNotifications.find(
+                    (noti: any) => noti.sender.id === userId && noti.notiType === "FRIEND" && noti.notiStatus === "ACCEPTED"
+                );
+
+                // 상대방의 알림에서도 찾을 수 없는 경우
+                if (!notification) {
+                    console.error("상대방의 알림 리스트에서도 해당 알림을 찾을 수 없습니다.");
+                    return;
+                }
+            }
+
+            // 5. 친구 삭제 API 요청
+            const requestBody = {
+                receiverId: selectedFriendId,
+                notiType: "FRIEND",
+                notiStatus: "DECLINED", // 삭제 상태로 업데이트
+                commentId: null,
+                roomId: null
+            };
+
+            // PATCH 요청으로 친구 삭제 처리
+            await axiosInstance.patch(`${process.env.REACT_APP_API_URL}/api/v1/users/${userId}/notifications/${notification.id}`, requestBody);
+
+            // 알림 리스트에서 해당 알림을 제거하여 화면에서 갱신
             setFriends((prevFriends) =>
                 prevFriends.filter((friend) => friend.id !== selectedFriendId)
             );
+
+            // 성공 토스트 메시지 표시
             setShowDeleteModal(false);
+            setShowDeleteFriendToast(true);
+
+        } catch (error) {
+            console.error("친구 삭제 실패:", error);
         }
-        setShowDeleteFriendToast(true);
-    };
+    }
+};
+
 
     const handleFindNewFriends = () => {
         navigate("/friends/search");
@@ -120,12 +179,12 @@ const FriendListContainer: React.FC = () => {
                                 <p className="text-gray-500 mb-4">
                                     스터디 시간: {friend.time}
                                 </p>
-                                {/* <button
+                                <button
                                     onClick={() => handleDeleteFriend(friend.id)}
                                     className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600"
                                 >
                                     친구 삭제
-                                </button> */}
+                                </button>
                             </div>
                         </div>
                     ))
