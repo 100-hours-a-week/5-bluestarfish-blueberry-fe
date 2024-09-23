@@ -120,12 +120,12 @@ const FriendListContainer: React.FC = () => {
                                 <p className="text-gray-500 mb-4">
                                     스터디 시간: {friend.time}
                                 </p>
-                                <button
+                                {/* <button
                                     onClick={() => handleDeleteFriend(friend.id)}
                                     className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600"
                                 >
                                     친구 삭제
-                                </button>
+                                </button> */}
                             </div>
                         </div>
                     ))
