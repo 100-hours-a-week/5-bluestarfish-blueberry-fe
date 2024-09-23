@@ -34,7 +34,10 @@ const RecruitStudyDetailContainer: React.FC = () => {
         );
         setCurrentUser(response.data.data);
       } catch (error: unknown) {
-        console.error("사용자 정보를 가져오는 데 실패했습니다:", getErrorMessage(error));
+        console.error(
+          "사용자 정보를 가져오는 데 실패했습니다:",
+          getErrorMessage(error)
+        );
       }
     };
 
@@ -62,8 +65,10 @@ const RecruitStudyDetailContainer: React.FC = () => {
                 nickname: comment.mentionedUser.nickname,
               }
             : null,
-          createdAt: comment.createdAt ? new Date(comment.createdAt).getTime() : null,
-          profileImage: `${process.env.PUBLIC_URL}/assets/images/real_ian.png`,
+          createdAt: comment.createdAt
+            ? new Date(comment.createdAt).getTime()
+            : null,
+          profileImage: comment.user.profileImage,
         }));
 
         setComments((prevComments) => [...prevComments, ...formattedComments]);
@@ -123,7 +128,9 @@ const RecruitStudyDetailContainer: React.FC = () => {
       threshold: 1,
     });
 
-    const loadMoreTriggerElement = document.querySelector("#load-more-comments");
+    const loadMoreTriggerElement = document.querySelector(
+      "#load-more-comments"
+    );
 
     if (loadMoreTriggerElement) {
       observer.current.observe(loadMoreTriggerElement);
@@ -138,7 +145,9 @@ const RecruitStudyDetailContainer: React.FC = () => {
     }
   };
 
-  const handleCommentSubmit = async (comment: string): Promise<number | null> => {
+  const handleCommentSubmit = async (
+    comment: string
+  ): Promise<number | null> => {
     if (!comment.trim()) {
       alert("댓글을 입력해주세요.");
       return null;
@@ -182,7 +191,6 @@ const RecruitStudyDetailContainer: React.FC = () => {
       return null;
     }
   };
-
 
   const handleCloseToast = () => {
     setShowToast(false);
@@ -283,11 +291,17 @@ const RecruitStudyDetailContainer: React.FC = () => {
 
       {!isRecruited && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
-          <span className="block w-full text-center"> ┈┈┈ ✁✃✁ 모집이 완료된 게시글입니다 ✁✁✃ ┈┈┈ </span>
+          <span className="block w-full text-center">
+            {" "}
+            ┈┈┈ ✁✃✁ 모집이 완료된 게시글입니다 ✁✁✃ ┈┈┈{" "}
+          </span>
         </div>
       )}
 
-      <div id="load-more-comments" className="h-10 flex justify-center items-center">
+      <div
+        id="load-more-comments"
+        className="h-10 flex justify-center items-center"
+      >
         {page < totalPages ? "Loading more comments..." : ""}
       </div>
 
@@ -301,7 +315,11 @@ const RecruitStudyDetailContainer: React.FC = () => {
       )}
 
       {showToast && (
-        <ToastNotification message="변경 완료!" isSuccess={true} onClose={handleCloseToast} />
+        <ToastNotification
+          message="변경 완료!"
+          isSuccess={true}
+          onClose={handleCloseToast}
+        />
       )}
     </div>
   );
@@ -314,7 +332,7 @@ function getErrorMessage(error: unknown): string {
     }
     return String(error);
   } catch (e) {
-    return 'Unknown error';
+    return "Unknown error";
   }
 }
 
