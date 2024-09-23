@@ -123,8 +123,8 @@ const AlarmModal: React.FC<AlarmModalProps> = ({ closeModal }) => {
         fetchNotifications();
   
         // 6. 친구가 되었다는 메시지를 표시 (수신자 측)
-        setAcceptFriendMessage(notification.sender.nickname + '님과 친구가 되었어요!');
-        setShowAcceptFriendNotiToast(true);
+        // setAcceptFriendMessage(notification.sender.nickname + '님과 친구가 되었어요!');
+        // setShowAcceptFriendNotiToast(true);
   
       }
     } catch (error) {
