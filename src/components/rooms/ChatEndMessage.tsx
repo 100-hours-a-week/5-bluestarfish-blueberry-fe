@@ -16,16 +16,11 @@ const ChatEndMessage: React.FC<ChatEndMessageProps> = ({
       <div className="chat-image avatar">
         <div className="w-10 rounded-full">
           {senderProfileImage ? (
-            <img
-              alt="Sender Profile"
-              src={senderProfileImage}
-              className="h-[80px] w-[80px] rounded-full my-4"
-            />
+            <img alt="Sender Profile" src={senderProfileImage} />
           ) : (
             <img
               alt="Tailwind CSS chat bubble component"
               src={`${process.env.PUBLIC_URL}/assets/images/profile-default-image.png`}
-              className="h-[80px] w-[80px] rounded-full my-4"
             />
           )}
         </div>
