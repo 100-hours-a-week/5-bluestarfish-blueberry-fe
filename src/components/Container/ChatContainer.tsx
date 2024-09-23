@@ -41,6 +41,7 @@ const ChatContainer: React.FC<ChatContainerProps> = () => {
       console.error("채팅 데이터를 가져오는 중 오류 발생:", error);
     }
   };
+
   useEffect(() => {
     getPreviousMessages();
     const socket = new SockJS(`${process.env.REACT_APP_SOCKET_URL}`);
@@ -102,7 +103,10 @@ const ChatContainer: React.FC<ChatContainerProps> = () => {
 
   return (
     <div className="m-2 flex flex-col h-full">
-      <div className="grow overflow-y-auto h-[550px] p-2">
+      <div
+        className="flex flex-col grow overflow-y-auto p-2"
+        style={{ height: "calc(100vh - 220px)" }}
+      >
         {Array.isArray(messages) &&
           messages
             .filter((msg) => msg.senderId)

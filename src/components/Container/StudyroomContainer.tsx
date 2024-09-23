@@ -48,6 +48,8 @@ const StudyroomContainer: React.FC<StudyroomContainerProps> = () => {
   const { setTime } = useTimeStore();
   const [isRegister, setIsRegister] = useState<boolean>(false);
 
+  const [exited, setExited] = useState(false);
+
   useEffect(() => {
     console.log(friends);
   }, [friends]);
@@ -63,6 +65,21 @@ const StudyroomContainer: React.FC<StudyroomContainerProps> = () => {
     fetchUserTime();
     return () => {
       cleanupStream();
+      leaveRoom();
+      exitStudyRoom();
+      cleanupStream();
+    };
+  }, []);
+
+  useEffect(() => {
+    const handleUnload = () => {
+      exitStudyRoom();
+    };
+
+    window.addEventListener("unload", handleUnload);
+
+    return () => {
+      window.removeEventListener("unload", handleUnload);
     };
   }, []);
 
@@ -180,6 +197,8 @@ const StudyroomContainer: React.FC<StudyroomContainerProps> = () => {
   };
 
   const exitStudyRoom = async () => {
+    if (exited) return; // 이미 퇴장 처리가 시작된 경우 추가 실행 방지
+    setExited(true);
     if (isLoading) return;
     try {
       setIsLoading(true);
@@ -196,8 +215,6 @@ const StudyroomContainer: React.FC<StudyroomContainerProps> = () => {
         }
       );
       if (response.status === 204) {
-        // updateUserTime();
-        // stopTimer();
         navigate(`/`);
       }
     } catch (error: any) {
@@ -372,9 +389,6 @@ const StudyroomContainer: React.FC<StudyroomContainerProps> = () => {
   };
 
   const handleExitButton = async () => {
-    leaveRoom();
-    await exitStudyRoom();
-    cleanupStream();
     navigate("/");
   };
 
@@ -636,9 +650,6 @@ const StudyroomContainer: React.FC<StudyroomContainerProps> = () => {
 
   return (
     <div className="w-full flex flex-col items-center justify-center p-4">
-      <span id="numUsers" className="text-white">
-        {curUsers}
-      </span>
       <div>
         <div
           id="container"
