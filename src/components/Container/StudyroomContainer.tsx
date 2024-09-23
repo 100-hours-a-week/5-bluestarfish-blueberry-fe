@@ -46,6 +46,8 @@ const StudyroomContainer: React.FC<StudyroomContainerProps> = () => {
   const { setTime } = useTimeStore();
   const [isRegister, setIsRegister] = useState<boolean>(false);
 
+  const [exited, setExited] = useState(false);
+
   useEffect(() => {
     usersRef.current = users; // users 상태가 변경될 때마다 usersRef 업데이트
   }, [users]);
@@ -188,6 +190,8 @@ const StudyroomContainer: React.FC<StudyroomContainerProps> = () => {
   };
 
   const exitStudyRoom = async () => {
+    if (exited) return; // 이미 퇴장 처리가 시작된 경우 추가 실행 방지
+    setExited(true);
     if (isLoading) return;
     try {
       setIsLoading(true);
