@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import DeleteModal from "../common/DeleteModal";
 import ToastNotification from "../common/ToastNotification";
 import axiosInstance from "../../utils/axiosInstance";
+import { useLoginedUserStore } from "../../store/store";
 
 type Friend = {
     id: number;
@@ -13,25 +14,65 @@ type Friend = {
 };
 
 const FriendListContainer: React.FC = () => {
+    const { userId } = useLoginedUserStore();
     const navigate = useNavigate();
     const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
     const [selectedFriendId, setSelectedFriendId] = useState<number | null>(null);
     const [showDeleteFriendToast, setShowDeleteFriendToast] = useState(false);
     const [friends, setFriends] = useState<Friend[]>([]);
 
+    // 친구 삭제 핸들러
     const handleDeleteFriend = (id: number) => {
         setSelectedFriendId(id);
         setShowDeleteModal(true);
     };
 
-    const handleDeleteConfirm = () => {
+    // 친구 삭제 확인 로직
+    const handleDeleteConfirm = async () => {
         if (selectedFriendId !== null) {
-            setFriends((prevFriends) =>
-                prevFriends.filter((friend) => friend.id !== selectedFriendId)
-            );
-            setShowDeleteModal(false);
+            try {
+                // 1. 현재 사용자의 알림 리스트를 조회
+                const response = await axiosInstance.get(
+                    `${process.env.REACT_APP_API_URL}/api/v1/users/${userId}/notifications`
+                );
+
+                const notifications = response.data.data;
+
+                // 2. 친구 되어있는 사용자 찾기
+                const notification = notifications.find(
+                    (noti: any) => noti.sender.id === selectedFriendId && noti.notiType === "FRIEND" && noti.notiStatus === "ACCEPTED"
+                );
+
+                if (!notification) {
+                    console.error("해당 친구와 관련된 알림을 찾을 수 없습니다.");
+                    return;
+                }
+
+                // 3. 친구 삭제 API 요청
+                const requestBody = {
+                    receiverId: selectedFriendId,
+                    notiType: "FRIEND",
+                    notiStatus: "DECLINED", // 삭제 상태로 업데이트
+                    commentId: null,
+                    roomId: null
+                };
+
+                // PATCH 요청으로 친구 삭제 처리
+                await axiosInstance.patch(`${process.env.REACT_APP_API_URL}/api/v1/users/${userId}/notifications/${notification.id}`, requestBody);
+
+                // 알림 리스트에서 해당 알림을 제거하여 화면에서 갱신
+                setFriends((prevFriends) =>
+                    prevFriends.filter((friend) => friend.id !== selectedFriendId)
+                );
+
+                // 성공 토스트 메시지 표시
+                setShowDeleteModal(false);
+                setShowDeleteFriendToast(true);
+
+            } catch (error) {
+                console.error("친구 삭제 실패:", error);
+            }
         }
-        setShowDeleteFriendToast(true);
     };
 
     const handleFindNewFriends = () => {
@@ -120,12 +161,12 @@ const FriendListContainer: React.FC = () => {
                                 <p className="text-gray-500 mb-4">
                                     스터디 시간: {friend.time}
                                 </p>
-                                {/* <button
+                                <button
                                     onClick={() => handleDeleteFriend(friend.id)}
                                     className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600"
                                 >
                                     친구 삭제
-                                </button> */}
+                                </button>
                             </div>
                         </div>
                     ))

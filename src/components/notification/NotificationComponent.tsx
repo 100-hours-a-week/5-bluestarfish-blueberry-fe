@@ -52,33 +52,29 @@ const NotificationComponent: React.FC = () => {
                 console.log("notification 이벤트 수신");
                 const data = JSON.parse(event.data);
                 console.log(data);
-
-                // 데이터의 receiver와 comment가 존재하는지 확인
-                // if (data.receiver && data.receiver.nickname && data.comment && data.comment.content) {
-                //     setMentionMessage(data.comment.content);
-
-                //     if (data.notiType === "MENTION") {
-                //         setShowMentionNotiToast(true);
-                //     } else if (data.notiType === "FRIEND") {
-                //         setShowFriendNotiToast(true);
-                //     }
-                // } else {
-                //     console.error("Invalid data structure:", data);
-                // }
+              
                 if (data.notiType === "MENTION") {
-                    setMentionMessage(data.comment.content);
-                    setMentionSenderNickname(data.sender.nickname);
-                    setShowMentionNotiToast(true);
+                  setMentionMessage(data.comment.content);
+                  setMentionSenderNickname(data.sender.nickname);
+                  setShowMentionNotiToast(true);
                 } else if (data.notiType === "FRIEND" && data.notiStatus === "PENDING") {
-                    setFriendMessage(data.sender.nickname + '님이 친구 요청을 보냈어요!');
-                    setShowFriendNotiToast(true);
+                  setFriendMessage(data.sender.nickname + '님이 친구 요청을 보냈어요!');
+                  setShowFriendNotiToast(true);
                 } else if (data.notiStatus === "ACCEPTED") {
-                    console.log('받은 데이터: ', data);
-                    // setAcceptFriendMessage('친구가 되었어요!'); // 닉네임이 들어가야 함
-                    setAcceptFriendMessage(`${data.receiver.nickname}님과 친구가 되었어요!`);
-                    setShowAcceptFriendNotiToast(true);
+                  console.log('받은 데이터: ', data);
+              
+                  // 발신자와 수신자 모두 알림 처리
+                  if (data.sender.id === currentUser.id) {
+                    // 발신자일 경우: 친구가 수락했음을 알림
+                    setAcceptFriendMessage(`${data.receiver.nickname}님과 친구가 되었습니다!`);
+                  } else {
+                    // 수신자일 경우: 수락한 알림
+                    setAcceptFriendMessage(`${data.sender.nickname}님과 친구가 되었습니다!`);
+                  }
+                  setShowAcceptFriendNotiToast(true);
                 }
-            });
+              });
+              
 
 
             // SSE 연결 상태 및 에러 처리
