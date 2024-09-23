@@ -9,6 +9,7 @@ const NotificationComponent: React.FC = () => {
     const [showFriendNotiToast, setShowFriendNotiToast] = useState(false);
     const [showAcceptFriendNotiToast, setShowAcceptFriendNotiToast] = useState(false);
     const [mentionMessage, setMentionMessage] = useState("");
+    const [mentionSenderNickname, setMentionSenderNickname] = useState("");
     const [friendMessage, setFriendMessage] = useState("");
     const [acceptFriendMessage, setAcceptFriendMessage] = useState("");
 
@@ -66,6 +67,7 @@ const NotificationComponent: React.FC = () => {
                 // }
                 if (data.notiType === "MENTION") {
                     setMentionMessage(data.comment.content);
+                    setMentionSenderNickname(data.sender.nickname);
                     setShowMentionNotiToast(true);
                 } else if (data.notiType === "FRIEND") {
                     setFriendMessage(data.sender.nickname + '님이 친구 요청을 보냈어요!');
@@ -115,7 +117,7 @@ const NotificationComponent: React.FC = () => {
     return (
         <>
             {showMentionNotiToast && (
-                <AlarmToastNotification sender="발신자" message={mentionMessage} notiType="MENTION" onClose={handleCloseMentionNotiToast} />
+                <AlarmToastNotification sender={mentionSenderNickname} message={mentionMessage} notiType="MENTION" onClose={handleCloseMentionNotiToast} />
             )}
             {showFriendNotiToast && (
                 <AlarmToastNotification sender="발신자" message={friendMessage} notiType="FRIEND" onClose={handleCloseFriendNotiToast} />
