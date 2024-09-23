@@ -29,7 +29,12 @@ const ChatStartMessage: React.FC<ChatStartMessageProps> = ({
         {senderNickname}
         <time className="text-xs opacity-50"></time>
       </div>
-      <div className="chat-bubble">{message}</div>
+      <div
+        className="chat-bubble breaks-words"
+        style={{ wordBreak: "break-word" }}
+      >
+        {message}
+      </div>
       <div className="chat-footer opacity-50 text-black">{createdAt}</div>
     </div>
   );
