@@ -10,9 +10,13 @@ import { checkMediaPermissions } from "../../utils/checkMediaPermission";
 import { useTimeStore } from "../../store/timeStore";
 import { useFriendStore } from "../../store/friendStore";
 
-interface StudyroomContainerProps {}
+interface StudyroomContainerProps {
+  stopTimer: () => void;
+}
 
-const StudyroomContainer: React.FC<StudyroomContainerProps> = () => {
+const StudyroomContainer: React.FC<StudyroomContainerProps> = ({
+  stopTimer,
+}) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { roomId } = useParams<{ roomId: string }>();
   const navigate = useNavigate();
@@ -55,21 +59,17 @@ const StudyroomContainer: React.FC<StudyroomContainerProps> = () => {
   }, [friends]);
 
   useEffect(() => {
-    usersRef.current = users; // users 상태가 변경될 때마다 usersRef 업데이트
-  }, [users]);
-
-  useEffect(() => {
+    if (userId == 0) return;
     fetchStudyRoom();
     fetchFriendsData();
     checkPermissions();
     fetchUserTime();
     return () => {
-      cleanupStream();
-      leaveRoom();
       exitStudyRoom();
       cleanupStream();
+      leaveRoom();
     };
-  }, []);
+  }, [userId]);
 
   useEffect(() => {
     const handleUnload = () => {
@@ -215,6 +215,7 @@ const StudyroomContainer: React.FC<StudyroomContainerProps> = () => {
         }
       );
       if (response.status === 204) {
+        stopTimer();
         navigate(`/`);
       }
     } catch (error: any) {
@@ -389,6 +390,7 @@ const StudyroomContainer: React.FC<StudyroomContainerProps> = () => {
   };
 
   const handleExitButton = async () => {
+    await exitStudyRoom();
     navigate("/");
   };
 

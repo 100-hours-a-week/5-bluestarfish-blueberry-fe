@@ -37,7 +37,7 @@ const UserInfo: React.FC<UserInfoProps> = ({
           <img
             src={
               profileImage ||
-              `${process.env.PUBLIC_URL}/assets/images/user-default-profile.png`
+              `${process.env.PUBLIC_URL}/assets/images/profile-default-image.png`
             }
             alt="user-profile"
             className="h-[23px] w-[23px]"

@@ -84,7 +84,7 @@ const RecruitPostList: React.FC<RecruitPostListProps> = ({
                 <img
                   src={
                     post.userResponse.profileImage ??
-                    `${process.env.PUBLIC_URL}/assets/images/real_ian.png`
+                    `${process.env.PUBLIC_URL}/assets/images/profile-default-image.png`
                   } // profileImage가 없을 경우 기본 이미지 사용
                   alt={post.userResponse.nickname}
                   className="h-5 w-5 rounded-full"

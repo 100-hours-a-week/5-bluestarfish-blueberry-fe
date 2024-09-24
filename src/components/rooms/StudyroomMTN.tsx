@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { useLoginedUserStore } from "../../store/store";
 
 type StudyroomMTNProps = {
   id: number;
@@ -26,8 +27,11 @@ const StudyroomMTN: React.FC<StudyroomMTNProps> = ({
   setClickedRoomId,
 }) => {
   const navigate = useNavigate(); // 페이지 이동을 위한 useNavigate 훅
+  const { userId } = useLoginedUserStore();
   const enterStudyRoom = () => {
-    if (needPassword) {
+    if (userId == 0) {
+      alert("로그인이 필요한 서비스입니다!");
+    } else if (needPassword) {
       setClickedRoomId(id);
       openModal();
     } else
@@ -37,7 +41,10 @@ const StudyroomMTN: React.FC<StudyroomMTNProps> = ({
   };
 
   return (
-    <div className="relative w-[187px] h-[171px] cursor-pointer" onClick={enterStudyRoom}>
+    <div
+      className="relative w-[187px] h-[171px] cursor-pointer"
+      onClick={enterStudyRoom}
+    >
       <div
         className={`w-full h-full rounded-lg bg-cover bg-center bg-blend-darken bg-black bg-opacity-50 ${
           isSelected ? "blur-[1.5px] opacity-70" : ""
