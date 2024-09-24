@@ -65,6 +65,7 @@ const StudyroomContainer: React.FC<StudyroomContainerProps> = ({
     checkPermissions();
     fetchUserTime();
     return () => {
+      exitStudyRoom();
       cleanupStream();
       leaveRoom();
     };

@@ -96,6 +96,7 @@ const RecruitStudyDetailContainer: React.FC = () => {
             id: studyData.roomResponse.id,
             title: studyData.roomResponse.title,
             camEnabled: studyData.roomResponse.camEnabled,
+            needPassword: studyData.roomResponse.needPassword,
             memberNumber: studyData.roomResponse.memberNumber,
             maxUsers: studyData.roomResponse.maxUsers,
             thumbnail: studyData.roomResponse.thumbnail,
@@ -196,12 +197,6 @@ const RecruitStudyDetailContainer: React.FC = () => {
     setShowToast(false);
   };
 
-  const handleNavigateToRoom = () => {
-    if (isRecruited) {
-      navigate(`/wait/${studyRoom.id}`);
-    }
-  };
-
   const handleEditPost = () => {
     navigate(`/recruit/update/${studyId}`);
   };
@@ -272,11 +267,7 @@ const RecruitStudyDetailContainer: React.FC = () => {
 
       <StudyContent content={study.content} />
 
-      <StudyRoomLink
-        studyRoom={studyRoom}
-        isRecruited={isRecruited}
-        handleNavigateToRoom={handleNavigateToRoom}
-      />
+      <StudyRoomLink studyRoom={studyRoom} isRecruited={isRecruited} />
 
       {isRecruited && (
         <CommentSection
