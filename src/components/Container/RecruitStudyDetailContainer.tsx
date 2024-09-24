@@ -260,7 +260,7 @@ const RecruitStudyDetailContainer: React.FC = () => {
   const isAuthor = study.userResponse.id === currentUser?.id;
 
   return (
-    <div className="container mx-auto mt-8 p-4 mt-[100px] w-[1000px] h-full">
+    <div className="container p-4 mt-[100px] w-[1000px] h-full">
       <StudyHeader
         study={study}
         isRecruited={isRecruited}
