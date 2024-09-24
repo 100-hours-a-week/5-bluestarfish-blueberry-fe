@@ -41,8 +41,6 @@ function getErrorMessage(error: unknown): string {
 }
 
 const MyInfoContainer: React.FC = () => {
-  const MAX_FILE_SIZE = 2 * 1024 * 1024; // 10MB
-
   const [activeTab, setActiveTab] = useState<number>(0);
   const [currentUser, setCurrentUser] = useState<any | null>(null);
   const [isEditing, setIsEditing] = useState(false);
