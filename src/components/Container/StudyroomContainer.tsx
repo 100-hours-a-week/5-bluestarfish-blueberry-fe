@@ -8,10 +8,15 @@ import { useRoomStore } from "../../store/roomStore";
 import axiosInstance from "../../utils/axiosInstance";
 import { checkMediaPermissions } from "../../utils/checkMediaPermission";
 import { useTimeStore } from "../../store/timeStore";
+import { useFriendStore } from "../../store/friendStore";
 
-interface StudyroomContainerProps {}
+interface StudyroomContainerProps {
+  stopTimer: () => void;
+}
 
-const StudyroomContainer: React.FC<StudyroomContainerProps> = () => {
+const StudyroomContainer: React.FC<StudyroomContainerProps> = ({
+  stopTimer,
+}) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { roomId } = useParams<{ roomId: string }>();
   const navigate = useNavigate();
@@ -33,6 +38,7 @@ const StudyroomContainer: React.FC<StudyroomContainerProps> = () => {
     setCurUsers,
     setCamEnabled,
   } = useRoomStore();
+  const { friends, setFriends } = useFriendStore();
   const [cameraEnabled, setCameraEnabled] = useState<boolean>(false);
   const [microphoneEnabled, setMicrophoneEnabled] = useState<boolean>(false);
   const [permissionsChecked, setPermissionsChecked] = useState<boolean>(false);
@@ -49,20 +55,21 @@ const StudyroomContainer: React.FC<StudyroomContainerProps> = () => {
   const [exited, setExited] = useState(false);
 
   useEffect(() => {
-    usersRef.current = users; // users 상태가 변경될 때마다 usersRef 업데이트
-  }, [users]);
+    console.log(friends);
+  }, [friends]);
 
   useEffect(() => {
+    if (userId == 0) return;
     fetchStudyRoom();
+    fetchFriendsData();
     checkPermissions();
     fetchUserTime();
     return () => {
-      cleanupStream();
-      leaveRoom();
       exitStudyRoom();
       cleanupStream();
+      leaveRoom();
     };
-  }, []);
+  }, [userId]);
 
   useEffect(() => {
     const handleUnload = () => {
@@ -208,6 +215,7 @@ const StudyroomContainer: React.FC<StudyroomContainerProps> = () => {
         }
       );
       if (response.status === 204) {
+        stopTimer();
         navigate(`/`);
       }
     } catch (error: any) {
@@ -241,6 +249,49 @@ const StudyroomContainer: React.FC<StudyroomContainerProps> = () => {
         setMaxUsers(response.data.data.maxUsers);
         setCamEnabled(response.data.data.camEnabled);
         setUsers([]);
+      }
+    } catch (error: any) {
+      if (error.response) {
+        if (error.response.status === 404) {
+          console.error(
+            "404 오류: ",
+            error.response.data.message || "스터디룸을 찾을 수 없습니다."
+          );
+        } else {
+          console.error(
+            `오류 발생 (${error.response.status}):`,
+            error.response.data.message || "서버 오류가 발생했습니다."
+          );
+        }
+      } else {
+        console.error("스터디룸 정보를 가져오는 중 오류 발생:", error.message);
+      }
+    } finally {
+      setIsLoading(false); // 로딩 종료
+    }
+  };
+
+  const fetchFriendsData = async () => {
+    if (isLoading) return;
+    try {
+      setIsLoading(true);
+      const response = await axiosInstance.get(
+        `${process.env.REACT_APP_API_URL}/api/v1/users/friends/${userId}`
+      );
+      if (response.status === 200) {
+        if (Array.isArray(response.data.data)) {
+          // 응답 데이터를 Friend 타입으로 변환
+          const newFriends = response.data.data.map((user: any) => ({
+            id: user.id,
+            nickname: user.nickname,
+            profileImage: user.profileImage,
+          }));
+          // 변환된 데이터를 상태에 저장
+          setFriends(newFriends);
+        } else {
+          // 유효하지 않은 경우 빈 배열을 설정
+          setFriends([]);
+        }
       }
     } catch (error: any) {
       if (error.response) {
@@ -339,6 +390,7 @@ const StudyroomContainer: React.FC<StudyroomContainerProps> = () => {
   };
 
   const handleExitButton = async () => {
+    await exitStudyRoom();
     navigate("/");
   };
 
