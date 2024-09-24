@@ -9,6 +9,7 @@ import ToastNotification from "../common/ToastNotification";
 import SubmitButton from "../common/SubmitButton";
 import axiosInstance from "../../utils/axiosInstance";
 import DefaultThumbnail from "../../images/study-thumbnail-3.png";
+import { useLoginedUserStore } from "../../store/store";
 
 const RecruitStudyUpdateContainer: React.FC = () => {
   const { id } = useParams<{ id: string }>(); // URL에서 게시글 ID를 가져옴
@@ -25,14 +26,19 @@ const RecruitStudyUpdateContainer: React.FC = () => {
   const [tab1Title, setTab1Title] = useState("");
   const [tab1Content, setTab1Content] = useState("");
 
-  const [categoryHelperText, setCategoryHelperText] = useState<string>("* 헬퍼텍스트");
-  const [titleHelperText, setTitleHelperText] = useState<string>("* 헬퍼텍스트");
-  const [contentHelperText, setContentHelperText] = useState<string>("* 헬퍼텍스트");
-  const [studyHelperText, setStudyHelperText] = useState<string>("* 헬퍼텍스트");
+  const [categoryHelperText, setCategoryHelperText] =
+    useState<string>("* 헬퍼텍스트");
+  const [titleHelperText, setTitleHelperText] =
+    useState<string>("* 헬퍼텍스트");
+  const [contentHelperText, setContentHelperText] =
+    useState<string>("* 헬퍼텍스트");
+  const [studyHelperText, setStudyHelperText] =
+    useState<string>("* 헬퍼텍스트");
 
   const [isFormValid, setIsFormValid] = useState<boolean>(false);
   const [showToast, setShowToast] = useState(false);
   const [activeTab, setActiveTab] = useState<number>(0); // 현재 활성화된 탭
+  const { userId } = useLoginedUserStore();
 
   // 카테고리 데이터
   const categories = [
@@ -55,12 +61,16 @@ const RecruitStudyUpdateContainer: React.FC = () => {
           setTab0Title(postData.title);
           setTab0Content(postData.content);
           setTab0SelectedStudy(postData.roomResponse); // 스터디룸 객체 저장
-          setTab0SelectedCategory(postData.roomResponse.camEnabled ? "캠켜공" : "캠끄공");
+          setTab0SelectedCategory(
+            postData.roomResponse.postCamEnabled ? "캠켜공" : "캠끄공"
+          );
         } else if (postData.type === "FINDING_ROOMS") {
           setActiveTab(1);
           setTab1Title(postData.title);
           setTab1Content(postData.content);
-          setTab1SelectedCategory(postData.roomResponse.camEnabled ? "캠켜공" : "캠끄공");
+          setTab1SelectedCategory(
+            postData.roomResponse.postCamEnabled ? "캠켜공" : "캠끄공"
+          );
         }
       } catch (error) {
         console.error("게시글을 불러오지 못했습니다:", error);
@@ -112,14 +122,16 @@ const RecruitStudyUpdateContainer: React.FC = () => {
   const handleSubmit = async () => {
     if (isFormValid) {
       const requestBody = {
-        userId: 1, // 실제로는 로그인한 사용자의 ID를 사용
+        userId: userId,
         roomId: activeTab === 0 ? tab0SelectedStudy?.id : null, // 스터디룸 ID 전송
         title: activeTab === 0 ? tab0Title : tab1Title,
         content: activeTab === 0 ? tab0Content : tab1Content,
         type: activeTab === 0 ? "FINDING_MEMBERS" : "FINDING_ROOMS",
         isRecruited: true,
         postCamEnabled:
-          activeTab === 0 ? tab0SelectedCategory === "캠켜공" : tab1SelectedCategory === "캠켜공",
+          activeTab === 0
+            ? tab0SelectedCategory === "캠켜공"
+            : tab1SelectedCategory === "캠켜공",
       };
 
       try {
@@ -130,7 +142,10 @@ const RecruitStudyUpdateContainer: React.FC = () => {
         if (response.status === 204 || response.status === 200) {
           handleShowToast();
         } else {
-          console.error("게시글 수정 실패: 예상치 못한 응답 상태", response.status);
+          console.error(
+            "게시글 수정 실패: 예상치 못한 응답 상태",
+            response.status
+          );
         }
       } catch (error) {
         console.error("게시글 수정 실패:", error);
@@ -151,8 +166,14 @@ const RecruitStudyUpdateContainer: React.FC = () => {
   };
 
   const tabData = [
-    { name: '스터디 룸 멤버 찾기', icon: `${process.env.PUBLIC_URL}/assets/images/member-icon-blue.png` },
-    { name: '스터디 룸 찾기', icon: `${process.env.PUBLIC_URL}/assets/images/room-icon-blue.png` },
+    {
+      name: "스터디 룸 멤버 찾기",
+      icon: `${process.env.PUBLIC_URL}/assets/images/member-icon-blue.png`,
+    },
+    {
+      name: "스터디 룸 찾기",
+      icon: `${process.env.PUBLIC_URL}/assets/images/room-icon-blue.png`,
+    },
   ];
 
   return (
@@ -160,7 +181,12 @@ const RecruitStudyUpdateContainer: React.FC = () => {
       <h1 className="text-2xl font-bold mb-8 text-black">✍🏻 게시글 수정 ✍🏻</h1>
       <div className="w-full max-w-3xl">
         {/* 탭 바 컴포넌트 */}
-        <TabBar activeIndex={activeTab} setActiveIndex={setActiveTab} tabs={tabData} pageType="post" />
+        <TabBar
+          activeIndex={activeTab}
+          setActiveIndex={setActiveTab}
+          tabs={tabData}
+          pageType="post"
+        />
 
         {/* 활성화된 탭에 따라 다른 폼을 렌더링 */}
         {activeTab === 0 ? (
@@ -173,7 +199,9 @@ const RecruitStudyUpdateContainer: React.FC = () => {
               titleHelperText={titleHelperText}
               contentHelperText={contentHelperText}
               categories={categories}
-              handleCategorySelect={(category) => setTab0SelectedCategory(category)}
+              handleCategorySelect={(category) =>
+                setTab0SelectedCategory(category)
+              }
               handleTitleChange={(e) => setTab0Title(e.target.value)}
               handleContentChange={(e) => setTab0Content(e.target.value)}
             />
@@ -207,7 +235,9 @@ const RecruitStudyUpdateContainer: React.FC = () => {
             titleHelperText={titleHelperText}
             contentHelperText={contentHelperText}
             categories={categories}
-            handleCategorySelect={(category) => setTab1SelectedCategory(category)}
+            handleCategorySelect={(category) =>
+              setTab1SelectedCategory(category)
+            }
             handleTitleChange={(e) => setTab1Title(e.target.value)}
             handleContentChange={(e) => setTab1Content(e.target.value)}
           />
@@ -220,7 +250,11 @@ const RecruitStudyUpdateContainer: React.FC = () => {
         />
 
         {showToast && (
-          <ToastNotification message="수정 완료!" isSuccess={true} onClose={handleCloseToast} />
+          <ToastNotification
+            message="수정 완료!"
+            isSuccess={true}
+            onClose={handleCloseToast}
+          />
         )}
       </div>
     </div>

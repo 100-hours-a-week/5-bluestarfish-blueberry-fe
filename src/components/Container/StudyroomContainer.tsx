@@ -321,7 +321,6 @@ const StudyroomContainer: React.FC<StudyroomContainerProps> = ({
       );
       if (response.status === 200) {
         setTime(() => response.data.data.time);
-        console.log("TIme is", response.data.data);
       }
     } catch (error: any) {
       if (error.response) {
