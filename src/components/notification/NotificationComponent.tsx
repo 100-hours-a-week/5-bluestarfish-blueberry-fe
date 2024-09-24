@@ -66,10 +66,10 @@ const NotificationComponent: React.FC = () => {
                   // 발신자와 수신자 모두 알림 처리
                   if (data.sender.id === currentUser.id) {
                     // 발신자일 경우: 친구가 수락했음을 알림
-                    setAcceptFriendMessage(`${data.receiver.nickname}님과 친구가 되었습니다!`);
+                    setAcceptFriendMessage(`${data.receiver.nickname}님과 친구가 되었어요!`);
                   } else {
                     // 수신자일 경우: 수락한 알림
-                    setAcceptFriendMessage(`${data.sender.nickname}님과 친구가 되었습니다!`);
+                    setAcceptFriendMessage(`${data.sender.nickname}님과 친구가 되었어요!`);
                   }
                   setShowAcceptFriendNotiToast(true);
                 }
