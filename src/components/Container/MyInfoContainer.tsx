@@ -80,7 +80,7 @@ const MyInfoContainer: React.FC = () => {
     setProfileImage: setUserProfileImage,
   } = useLoginedUserStore();
 
-  const defaultProfileImage = `${process.env.PUBLIC_URL}/assets/images/gunssakdo.png`; // 기본 프로필 이미지 URL
+  const defaultProfileImage = `${process.env.PUBLIC_URL}/assets/images/profile-default-image.png`; // 기본 프로필 이미지 URL
   const navigate = useNavigate();
   const { setTime, time } = useTimeStore();
 
