@@ -83,6 +83,13 @@ const MyInfoContainer: React.FC = () => {
   const defaultProfileImage = `${process.env.PUBLIC_URL}/assets/images/profile-default-image.png`; // 기본 프로필 이미지 URL
   const navigate = useNavigate();
   const { setTime, time } = useTimeStore();
+  const [isOAuth, setIsOAuth] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (currentUser && currentUser.email) {
+      setIsOAuth(currentUser.email.split("@").length >= 3);
+    }
+  }, [currentUser]);
 
   const fetchUserTime = async () => {
     try {
@@ -91,7 +98,6 @@ const MyInfoContainer: React.FC = () => {
       );
       if (response.status === 200) {
         setTime(() => response.data.data.time);
-        console.log("TIme is", response.data.data);
       }
     } catch (error: any) {
       if (error.response) {
@@ -166,8 +172,7 @@ const MyInfoContainer: React.FC = () => {
   useEffect(() => {
     const isFormValidNow =
       isValidNickname &&
-      isValidPassword &&
-      isPasswordMatch &&
+      (isOAuth || (isValidPassword && isPasswordMatch)) &&
       isValidProfileImage;
     setIsFormValid(isFormValidNow); // 유효성 검사 통과 여부 업데이트
   }, [isValidNickname, isValidPassword, isPasswordMatch, isValidProfileImage]); // 의존성 배열에 유효성 검사 상태 추가
@@ -409,7 +414,7 @@ const MyInfoContainer: React.FC = () => {
                   </span>
                 </div>
                 <span className="text-black underline">
-                  {currentUser.email.split("@").length - 1 > 1
+                  {isOAuth
                     ? currentUser.email.slice(
                         0,
                         currentUser.email.lastIndexOf("@")
@@ -436,15 +441,17 @@ const MyInfoContainer: React.FC = () => {
             )}
 
             {/* 비밀번호 섹션 */}
-            <PasswordSection
-              password={password}
-              confirmPassword={confirmPassword}
-              handlePasswordChange={handlePasswordChange}
-              handleConfirmPasswordChange={handleConfirmPasswordChange}
-              passwordError={passwordError}
-              confirmPasswordError={confirmPasswordError}
-              isEditing={isEditing}
-            />
+            {!isOAuth && (
+              <PasswordSection
+                password={password}
+                confirmPassword={confirmPassword}
+                handlePasswordChange={handlePasswordChange}
+                handleConfirmPasswordChange={handleConfirmPasswordChange}
+                passwordError={passwordError}
+                confirmPasswordError={confirmPasswordError}
+                isEditing={isEditing}
+              />
+            )}
 
             {/* 버튼 섹션 */}
             <div className="flex space-x-4">
