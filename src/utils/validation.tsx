@@ -173,13 +173,17 @@ export const validatePassword = (pw: string): string => {
   return "통과";
 };
 
-// 닉네임 유효성 검사
+// 닉네임 유효성 검사 (특수 공백 및 일반 공백 허용하지 않음)
 export const validateNickname = (nickname: string): string => {
+  // 특수 공백 문자를 포함한 유니코드 공백 감지 (일반 공백과 유니코드 공백 모두 포함)
+  const specialWhitespaceRegex = /[\u00A0\u2000-\u200D\u202F\u205F\u3000\u2800]/; // 여러 공백 문자의 유니코드 범위
+
   if (nickname.length === 0) {
     return "닉네임을 입력해주세요.";
   }
 
-  if (/\s/.test(nickname)) {
+  // 일반 공백 또는 특수 공백이 포함된 경우
+  if (/\s/.test(nickname) || specialWhitespaceRegex.test(nickname)) {
     return "닉네임에 공백이 포함될 수 없습니다.";
   }
 
@@ -189,6 +193,7 @@ export const validateNickname = (nickname: string): string => {
 
   return "사용 가능한 닉네임입니다.";
 };
+
 
 // 비밀번호 일치 여부 검사
 export const validatePasswordMatch = (
