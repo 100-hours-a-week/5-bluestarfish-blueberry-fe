@@ -55,10 +55,6 @@ const StudyroomContainer: React.FC<StudyroomContainerProps> = ({
   const [exited, setExited] = useState(false);
 
   useEffect(() => {
-    console.log(friends);
-  }, [friends]);
-
-  useEffect(() => {
     if (userId == 0) return;
     fetchStudyRoom();
     fetchFriendsData();
