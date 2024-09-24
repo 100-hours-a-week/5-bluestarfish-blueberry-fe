@@ -42,11 +42,11 @@ const StudyroomTNContainer: React.FC<StudyroomTNContainerProps> = ({
     }
   }, [isPasswordModalOpen]);
 
-  const closeQnAModal = () => {
+  const closePasswordModal = () => {
     setPasswordModalOpen(false);
   };
 
-  const openQnAModal = () => {
+  const openPasswordModal = () => {
     setPasswordModalOpen(true);
   };
 
@@ -177,7 +177,7 @@ const StudyroomTNContainer: React.FC<StudyroomTNContainerProps> = ({
                   `${process.env.PUBLIC_URL}/assets/images/study-thumbnail-1.png`
                 }
                 isSelected={false}
-                openModal={openQnAModal}
+                openModal={openPasswordModal}
                 setClickedRoomId={setClickedRoomId}
               />
             </div>
@@ -196,7 +196,7 @@ const StudyroomTNContainer: React.FC<StudyroomTNContainerProps> = ({
           {isLoading ? "Loading..." : "Scroll to load more"}
         </div>
       )}
-      {!isStudyRoomPage && <StudyroomFooter />}{" "}
+      {!isStudyRoomPage && <StudyroomFooter />}
       {isPasswordModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
           {/* 모달 배경 */}
@@ -205,7 +205,7 @@ const StudyroomTNContainer: React.FC<StudyroomTNContainerProps> = ({
           <div className="relative z-50">
             <PasswordModal
               roomId={clickedRoomId}
-              closeModal={closeQnAModal}
+              closeModal={closePasswordModal}
               setShowToast={setShowToast}
             />
           </div>
