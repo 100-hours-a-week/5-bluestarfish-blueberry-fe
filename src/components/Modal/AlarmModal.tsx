@@ -14,6 +14,7 @@ const AlarmModal: React.FC<AlarmModalProps> = ({ closeModal }) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [showAcceptFriendNotiToast, setShowAcceptFriendNotiToast] = useState(false);
   const [showDeclineFriendNotiToast, setShowDeclineFriendNotiToast] = useState(false);
+  const [showAcceptInviteNotiToast, setShowAcceptInviteNotiToast] = useState(false);
   const [acceptFriendMessage, setAcceptFriendMessage] = useState("");
   const [declineFriendMessage, setDeclineFriendMessage] = useState("");
   const navigate = useNavigate(); // useNavigate 사용
@@ -21,10 +22,10 @@ const AlarmModal: React.FC<AlarmModalProps> = ({ closeModal }) => {
   const fetchNotifications = async () => {
     try {
       const response = await axiosInstance.get(`${process.env.REACT_APP_API_URL}/api/v1/users/${userId}/notifications`);
-      // FRIEND 타입이면서 ACCEPTED, DECLINED 상태인 알림을 숨기고 나머지를 표시
+      // FRIEND 또는 ROOM 타입이면서 ACCEPTED, DECLINED 상태인 알림을 숨기고 나머지를 표시
       const filteredNotifications = response.data.data.filter(
         (notification: any) =>
-          !((notification.notiType === "FRIEND" && notification.notiStatus === "ACCEPTED") || (notification.notiType === "FRIEND" && notification.notiStatus === "DECLINED"))
+          !((notification.notiType === "FRIEND" && notification.notiStatus === "ACCEPTED") || (notification.notiType === "FRIEND" && notification.notiStatus === "DECLINED") || (notification.notiType === "ROOM" && notification.notiStatus === "ACCEPTED") || (notification.notiType === "ROOM" && notification.notiStatus === "DECLINED"))
       );
       setNotifications(filteredNotifications.reverse()); // 최신 알림이 위로 오도록 정렬
     } catch (error) {
@@ -50,6 +51,10 @@ const AlarmModal: React.FC<AlarmModalProps> = ({ closeModal }) => {
 
   const handleCloseDeclineFriendNotiToast = () => {
     setShowDeclineFriendNotiToast(false);
+  };
+
+  const handleCloseAcceptInviteNotiToast = () => {
+    setShowAcceptInviteNotiToast(false);
   };
 
   // ESC 키로 모달 닫기 기능
@@ -80,21 +85,21 @@ const AlarmModal: React.FC<AlarmModalProps> = ({ closeModal }) => {
         const response = await axiosInstance.get(
           `${process.env.REACT_APP_API_URL}/api/v1/users/${userId}/notifications`
         );
-  
+
         const notifications = response.data.data;
-  
+
         // 2. notiId에 해당하는 알림 찾기
         const notification = notifications.find(
           (noti: any) => noti.id === notiId && noti.notiType === "FRIEND" && noti.notiStatus === "PENDING"
         );
-  
+
         if (!notification) {
           console.error("해당 알림을 찾을 수 없습니다.");
           return;
         }
-  
+
         const senderId = notification.sender.id; // 친구 요청을 보낸 사용자 ID
-  
+
         // 3. 친구 요청을 수락하는 API 요청 (수신자의 알림 반영)
         const requestBody = {
           receiverId: senderId, // 요청을 보낸 사용자를 친구로 추가
@@ -103,10 +108,10 @@ const AlarmModal: React.FC<AlarmModalProps> = ({ closeModal }) => {
           commentId: null,
           roomId: null
         };
-  
+
         // 친구 요청 수락을 PATCH 요청으로 전송 (수신자의 알림 반영)
         await axiosInstance.patch(`${process.env.REACT_APP_API_URL}/api/v1/users/${userId}/notifications/${notiId}`, requestBody);
-  
+
         // 4. 발신자에게도 ACCEPTED 알림을 반영
         const senderNotificationBody = {
           receiverId: userId, // 발신자에게 수신자의 정보를 전송
@@ -115,22 +120,22 @@ const AlarmModal: React.FC<AlarmModalProps> = ({ closeModal }) => {
           commentId: null,
           roomId: null
         };
-  
+
         // 발신자에게 수락 알림 POST 전송
         await axiosInstance.patch(`${process.env.REACT_APP_API_URL}/api/v1/users/${senderId}/notifications/${notiId}`, senderNotificationBody);
-  
+
         // 5. 알림 리스트에서 해당 알림을 제거하여 화면에서 갱신
         fetchNotifications();
-  
+
         // 6. 친구가 되었다는 메시지를 표시 (수신자 측)
         // setAcceptFriendMessage(notification.sender.nickname + '님과 친구가 되었어요!');
         // setShowAcceptFriendNotiToast(true);
-  
+
       }
     } catch (error) {
       console.error('친구 요청 수락 실패:', error);
     }
-  };  
+  };
 
   const handleDeclineFriendRequest = async (notiId: number) => {
     try {
@@ -156,7 +161,7 @@ const AlarmModal: React.FC<AlarmModalProps> = ({ closeModal }) => {
 
         // 3. 친구 요청을 거절하는 API 요청
         const requestBody = {
-          receiverId: senderId, // 요청을 보낸 사용자를 친구로 추가
+          receiverId: senderId,
           notiType: "FRIEND",
           notiStatus: "DECLINED",
           commentId: null,
@@ -177,6 +182,52 @@ const AlarmModal: React.FC<AlarmModalProps> = ({ closeModal }) => {
       console.error('친구 요청 거절 실패:', error);
     }
   };
+
+  const handleAcceptInviteRequest = async (notiId: number, roomId: number) => {
+    try {
+      if (notiId !== null && roomId !== null) {
+        // 1. 현재 사용자의 알림 리스트를 조회
+        const response = await axiosInstance.get(
+          `${process.env.REACT_APP_API_URL}/api/v1/users/${userId}/notifications`
+        );
+
+        const notifications = response.data.data;
+
+        // 2. notiId에 해당하는 알림 찾기
+        const notification = notifications.find(
+          (noti: any) => noti.id === notiId && noti.notiType === "ROOM" && noti.notiStatus === "PENDING"
+        );
+
+        if (!notification) {
+          console.error("해당 초대 알림을 찾을 수 없습니다.");
+          return;
+        }
+
+        // 3. 초대 수락 처리 (ACCEPTED로 상태 변경)
+        const requestBody = {
+          receiverId: notification.sender.id,  // 초대를 보낸 사용자
+          notiType: "ROOM",
+          notiStatus: "ACCEPTED",
+          commentId: null,
+          roomId: roomId,  // 초대받은 스터디룸 ID
+        };
+
+        // 초대 수락을 PATCH 요청으로 전송
+        await axiosInstance.patch(`${process.env.REACT_APP_API_URL}/api/v1/users/${userId}/notifications/${notiId}`, requestBody);
+
+        fetchNotifications();
+
+        // 4. 해당 스터디룸 대기 페이지로 이동
+        navigate(`/wait/${roomId}`, {
+          state: { authorized: true }
+        });
+
+      }
+    } catch (error) {
+      console.error("스터디룸 초대 수락 실패:", error);
+    }
+  };
+
 
 
   return (
@@ -220,7 +271,7 @@ const AlarmModal: React.FC<AlarmModalProps> = ({ closeModal }) => {
                       className="h-[23px] rounded-full cursor-pointer mr-2"
                     />
                     <div className="flex flex-col">
-                      <div className="font-semibold text-[13px]">{notification.sender.nickname}</div>
+                      <div className="font-semibold text-[13px]">{notification.sender.nickname}님의 멘션</div>
                       <div className="text-[12px]">{notification.comment.content}</div>
                     </div>
                   </div>
@@ -259,6 +310,25 @@ const AlarmModal: React.FC<AlarmModalProps> = ({ closeModal }) => {
                     </div>
                   </>
                 )}
+
+                {notification.notiType === 'ROOM' && (
+                  <>
+                    {/* 스터디룸 초대 알림 */}
+                    <div className="flex items-center">
+                      <img
+                        src={`${process.env.PUBLIC_URL}/assets/images/noti-invite.png`}
+                        alt="프로필 이미지"
+                        aria-label="프로필 이미지"
+                        className="h-[23px] rounded-full cursor-pointer mr-2"
+                      />
+                      <div className="flex flex-col">
+                        <div className="font-semibold text-[13px]">스터디룸 초대</div>
+                        <div className="text-[12px]">{notification.sender.nickname}님이 {notification.room.title}에서 기다리고 있어요!</div>
+                      </div>
+                    </div>
+                  </>
+                )}
+
               </div>
             </div>
           ))
@@ -270,6 +340,9 @@ const AlarmModal: React.FC<AlarmModalProps> = ({ closeModal }) => {
       {showDeclineFriendNotiToast && (
         <AlarmToastNotification sender="발신자" message={declineFriendMessage} notiType="FRIEND" onClose={handleCloseDeclineFriendNotiToast} />
       )}
+      {/* {showAcceptInviteNotiToast && (
+        <AlarmToastNotification sender="발신자" message={acceptInviteMessage} notiType="ROOM" onClose={handleCloseAcceptInviteNotiToast} />
+      )} */}
     </div>
   );
 };

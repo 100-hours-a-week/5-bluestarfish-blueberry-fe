@@ -47,9 +47,8 @@ const AlarmToastNotification: React.FC<ToastNotificationProps> = ({ sender, mess
   return (
     <div className="fixed top-4 right-4 bg-white shadow-lg rounded-lg flex items-center p-4 w-72 z-[200]">
       <div className="flex items-center text-gray-800">
-        {/* 멘션 아이콘 */}
         <div className="flex items-center justify-start mr-3">
-          {notiType === "MENTION" && (
+          {notiType === "MENTION" && ( /* 멘션 알림 */
             <>
               <img src={`${process.env.PUBLIC_URL}/assets/images/noti-mention.png`} alt="Mention" className="w-7 h-7 mr-2" />
               {/* 발신자와 댓글 내용을 가로로 정렬 */}
@@ -59,10 +58,19 @@ const AlarmToastNotification: React.FC<ToastNotificationProps> = ({ sender, mess
               </div>
             </>
           )}
-          {notiType === "FRIEND" && (
+          {notiType === "FRIEND" && ( /* 친구 추가 알림 */
             <>
               <img src={`${process.env.PUBLIC_URL}/assets/images/noti-friend.png`} alt="Friend" className="w-7 h-7 mr-2" />
               <div className="text-[12px]">{message}</div>
+            </>
+          )}
+          {notiType === "ROOM" && ( /* 스터디룸 초대 알림 */
+            <>
+              <img src={`${process.env.PUBLIC_URL}/assets/images/noti-invite.png`} alt="Invite Studyroom" className="w-7 h-7 mr-2" />
+              <div className="flex flex-col">
+                <div className="font-semibold text-[13px] whitespace-nowrap">{sender}</div> {/* 닉네임이 가로로 표시됨 */}
+                <div className="text-[12px]">{message}</div>
+              </div>
             </>
           )}
         </div>
