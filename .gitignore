@@ -27,4 +27,6 @@ yarn-error.log*
 # Ignore .env and any files starting with .env
 .env
 .env.*
-# git rm --cached .env.development
+
+# git rm --cached .env.development 로 추적 대상에서 제외
+
