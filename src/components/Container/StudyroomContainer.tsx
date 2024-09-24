@@ -31,12 +31,12 @@ const StudyroomContainer: React.FC<StudyroomContainerProps> = ({
   const { userId, nickname } = useLoginedUserStore();
   const { users, setUsers, addUser, updateUser, removeUser } = useUserStore();
   const {
-    curUsers,
+    roomCamEnabled,
     setRoomId,
     setTitle,
     setMaxUsers,
     setCurUsers,
-    setCamEnabled,
+    setRoomCamEnabled,
   } = useRoomStore();
   const { friends, setFriends } = useFriendStore();
   const [cameraEnabled, setCameraEnabled] = useState<boolean>(false);
@@ -243,7 +243,7 @@ const StudyroomContainer: React.FC<StudyroomContainerProps> = ({
         setRoomId(response.data.data.id);
         setTitle(response.data.data.title);
         setMaxUsers(response.data.data.maxUsers);
-        setCamEnabled(response.data.data.camEnabled);
+        setRoomCamEnabled(response.data.data.camEnabled);
         setUsers([]);
       }
     } catch (error: any) {
@@ -360,6 +360,14 @@ const StudyroomContainer: React.FC<StudyroomContainerProps> = ({
       updateUser(userId, { micEnabled: micEnabled });
     }
   }, [micEnabled, isRegister]);
+
+  useEffect(() => {
+    if (!roomCamEnabled) {
+      if (camEnabled) {
+        toggleCam();
+      }
+    }
+  }, [roomCamEnabled]);
 
   const clickCamIcon = () => {
     if (localStreamRef.current) {
@@ -684,7 +692,7 @@ const StudyroomContainer: React.FC<StudyroomContainerProps> = ({
         </div>
       </div>
       <div className="mt-10 flex flex-row gap-5 justify-center items-center">
-        <button onClick={clickCamIcon}>
+        <button onClick={clickCamIcon} disabled={!roomCamEnabled}>
           <img
             src={
               camEnabled

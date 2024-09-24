@@ -6,12 +6,12 @@ interface RoomStore {
   title: string;
   maxUsers: number;
   curUsers: number;
-  camEnabled: boolean;
+  roomCamEnabled: boolean;
   setRoomId: (roomId: number) => void;
   setTitle: (title: string) => void;
   setMaxUsers: (maxUsers: number) => void;
   setCurUsers: (maxUsers: number) => void;
-  setCamEnabled: (camEnabled: boolean) => void;
+  setRoomCamEnabled: (roomCamEnabled: boolean) => void;
 }
 
 // Zustand 스토어 생성
@@ -20,12 +20,13 @@ export const useRoomStore = create<RoomStore>((set) => ({
   title: "", // 초기 방 제목
   maxUsers: 0, // 초기 최대 인원 수
   curUsers: 0,
-  camEnabled: true, // 기본 카메라 상태는 활성화 (true)
+  roomCamEnabled: true, // 기본 카메라 상태는 활성화 (true)
 
   // 개별 상태 업데이트 메서드
   setRoomId: (roomId: number) => set(() => ({ roomId })),
   setTitle: (title: string) => set(() => ({ title })),
   setMaxUsers: (maxUsers: number) => set(() => ({ maxUsers })),
   setCurUsers: (curUsers: number) => set(() => ({ curUsers })),
-  setCamEnabled: (camEnabled: boolean) => set(() => ({ camEnabled })),
+  setRoomCamEnabled: (roomCamEnabled: boolean) =>
+    set(() => ({ roomCamEnabled })),
 }));
