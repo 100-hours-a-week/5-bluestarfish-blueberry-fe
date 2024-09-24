@@ -143,7 +143,11 @@ const SignupForm: React.FC = () => {
         setIsValidRequestEmail(1);
       }
     } catch (error: any) {
-      if (error.response) {
+      if(error.response.status === 409) { // 이메일 중복
+        setIsValidRequestEmail(4);
+        setIsPossibleRequestEmail(true);
+      }
+      else if (error.response) {
         console.log(error.response.message);
         setIsValidRequestEmail(2);
         setIsPossibleRequestEmail(true);
@@ -301,11 +305,25 @@ const SignupForm: React.FC = () => {
       );
     } else if (isValidRequestEmail === 2) {
       return (
-        <img
-          src={`${process.env.PUBLIC_URL}/assets/images/email-request-fail.png`}
-          alt="request-fail"
-          className="ml-[10px] mt-[8px] h-[12px] w-[14px] mb-[2px]"
-        />
+        <div className="flex items-center">
+          <img
+            src={`${process.env.PUBLIC_URL}/assets/images/email-request-fail.png`}
+            alt="request-fail"
+            className="ml-[10px] mt-[8px] h-[12px] w-[14px] mb-[2px]"
+          />
+          <p className="text-red-500 text-xs italic">이메일 인증 요청이 실패했습니다. 잠시후 다시 시도해주세요.</p>
+        </div>
+      );
+    } else if (isValidRequestEmail === 4) {
+      return (
+        <div className="flex items-center">
+          <img
+            src={`${process.env.PUBLIC_URL}/assets/images/email-request-fail.png`}
+            alt="request-fail"
+            className="ml-[10px] mt-[8px] h-[12px] w-[14px] mb-[2px]"
+          />
+          <p className="text-red-500 text-xs italic">이미 사용중인 이메일입니다. 다른 이메일을 입력해주세요.</p>
+        </div>
       );
     } else if (isValidRequestEmail === 3) {
       return (
@@ -374,11 +392,10 @@ const SignupForm: React.FC = () => {
           </p>
         </div>
         <button
-          className={`w-full h-[40px] border-2 rounded-full text-[#4659AA] text-[16px] font-bold  ${
-            isPossibleRequestEmail === true
+          className={`w-full h-[40px] border-2 rounded-full text-[#4659AA] text-[16px] font-bold  ${isPossibleRequestEmail === true
               ? "bg-[#4659AA] text-white hover:bg-[#1A349D] cursor-pointer"
               : "bg-gray-400 text-gray-200 cursor-not-allowed"
-          }`}
+            }`}
           type="button"
           onClick={handleEmailVerificationButtonClick}
           disabled={isPossibleRequestEmail !== true}
@@ -390,7 +407,7 @@ const SignupForm: React.FC = () => {
         {/* 인증코드 입력 필드 */}
         <div
           className="relative mb-6 mt-6"
-          // style={{ display: "none" }}
+        // style={{ display: "none" }}
         >
           <input
             type="text"
@@ -523,11 +540,10 @@ const SignupForm: React.FC = () => {
         {/* 회원가입 버튼 */}
         <div className="flex justify-center">
           <button
-            className={`relative h-[40px] ${
-              isValid
+            className={`relative h-[40px] ${isValid
                 ? "bg-[#4659AA] hover:bg-[#1A349D]"
                 : "bg-gray-400 cursor-not-allowed"
-            } text-white font-bold py-3 px-6 rounded-full w-[70%] flex items-center justify-center text-center mb-3`}
+              } text-white font-bold py-3 px-6 rounded-full w-[70%] flex items-center justify-center text-center mb-3`}
             disabled={!isValid}
           >
             <span className="absolute transform transition-transform duration-300">
