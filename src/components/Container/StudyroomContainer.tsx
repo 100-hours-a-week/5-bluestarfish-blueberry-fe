@@ -67,7 +67,6 @@ const StudyroomContainer: React.FC<StudyroomContainerProps> = () => {
       cleanupStream();
       leaveRoom();
       exitStudyRoom();
-      cleanupStream();
     };
   }, []);
 

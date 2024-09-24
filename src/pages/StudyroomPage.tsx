@@ -20,7 +20,6 @@ const StudyroomPage: React.FC = () => {
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const { userId } = useLoginedUserStore();
   const timeRef = useRef(time); // time을 Ref로 관리
-  // const friendsRef = useRef<Friend[]>([]);
 
   useEffect(() => {
     timeRef.current = time;
@@ -35,10 +34,21 @@ const StudyroomPage: React.FC = () => {
     authCheck();
     // window.addEventListener("beforeunload", handleBeforeUnload);
     return () => {
-      stopTimer();
       updateUserTime();
       // updateUserTime();
       // window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, []);
+
+  useEffect(() => {
+    const handleUnload = () => {
+      updateUserTime();
+    };
+
+    window.addEventListener("unload", handleUnload);
+
+    return () => {
+      window.removeEventListener("unload", handleUnload);
     };
   }, []);
 
