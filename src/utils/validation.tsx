@@ -141,8 +141,8 @@ export const validateThumbnail = (file: File | null): string => {
   if (file) {
     if (!["image/jpeg", "image/png"].includes(file.type)) {
       return "이미지 파일은 JPG, JPEG, PNG 형식이어야 합니다.";
-    } else if (file.size > 3 * 1024 * 1024) {
-      return "이미지 파일 크기는 최대 3MB입니다.";
+    } else if (file.size > 10 * 1024 * 1024) {
+      return "이미지 파일 크기는 최대 10MB입니다.";
     }
     return "통과";
   }
@@ -154,8 +154,8 @@ export const validateProfileImage = (file: File | null): string => {
   if (file) {
     if (!["image/jpeg", "image/png"].includes(file.type)) {
       return "이미지 파일은 JPG, JPEG, PNG 형식이어야 합니다.";
-    } else if (file.size > 3 * 1024 * 1024) {
-      return "이미지 파일 크기는 최대 3MB입니다.";
+    } else if (file.size > 10 * 1024 * 1024) {
+      return "이미지 파일 크기는 최대 10MB입니다.";
     }
     return "통과";
   }
