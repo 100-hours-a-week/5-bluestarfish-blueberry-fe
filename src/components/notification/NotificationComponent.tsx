@@ -4,11 +4,17 @@ import { EventSourcePolyfill } from 'event-source-polyfill';
 import AlarmToastNotification from "../common/AlarmToastNotification";
 
 const NotificationComponent: React.FC = () => {
-    const [likes, setLikes] = useState<any[]>([]); // 'like' 이벤트 데이터를 저장할 상태
     const [currentUser, setCurrentUser] = useState<any | null>(null);
     const [showMentionNotiToast, setShowMentionNotiToast] = useState(false);
     const [showFriendNotiToast, setShowFriendNotiToast] = useState(false);
+    const [showAcceptFriendNotiToast, setShowAcceptFriendNotiToast] = useState(false);
+    const [showInviteNotiToast, setShowInviteNotiToast] = useState(false);
     const [mentionMessage, setMentionMessage] = useState("");
+    const [mentionSenderNickname, setMentionSenderNickname] = useState("");
+    const [inviteSenderNickname, setInviteSenderNickname] = useState("");
+    const [friendMessage, setFriendMessage] = useState("");
+    const [acceptFriendMessage, setAcceptFriendMessage] = useState("");
+    const [inviteMessage, setInviteMessage] = useState("");
 
     useEffect(() => {
         const fetchCurrentUser = async () => {
@@ -49,20 +55,33 @@ const NotificationComponent: React.FC = () => {
                 console.log("notification 이벤트 수신");
                 const data = JSON.parse(event.data);
                 console.log(data);
-
-                // 데이터의 receiver와 comment가 존재하는지 확인
-                if (data.receiver && data.receiver.nickname && data.comment && data.comment.content) {
-                    setMentionMessage(data.comment.content);
-
-                    if (data.notiType === "MENTION") {
-                        setShowMentionNotiToast(true);
-                    } else if (data.notiType === "FRIEND") {
-                        setShowFriendNotiToast(true);
-                    }
-                } else {
-                    console.error("Invalid data structure:", data);
+              
+                if (data.notiType === "MENTION") {
+                  setMentionMessage(data.comment.content);
+                  setMentionSenderNickname(data.sender.nickname);
+                  setShowMentionNotiToast(true);
+                } else if (data.notiType === "FRIEND" && data.notiStatus === "PENDING") {
+                  setFriendMessage(data.sender.nickname + '님이 친구 요청을 보냈어요!');
+                  setShowFriendNotiToast(true);
+                } else if (data.notiType === "FRIEND" && data.notiStatus === "ACCEPTED") {
+                //   console.log('받은 데이터: ', data);
+              
+                  // 발신자와 수신자 모두 알림 처리
+                  if (data.sender.id === currentUser.id) {
+                    // 발신자일 경우: 친구가 수락했음을 알림
+                    setAcceptFriendMessage(`${data.receiver.nickname}님과 친구가 되었어요!`);
+                  } else {
+                    // 수신자일 경우: 수락한 알림
+                    setAcceptFriendMessage(`${data.sender.nickname}님과 친구가 되었어요!`);
+                  }
+                  setShowAcceptFriendNotiToast(true);
+                } else if (data.notiType === "ROOM" && data.notiStatus === "PENDING") {
+                    setInviteMessage(data.room.title + "에서 기다리고 있어요!");
+                    setInviteSenderNickname(data.sender.nickname);
+                    setShowInviteNotiToast(true);
                 }
-            });
+              });
+              
 
 
             // SSE 연결 상태 및 에러 처리
@@ -96,13 +115,27 @@ const NotificationComponent: React.FC = () => {
         setShowFriendNotiToast(false);
     };
 
+    const handleCloseAcceptFriendNotiToast = () => {
+        setShowAcceptFriendNotiToast(false);
+    };
+
+    const handleCloseInviteNotiToast = () => {
+        setShowInviteNotiToast(false);
+    };
+
     return (
         <>
             {showMentionNotiToast && (
-                <AlarmToastNotification sender="발신자" message={mentionMessage} notiType="MENTION" onClose={handleCloseMentionNotiToast} />
+                <AlarmToastNotification sender={mentionSenderNickname} message={mentionMessage} notiType="MENTION" onClose={handleCloseMentionNotiToast} />
             )}
             {showFriendNotiToast && (
-                <AlarmToastNotification sender="발신자" message="친구 추가 알림!" notiType="FRIEND" onClose={handleCloseFriendNotiToast} />
+                <AlarmToastNotification sender="발신자" message={friendMessage} notiType="FRIEND" onClose={handleCloseFriendNotiToast} />
+            )}
+            {showAcceptFriendNotiToast && (
+                <AlarmToastNotification sender="발신자" message={acceptFriendMessage} notiType="FRIEND" onClose={handleCloseAcceptFriendNotiToast} />
+            )}
+            {showInviteNotiToast && (
+                <AlarmToastNotification sender={inviteSenderNickname} message={inviteMessage} notiType="ROOM" onClose={handleCloseInviteNotiToast} />
             )}
         </>
     );
