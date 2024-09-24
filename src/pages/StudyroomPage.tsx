@@ -20,7 +20,6 @@ const StudyroomPage: React.FC = () => {
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const { userId } = useLoginedUserStore();
   const timeRef = useRef(time); // time을 Ref로 관리
-  // const friendsRef = useRef<Friend[]>([]);
 
   useEffect(() => {
     timeRef.current = time;
@@ -35,10 +34,22 @@ const StudyroomPage: React.FC = () => {
     authCheck();
     // window.addEventListener("beforeunload", handleBeforeUnload);
     return () => {
-      stopTimer();
       updateUserTime();
       // updateUserTime();
       // window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, []);
+
+  useEffect(() => {
+    const handleUnload = () => {
+      stopTimer();
+      updateUserTime();
+    };
+
+    window.addEventListener("unload", handleUnload);
+
+    return () => {
+      window.removeEventListener("unload", handleUnload);
     };
   }, []);
 
@@ -51,10 +62,17 @@ const StudyroomPage: React.FC = () => {
   }, [isRunning]);
 
   useEffect(() => {
-    if (!location.state || !location.state.authorized) {
+    const authorizedInStorage = sessionStorage.getItem("authorized");
+
+    if (location.state?.authorized) {
+      // 사용자가 인가된 경우, sessionStorage에 인가 상태 저장
+      sessionStorage.setItem("authorized", "true");
+    } else if (!authorizedInStorage) {
+      // 새로고침이 아닌 도메인 직접 접근 시 (location.state가 없고, 인가되지 않은 경우)
       alert("인가되지 않은 접근입니다.");
       navigate("/");
     }
+    // 새로고침 시에는 authorizedInStorage가 true로 남아 있으므로 경고가 뜨지 않음
   }, [location]);
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -78,6 +96,7 @@ const StudyroomPage: React.FC = () => {
   };
 
   const updateUserTime = () => {
+    if (userId == 0) return;
     const requestBody = {
       time: timeRef.current,
     };
@@ -129,7 +148,7 @@ const StudyroomPage: React.FC = () => {
             </button>
           )}
         </div>
-        <StudyroomContainer />
+        <StudyroomContainer stopTimer={stopTimer} />
       </div>
       {isSidebarOpen && <Sidebar toggleSidebar={toggleSidebar}></Sidebar>}
     </div>

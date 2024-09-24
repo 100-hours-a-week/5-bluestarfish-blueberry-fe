@@ -29,7 +29,9 @@ const StudyRoomLink: React.FC<StudyRoomLinkProps> = ({
       <div className="text-black font-bold mb-3">스터디 룸 바로가기</div>
       <div
         className={`inline-block relative ${
-          !isRecruited ? "cursor-not-allowed opacity-50" : "hover:cursor-pointer"
+          !isRecruited
+            ? "cursor-not-allowed opacity-50"
+            : "hover:cursor-pointer"
         }`}
         onClick={isRecruited ? handleNavigateToRoom : undefined}
       >

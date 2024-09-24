@@ -1,13 +1,12 @@
 import React, { useEffect } from "react";
-// import { useParams, useNavigate } from "react-router-dom";
 import BasicHeader from "../components/common/BasicHeader";
 import SetAuthNicknameForm from "../components/users/SetAuthNicknameForm";
-import { useSetUserInfo } from "../utils/auth";
+import { useOAuthSetUserInfo } from "../utils/auth";
 
 const SetAuthNicknamePage: React.FC = () => {
-  const { setUserInfo } = useSetUserInfo();
+  const { oAuthSetUserInfo } = useOAuthSetUserInfo();
   useEffect(() => {
-    setUserInfo();
+    oAuthSetUserInfo();
   }, []);
   return (
     <div className="flex flex-col min-h-screen bg-white">

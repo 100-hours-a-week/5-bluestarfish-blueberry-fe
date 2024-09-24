@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react';
-import axiosInstance from '../../utils/axiosInstance';
-import DeleteModal from '../common/DeleteModal';
-import { useLocation } from 'react-router-dom'; // URL 해시 사용을 위해 useLocation 추가
+import React, { useState, useEffect, useRef } from "react";
+import axiosInstance from "../../utils/axiosInstance";
+import DeleteModal from "../common/DeleteModal";
+import { useLocation } from "react-router-dom"; // URL 해시 사용을 위해 useLocation 추가
 
 // Comment 인터페이스: 각 댓글의 구조를 정의
 interface Comment {
@@ -32,15 +32,19 @@ const CommentSection: React.FC<CommentSectionProps> = ({
   currentUser,
   postId,
 }) => {
-  const [comment, setComment] = useState(''); // 입력된 댓글 텍스트 상태
+  const [comment, setComment] = useState(""); // 입력된 댓글 텍스트 상태
   const [visibleComments, setVisibleComments] = useState<number>(10); // 현재 화면에 보이는 댓글 수
   const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false); // 삭제 모달 표시 여부
-  const [selectedCommentId, setSelectedCommentId] = useState<number | null>(null); // 삭제할 댓글 ID
+  const [selectedCommentId, setSelectedCommentId] = useState<number | null>(
+    null
+  ); // 삭제할 댓글 ID
   const [mention, setMention] = useState<string | null>(null); // 멘션된 사용자 이름
   const location = useLocation(); // URL 해시를 가져옴
 
   // 특정 댓글을 강조 표시하기 위한 상태
-  const [highlightedCommentId, setHighlightedCommentId] = useState<number | null>(null);
+  const [highlightedCommentId, setHighlightedCommentId] = useState<
+    number | null
+  >(null);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
   // 댓글 입력 시 호출되는 함수
@@ -55,19 +59,20 @@ const CommentSection: React.FC<CommentSectionProps> = ({
     if (match) {
       const username = match[1];
       const mentionedComment = comments.find(
-        (comment) => comment.author === username && comment.userId !== currentUser?.id
+        (comment) =>
+          comment.author === username && comment.userId !== currentUser?.id
       );
 
       if (mentionedComment) {
         setMention(username);
         onMention(mentionedComment.userId); // 상위 컴포넌트에 멘션된 사용자 ID 전달
-        setComment(value.replace(mentionPattern, '').trim());
+        setComment(value.replace(mentionPattern, "").trim());
       }
     }
   };
 
   // 댓글 제출 시 호출되는 함수
-  const handleCommentSubmit = async () => {   
+  const handleCommentSubmit = async () => {
     if (comment.trim()) {
       const currentCommentId = await onSubmitComment(comment.trim()); // 상위 컴포넌트에 댓글을 전달하고 생성된 댓글 ID를 받아옴
 
@@ -81,31 +86,33 @@ const CommentSection: React.FC<CommentSectionProps> = ({
 
             if (mentionedComment) {
               const requestBody = {
-                receiverId: mentionedComment.userId,  // 멘션된 사용자 ID
-                notiType: "MENTION",  // 알림 타입: 멘션
-                notiStatus: "ACCEPTED",  // 상태: 수락됨
-                commentId: currentCommentId,  // **생성된 댓글 ID를 사용**
-                roomId: null  // 스터디룸 ID는 해당하지 않음
+                receiverId: mentionedComment.userId, // 멘션된 사용자 ID
+                notiType: "MENTION", // 알림 타입: 멘션
+                notiStatus: "ACCEPTED", // 상태: 수락됨
+                commentId: currentCommentId, // **생성된 댓글 ID를 사용**
+                roomId: null, // 스터디룸 ID는 해당하지 않음
               };
 
               // 알림 전송 요청
-              await axiosInstance.post(`${process.env.REACT_APP_API_URL}/api/v1/users/${currentUser.id}/notifications`, requestBody);
-              console.log('알림 전송 성공:', requestBody);
+              await axiosInstance.post(
+                `${process.env.REACT_APP_API_URL}/api/v1/users/${currentUser.id}/notifications`,
+                requestBody
+              );
+              console.log("알림 전송 성공:", requestBody);
             }
           } catch (error) {
-            console.error('알림 전송 실패:', error);
+            console.error("알림 전송 실패:", error);
           }
         }
 
-        setComment(''); // 댓글 입력란 초기화
+        setComment(""); // 댓글 입력란 초기화
         setMention(null); // 멘션 초기화
         // window.location.reload(); // 페이지 리로드
       } else {
-        console.error('댓글 ID를 가져오는 데 실패했습니다.');
+        console.error("댓글 ID를 가져오는 데 실패했습니다.");
       }
     }
   };
-
 
   // 댓글을 클릭할 때 멘션을 처리하는 함수
   const handleMentionClick = (comment: Comment) => {
@@ -137,8 +144,8 @@ const CommentSection: React.FC<CommentSectionProps> = ({
         console.log(`댓글 ID ${selectedCommentId}가 삭제되었습니다.`);
         window.location.reload();
       } catch (error) {
-        console.error('댓글 삭제 실패:', error);
-        alert('댓글 삭제에 실패했습니다.');
+        console.error("댓글 삭제 실패:", error);
+        alert("댓글 삭제에 실패했습니다.");
       } finally {
         setShowDeleteModal(false);
         setSelectedCommentId(null);
@@ -149,43 +156,57 @@ const CommentSection: React.FC<CommentSectionProps> = ({
   // URL 해시로부터 댓글 ID를 가져와 해당 댓글을 강조
   useEffect(() => {
     // 페이지가 처음 로드되었을 때도 스크롤을 실행하기 위해 확인
-    if (location.hash && comments.length > 0) { // comments가 로드된 후 스크롤
-      const commentIdFromHash = parseInt(location.hash.replace("#comment-", ""), 10);
+    if (location.hash && comments.length > 0) {
+      // comments가 로드된 후 스크롤
+      const commentIdFromHash = parseInt(
+        location.hash.replace("#comment-", ""),
+        10
+      );
       setHighlightedCommentId(commentIdFromHash);
 
       // 댓글 요소로 스크롤
-      const commentElement = document.getElementById(`comment-${commentIdFromHash}`);
+      const commentElement = document.getElementById(
+        `comment-${commentIdFromHash}`
+      );
       if (commentElement) {
-        const elementPosition = commentElement.getBoundingClientRect().top + window.pageYOffset;
+        const elementPosition =
+          commentElement.getBoundingClientRect().top + window.pageYOffset;
         const offset = 100; // 상단 여백
 
         window.scrollTo({
           top: elementPosition - offset, // 요소의 위치에서 오프셋만큼 뺀 값으로 스크롤
-          behavior: 'smooth',
+          behavior: "smooth",
         });
       }
     }
   }, [location.hash, comments]); // comments 배열을 의존성에 추가하여 댓글이 로드된 후 스크롤 실행
 
-
-
   // 스크롤 이벤트를 감지하여 화면에 보이는 댓글 수를 증가시키는 함수
   useEffect(() => {
     const handleScroll = () => {
-      if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100) {
+      if (
+        window.innerHeight + window.scrollY >=
+        document.body.offsetHeight - 100
+      ) {
         setVisibleComments((prev) => prev + 10); // 스크롤이 끝에 가까워지면 10개의 댓글을 추가로 표시
       }
     };
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   return (
     <div className="mb-6">
       <section className="relative w-full mb-20">
-        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="content">
-          내용 <span className="text-gray-400 text-xs pl-1">({comment.length} / 20)</span>
+        <label
+          className="block text-gray-700 text-sm font-bold mb-2"
+          htmlFor="content"
+        >
+          내용{" "}
+          <span className="text-gray-400 text-xs pl-1">
+            ({comment.length} / 20)
+          </span>
         </label>
 
         <div className="relative">
@@ -198,7 +219,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({
             maxLength={20} // 최대 20자
             disabled={!isRecruited} // 모집이 완료된 경우 댓글 입력 불가
             ref={textAreaRef}
-            style={{ paddingBottom: '2rem', paddingLeft: '0.5rem' }}
+            style={{ paddingBottom: "2rem", paddingLeft: "0.5rem" }}
           />
 
           {/* 멘션 표시 섹션 */}
@@ -217,10 +238,11 @@ const CommentSection: React.FC<CommentSectionProps> = ({
 
         {/* 댓글 등록 버튼 */}
         <button
-          className={`absolute -bottom-10 right-2 py-1 px-3 rounded-full shadow-md ${isRecruited
-            ? 'bg-[#E0E7FF] text-[#4659AA] hover:bg-[#6D81D5] hover:text-white'
-            : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-            }`}
+          className={`absolute -bottom-10 right-2 py-1 px-3 rounded-full shadow-md ${
+            isRecruited
+              ? "bg-[#E0E7FF] text-[#4659AA] hover:bg-[#6D81D5] hover:text-white"
+              : "bg-gray-300 text-gray-500 cursor-not-allowed"
+          }`}
           onClick={handleCommentSubmit}
           disabled={!isRecruited} // 모집이 완료된 경우 버튼 비활성화
         >
@@ -234,28 +256,44 @@ const CommentSection: React.FC<CommentSectionProps> = ({
           <div
             key={`${comment.id}-${index}`} // id와 index를 결합하여 고유한 키 생성
             className={`bg-white border border-gray-300 p-4 rounded-lg mb-2`}
-            style={highlightedCommentId === comment.id ? { backgroundColor: '#EEEEFF' } : {}} // 사용자 정의 색상
+            style={
+              highlightedCommentId === comment.id
+                ? { backgroundColor: "#EEEEFF" }
+                : {}
+            } // 사용자 정의 색상
             id={`comment-${comment.id}`} // 댓글에 ID 설정
             onClick={() => handleMentionClick(comment)}
           >
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center">
-                <img src={comment.profileImage || `${process.env.PUBLIC_URL}/assets/images/default-profile.png`} alt={comment.author} className="w-10 h-10 rounded-full mr-3" />
+                <img
+                  src={
+                    comment.profileImage ||
+                    `${process.env.PUBLIC_URL}/assets/images/profile-default-image.png`
+                  }
+                  alt={comment.author}
+                  className="w-10 h-10 rounded-full mr-3"
+                />
                 <div>
                   <div className="font-bold text-sm">{comment.author}</div>
                   <div className="text-xs text-gray-500">
-                    {comment.createdAt ? new Date(comment.createdAt).toLocaleString('ko-KR', {
-                      year: 'numeric',
-                      month: '2-digit',
-                      day: '2-digit',
-                      hour: '2-digit',
-                      minute: '2-digit',
-                    }) : '방금'}
+                    {comment.createdAt
+                      ? new Date(comment.createdAt).toLocaleString("ko-KR", {
+                          year: "numeric",
+                          month: "2-digit",
+                          day: "2-digit",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })
+                      : "방금"}
                   </div>
                 </div>
               </div>
               {currentUser?.id === comment.userId && (
-                <button className="text-red-500 hover:text-red-700" onClick={() => handleDeleteClick(comment.id)}>
+                <button
+                  className="text-red-500 hover:text-red-700"
+                  onClick={() => handleDeleteClick(comment.id)}
+                >
                   삭제
                 </button>
               )}
@@ -265,7 +303,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({
                 <span className="bg-[#EEEEFF] text-[#A36DDA] px-1 py-0.5 rounded inline-block">
                   @{comment.mentionedUser.nickname}
                 </span>
-              )}{' '}
+              )}{" "}
               {comment.text}
             </div>
           </div>
