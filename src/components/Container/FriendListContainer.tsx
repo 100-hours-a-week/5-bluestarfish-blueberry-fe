@@ -103,17 +103,20 @@ const handleDeleteConfirm = async () => {
 
     const fetchFriends = async () => {
         try {
+            // const response = await axiosInstance.get(
+            //     `${process.env.REACT_APP_API_URL}/api/v1/users`,
+            //     {
+            //         params: { keyword: "" }, // 빈 키워드를 보내서 모든 사용자 검색
+            //     }
+            // );
             const response = await axiosInstance.get(
-                `${process.env.REACT_APP_API_URL}/api/v1/users`,
-                {
-                    params: { keyword: "" }, // 빈 키워드를 보내서 모든 사용자 검색
-                }
-            );
+                `${process.env.REACT_APP_API_URL}/api/v1/users/friends/${userId}`
+              );
             const allUsers: Friend[] = response.data.data;
 
             // isFriend가 true인 사용자만 필터링
-            const filteredFriends = allUsers.filter((user) => user.isFriend);
-            setFriends(filteredFriends);
+            // const filteredFriends = allUsers.filter((user) => user.isFriend);
+            setFriends(allUsers);
         } catch (error) {
             console.error("친구 목록을 가져오는 데 실패했습니다:", error);
             setFriends([]); // 실패 시 빈 배열로 설정
