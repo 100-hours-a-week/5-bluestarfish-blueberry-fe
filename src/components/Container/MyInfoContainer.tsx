@@ -16,6 +16,7 @@ import {
   validatePasswordMatch,
 } from "../../utils/validation";
 import { useLoginedUserStore } from "../../store/store";
+import { useTimeStore } from "../../store/timeStore";
 
 const tabData = [
   {
@@ -81,6 +82,35 @@ const MyInfoContainer: React.FC = () => {
 
   const defaultProfileImage = `${process.env.PUBLIC_URL}/assets/images/gunssakdo.png`; // 기본 프로필 이미지 URL
   const navigate = useNavigate();
+  const { setTime, time } = useTimeStore();
+
+  const fetchUserTime = async () => {
+    try {
+      const response = await axiosInstance.get(
+        `${process.env.REACT_APP_API_URL}/api/v1/users/${currentUser.id}/time`
+      );
+      if (response.status === 200) {
+        setTime(() => response.data.data.time);
+        console.log("TIme is", response.data.data);
+      }
+    } catch (error: any) {
+      if (error.response) {
+        if (error.response.status === 404) {
+          console.error(
+            "404 오류: ",
+            error.response.data.message || "해당 유저를 찾을 수 없습니다."
+          );
+        } else {
+          console.error(
+            `오류 발생 (${error.response.status}):`,
+            error.response.data.message || "서버 오류가 발생했습니다."
+          );
+        }
+      } else {
+        console.error("스터디룸 정보를 가져오는 중 오류 발생:", error.message);
+      }
+    }
+  };
 
   useEffect(() => {
     const fetchCurrentUser = async () => {
@@ -101,6 +131,10 @@ const MyInfoContainer: React.FC = () => {
 
     fetchCurrentUser();
   }, []);
+
+  useEffect(() => {
+    fetchUserTime();
+  }, [currentUser]);
 
   useEffect(() => {
     if (profileImage) {
@@ -243,20 +277,6 @@ const MyInfoContainer: React.FC = () => {
       setProfileImage(e.target.files[0]);
     } else {
       setProfileImage(null);
-    }
-  };
-
-  const handleSaveClick = () => {
-    if (isFormValid) {
-      setShowProfileUpdateSuccessToast(true); // 수정 완료 토스트 메시지 띄우기
-
-      // 3초 뒤에 편집 모드를 종료
-      setTimeout(() => {
-        setIsEditing(false); // 편집 모드 종료
-        setShowProfileUpdateSuccessToast(false); // 토스트 메시지 종료
-      }, 3000);
-
-      // 실제 유저 정보 수정 로직이 들어갈 자리
     }
   };
 
@@ -406,10 +426,10 @@ const MyInfoContainer: React.FC = () => {
               <div className="w-full mb-[50px]">
                 <div className="w-full text-left mb-2">
                   <span className="text-[#4659AA] bg-[#EEEEFF] px-3 py-1 rounded-full shadow-md">
-                    스터디 누적 시간
+                    금일 스터디 누적 시간
                   </span>
                 </div>
-                <span className="text-black">24시간 53분</span>
+                <span className="text-black">{time}</span>
               </div>
             ) : (
               <span></span>

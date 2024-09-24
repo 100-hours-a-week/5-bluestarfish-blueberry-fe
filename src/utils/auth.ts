@@ -99,6 +99,7 @@ export const useLoginCheck = () => {
 
 export const useOAuthSetUserInfo = () => {
   const { setUserId, setProfileImage } = useLoginedUserStore();
+  const navigate = useNavigate();
 
   const oAuthSetUserInfo = async () => {
     try {
@@ -106,6 +107,7 @@ export const useOAuthSetUserInfo = () => {
         `${process.env.REACT_APP_API_URL}/api/v1/users/whoami`
       );
       if (response.status === 200) {
+        if (response.data.data.nickname) navigate("/");
         setUserId(response.data.data.id);
         setProfileImage(response.data.data.profileImage);
       }
@@ -113,12 +115,14 @@ export const useOAuthSetUserInfo = () => {
       if (error.response) {
         if (error.response.status === 404) {
           console.error("404: ", "Not found");
+          navigate("/");
         }
       } else {
         console.error(
           "로그인 유저 정보를 받아오는 중 오류 발생:",
           error.message
         );
+        navigate("/");
       }
     }
   };

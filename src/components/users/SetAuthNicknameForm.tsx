@@ -1,4 +1,10 @@
-import React, { useState, useEffect, ChangeEvent, FormEvent } from "react";
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  ChangeEvent,
+  FormEvent,
+} from "react";
 import axiosInstance from "../../utils/axiosInstance";
 import { useNavigate } from "react-router-dom";
 import { validateNickname } from "../../utils/validation";
@@ -19,10 +25,19 @@ const SetAuthNicknameForm: React.FC = () => {
     useState(false);
   const [showNicknameErrorToast, setShowNicknameErrorToast] = useState(false);
   const { userId, setUserId } = useLoginedUserStore();
+  const isSubmit = useRef<boolean>(false);
 
   useEffect(() => {
     checkNickname();
   }, [nickname]);
+
+  useEffect(() => {
+    return () => {
+      if (!isSubmit.current) {
+        logout();
+      }
+    };
+  }, []);
 
   useEffect(() => {
     if (isValidNickname && isValidConfirmNickname) setIsValid(true);
@@ -90,7 +105,6 @@ const SetAuthNicknameForm: React.FC = () => {
   };
 
   const handleClickText = async () => {
-    await logout();
     navigate("/");
   };
 
@@ -121,6 +135,7 @@ const SetAuthNicknameForm: React.FC = () => {
 
     try {
       setIsLoading(true);
+      isSubmit.current = true;
       const formData = new FormData();
       if (nickname) {
         formData.append("nickname", nickname);

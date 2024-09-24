@@ -74,7 +74,7 @@ const StudyHeader: React.FC<{
             <img
               src={
                 study.userResponse.profileImage ||
-                `${process.env.PUBLIC_URL}/assets/images/real_ian.png`
+                `${process.env.PUBLIC_URL}/assets/images/profile-default-image.png`
               }
               alt={study.userResponse.nickname}
               className="h-5 w-5 rounded-full"

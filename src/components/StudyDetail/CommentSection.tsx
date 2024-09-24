@@ -269,7 +269,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({
                 <img
                   src={
                     comment.profileImage ||
-                    `${process.env.PUBLIC_URL}/assets/images/default-profile.png`
+                    `${process.env.PUBLIC_URL}/assets/images/profile-default-image.png`
                   }
                   alt={comment.author}
                   className="w-10 h-10 rounded-full mr-3"
