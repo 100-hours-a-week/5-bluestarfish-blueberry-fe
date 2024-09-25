@@ -448,20 +448,6 @@ const StudyroomContainer: React.FC<StudyroomContainerProps> = ({
   };
 
   const controlCam = (parsedMessage: any) => {
-    // const videoElement = document.getElementById(
-    //   `video-${parsedMessage.sender}`
-    // );
-
-    // if (videoElement) {
-    //   videoElement.style.visibility = parsedMessage.isCamOn
-    //     ? "visible"
-    //     : "hidden";
-    // } else {
-    //   console.error(
-    //     `Video element with id video-${parsedMessage.sender} not found`
-    //   );
-    // }
-
     const userToUpdate = usersRef.current.find(
       (user) => user.nickname === parsedMessage.sender
     );
@@ -474,17 +460,6 @@ const StudyroomContainer: React.FC<StudyroomContainerProps> = ({
   };
 
   const controlMic = (parsedMessage: any) => {
-    // const videoElement = document.getElementById(
-    //   `video-${parsedMessage.sender}`
-    // ) as HTMLVideoElement | null;
-
-    // if (videoElement) {
-    //   videoElement.muted = !parsedMessage.isMicOn;
-    // } else {
-    //   console.error(
-    //     `Video element with id video-${parsedMessage.sender} not found`
-    //   );
-    // }
     const userToUpdate = usersRef.current.find(
       (user) => user.nickname === parsedMessage.sender
     );
