@@ -177,7 +177,7 @@ const FriendListContainer: React.FC = () => {
               {/* 프로필 사진과 이름 */}
               <div className="p-4 flex flex-col items-center group-hover:hidden">
                 <img
-                  src={friend.profileImage || `${process.env.PUBLIC_URL}/assets/images/profile1.png`}
+                  src={friend.profileImage || `${process.env.PUBLIC_URL}/assets/images/profile-default-image.png`}
                   alt={friend.nickname}
                   className="w-20 h-20 rounded-full mt-12 mb-20 object-contain"
                   onError={(e) => {
