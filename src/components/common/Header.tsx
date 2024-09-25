@@ -73,7 +73,7 @@ const Header: React.FC = () => {
                   `${process.env.PUBLIC_URL}/assets/images/profile-default-image.png`
                 }
                 alt="Profile"
-                className="h-10 w-8 rounded-full cursor-pointer object-scale-down mr-3"
+                className="h-9 w-9 rounded-full cursor-pointer object-cover mr-3"
                 onClick={toggleModal}
               />
               {isModalOpen && <HeaderModal closeModal={closeModal} />}
