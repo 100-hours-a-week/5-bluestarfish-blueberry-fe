@@ -60,10 +60,12 @@ const MyInfoContainer: React.FC = () => {
   const [showProfileUpdateSuccessToast, setShowProfileUpdateSuccessToast] =
     useState(false);
   const [profileImageError, setProfileImageError] = useState("");
-  const [nicknameError, setNicknameError] = useState("");
-  const [passwordError, setPasswordError] = useState("");
+  const [nicknameError, setNicknameError] = useState(
+    "* 닉네임 중복 검사를 진행해주세요."
+  );
+  const [passwordError, setPasswordError] = useState("* 헬퍼텍스트");
   const [confirmPasswordError, setConfirmPasswordError] =
-    useState("");
+    useState("* 헬퍼텍스트");
   const [isValidNickname, setIsValidNickname] = useState(false);
   const [isValidPassword, setIsValidPassword] = useState(false);
   const [isPasswordMatch, setIsPasswordMatch] = useState(false);
@@ -81,6 +83,13 @@ const MyInfoContainer: React.FC = () => {
   const defaultProfileImage = `${process.env.PUBLIC_URL}/assets/images/profile-default-image.png`; // 기본 프로필 이미지 URL
   const navigate = useNavigate();
   const { setTime, time } = useTimeStore();
+  const [isOAuth, setIsOAuth] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (currentUser && currentUser.email) {
+      setIsOAuth(currentUser.email.split("@").length >= 3);
+    }
+  }, [currentUser]);
 
   const fetchUserTime = async () => {
     try {
@@ -89,7 +98,6 @@ const MyInfoContainer: React.FC = () => {
       );
       if (response.status === 200) {
         setTime(() => response.data.data.time);
-        console.log("TIme is", response.data.data);
       }
     } catch (error: any) {
       if (error.response) {
@@ -141,7 +149,6 @@ const MyInfoContainer: React.FC = () => {
       setIsValidProfileImage(validationError === "통과"); // 유효성 검사 통과 여부 업데이트
 
       if (validationError === "통과") {
-        setProfileImageError("");
         // 유효성 검사를 통과한 경우 이미지를 미리보기로 업데이트
         const reader = new FileReader();
         reader.onloadend = () => {
@@ -164,11 +171,11 @@ const MyInfoContainer: React.FC = () => {
 
   useEffect(() => {
     const isFormValidNow =
-      profileImageError === "" &&
-      nicknameError === "" &&
-      passwordError === "" && confirmPasswordError === "" && (password !== "" && confirmPassword !== "" || password === "" && confirmPassword === "") && password === confirmPassword;
+      isValidNickname &&
+      (isOAuth || (isValidPassword && isPasswordMatch)) &&
+      isValidProfileImage;
     setIsFormValid(isFormValidNow); // 유효성 검사 통과 여부 업데이트
-  }, [isValidNickname, isValidPassword, isPasswordMatch, isValidProfileImage, profileImage, nickname, password, confirmPassword]); // 의존성 배열에 유효성 검사 상태 추가
+  }, [isValidNickname, isValidPassword, isPasswordMatch, isValidProfileImage]); // 의존성 배열에 유효성 검사 상태 추가
 
   // 닉네임 중복 검사 함수
   const sendNickname = async (trimmedNickname: string) => {
@@ -179,7 +186,7 @@ const MyInfoContainer: React.FC = () => {
 
       if (response.status === 200) {
         setIsValidNickname(true); // 중복 검사에 통과했을 때 유효성 검사 통과
-        setNicknameError("");
+        setNicknameError("사용 가능한 닉네임입니다.");
         setShowNicknameSuccessToast(true);
       }
     } catch (error: any) {
@@ -197,9 +204,8 @@ const MyInfoContainer: React.FC = () => {
 
     if (trimmedNickname === currentUser.nickname) {
       setIsValidNickname(true); // 중복 검사에 통과했을 때 유효성 검사 통과
-      setNicknameError("");
+      setNicknameError("사용 가능한 닉네임입니다.");
       setShowNicknameSuccessToast(true);
-      
       return;
     }
 
@@ -408,7 +414,7 @@ const MyInfoContainer: React.FC = () => {
                   </span>
                 </div>
                 <span className="text-black underline">
-                  {currentUser.email.split("@").length - 1 > 1
+                  {isOAuth
                     ? currentUser.email.slice(
                         0,
                         currentUser.email.lastIndexOf("@")
@@ -435,15 +441,17 @@ const MyInfoContainer: React.FC = () => {
             )}
 
             {/* 비밀번호 섹션 */}
-            <PasswordSection
-              password={password}
-              confirmPassword={confirmPassword}
-              handlePasswordChange={handlePasswordChange}
-              handleConfirmPasswordChange={handleConfirmPasswordChange}
-              passwordError={passwordError}
-              confirmPasswordError={confirmPasswordError}
-              isEditing={isEditing}
-            />
+            {!isOAuth && (
+              <PasswordSection
+                password={password}
+                confirmPassword={confirmPassword}
+                handlePasswordChange={handlePasswordChange}
+                handleConfirmPasswordChange={handleConfirmPasswordChange}
+                passwordError={passwordError}
+                confirmPasswordError={confirmPasswordError}
+                isEditing={isEditing}
+              />
+            )}
 
             {/* 버튼 섹션 */}
             <div className="flex space-x-4">
@@ -505,7 +513,6 @@ const MyInfoContainer: React.FC = () => {
           isSuccess={true}
           onClose={handleCloseNicknameSuccessToast}
         />
-        
       )}
       {showNicknameErrorToast && (
         <ToastNotification
