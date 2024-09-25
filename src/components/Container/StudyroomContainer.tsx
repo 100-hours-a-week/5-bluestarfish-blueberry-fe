@@ -55,10 +55,6 @@ const StudyroomContainer: React.FC<StudyroomContainerProps> = ({
   const [exited, setExited] = useState(false);
 
   useEffect(() => {
-    console.log(friends);
-  }, [friends]);
-
-  useEffect(() => {
     if (userId == 0) return;
     fetchStudyRoom();
     fetchFriendsData();
@@ -321,7 +317,6 @@ const StudyroomContainer: React.FC<StudyroomContainerProps> = ({
       );
       if (response.status === 200) {
         setTime(() => response.data.data.time);
-        console.log("TIme is", response.data.data);
       }
     } catch (error: any) {
       if (error.response) {
