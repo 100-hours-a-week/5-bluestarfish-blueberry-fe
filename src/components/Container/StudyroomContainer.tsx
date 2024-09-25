@@ -14,6 +14,15 @@ interface StudyroomContainerProps {
   stopTimer: () => void;
 }
 
+interface User {
+  id: number;
+  nickname: string;
+  profileImage: string;
+  camEnabled: boolean;
+  micEnabled: boolean;
+  speakerEnabled: boolean;
+}
+
 const StudyroomContainer: React.FC<StudyroomContainerProps> = ({
   stopTimer,
 }) => {
@@ -31,12 +40,12 @@ const StudyroomContainer: React.FC<StudyroomContainerProps> = ({
   const { userId, nickname } = useLoginedUserStore();
   const { users, setUsers, addUser, updateUser, removeUser } = useUserStore();
   const {
-    curUsers,
+    roomCamEnabled,
     setRoomId,
     setTitle,
     setMaxUsers,
     setCurUsers,
-    setCamEnabled,
+    setRoomCamEnabled,
   } = useRoomStore();
   const { friends, setFriends } = useFriendStore();
   const [cameraEnabled, setCameraEnabled] = useState<boolean>(false);
@@ -66,6 +75,14 @@ const StudyroomContainer: React.FC<StudyroomContainerProps> = ({
       leaveRoom();
     };
   }, [userId]);
+
+  useEffect(() => {
+    usersRef.current = users;
+  }, [users]);
+
+  useEffect(() => {
+    if (wsRef.current) setVideo();
+  }, [usersRef.current]);
 
   useEffect(() => {
     const handleUnload = () => {
@@ -243,7 +260,7 @@ const StudyroomContainer: React.FC<StudyroomContainerProps> = ({
         setRoomId(response.data.data.id);
         setTitle(response.data.data.title);
         setMaxUsers(response.data.data.maxUsers);
-        setCamEnabled(response.data.data.camEnabled);
+        setRoomCamEnabled(response.data.data.camEnabled);
         setUsers([]);
       }
     } catch (error: any) {
@@ -361,6 +378,14 @@ const StudyroomContainer: React.FC<StudyroomContainerProps> = ({
     }
   }, [micEnabled, isRegister]);
 
+  useEffect(() => {
+    if (!roomCamEnabled) {
+      if (camEnabled) {
+        toggleCam();
+      }
+    }
+  }, [roomCamEnabled]);
+
   const clickCamIcon = () => {
     if (localStreamRef.current) {
       localStreamRef.current.getVideoTracks().forEach((track) => {
@@ -389,25 +414,44 @@ const StudyroomContainer: React.FC<StudyroomContainerProps> = ({
     navigate("/");
   };
 
+  const setVideo = () => {
+    const users = usersRef.current;
+
+    users.forEach((user: User) => {
+      const videoElement = document.getElementById(
+        `video-${user.nickname}`
+      ) as HTMLVideoElement | null;
+
+      if (videoElement) {
+        // 카메라 상태 처리
+        if (user.camEnabled) {
+          videoElement.style.visibility = "visible"; // 카메라가 켜졌을 때
+        } else {
+          videoElement.style.visibility = "hidden"; // 카메라가 꺼졌을 때
+        }
+        videoElement.muted = !user.micEnabled;
+        // 스피커 상태 처리 (스피커가 켜졌는지 여부를 시각적으로 표시)
+        // const speakerElement = videoElement.querySelector(".speaker-indicator"); // 스피커 상태를 표시하는 요소
+        // if (speakerElement) {
+        //   if (user.speakerEnabled) {
+        //     speakerElement.classList.add("speaker-on");
+        //     speakerElement.classList.remove("speaker-off");
+        //   } else {
+        //     speakerElement.classList.add("speaker-off");
+        //     speakerElement.classList.remove("speaker-on");
+        //   }
+        // }
+      } else {
+        console.warn(`Video element for ${user.nickname} not found.`);
+      }
+    });
+  };
+
   const controlCam = (parsedMessage: any) => {
-    const videoElement = document.getElementById(
-      `video-${parsedMessage.sender}`
-    );
-
-    if (videoElement) {
-      videoElement.style.visibility = parsedMessage.isCamOn
-        ? "visible"
-        : "hidden";
-    } else {
-      console.error(
-        `Video element with id video-${parsedMessage.sender} not found`
-      );
-    }
-
     const userToUpdate = usersRef.current.find(
       (user) => user.nickname === parsedMessage.sender
     );
-
+    console.log(usersRef.current);
     if (userToUpdate) {
       updateUser(userToUpdate.id, { camEnabled: parsedMessage.isCamOn });
     } else {
@@ -416,17 +460,6 @@ const StudyroomContainer: React.FC<StudyroomContainerProps> = ({
   };
 
   const controlMic = (parsedMessage: any) => {
-    const videoElement = document.getElementById(
-      `video-${parsedMessage.sender}`
-    ) as HTMLVideoElement | null;
-
-    if (videoElement) {
-      videoElement.muted = !parsedMessage.isMicOn;
-    } else {
-      console.error(
-        `Video element with id video-${parsedMessage.sender} not found`
-      );
-    }
     const userToUpdate = usersRef.current.find(
       (user) => user.nickname === parsedMessage.sender
     );
@@ -684,7 +717,7 @@ const StudyroomContainer: React.FC<StudyroomContainerProps> = ({
         </div>
       </div>
       <div className="mt-10 flex flex-row gap-5 justify-center items-center">
-        <button onClick={clickCamIcon}>
+        <button onClick={clickCamIcon} disabled={!roomCamEnabled}>
           <img
             src={
               camEnabled

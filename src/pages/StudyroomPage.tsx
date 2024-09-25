@@ -26,17 +26,9 @@ const StudyroomPage: React.FC = () => {
   }, [time]);
 
   useEffect(() => {
-    // const handleBeforeUnload = (event: BeforeUnloadEvent) => {
-    //   event.preventDefault(); // 기본 동작 방지
-    //   stopTimer(); // 페이지가 닫히거나 새로고침될 때 타이머를 중지
-    //   event.returnValue = ""; // 사용자에게 경고 메시지 표시 (브라우저에 따라 달라질 수 있음)
-    // };
     authCheck();
-    // window.addEventListener("beforeunload", handleBeforeUnload);
     return () => {
       updateUserTime();
-      // updateUserTime();
-      // window.removeEventListener("beforeunload", handleBeforeUnload);
     };
   }, []);
 
