@@ -38,9 +38,9 @@ interface DeviceState {
 
 // 카메라, 마이크, 스피커 상태 관리하는 Zustand 스토어
 export const useDeviceStore = create<DeviceState>((set) => ({
-  camEnabled: true, // 초기값 설정
-  micEnabled: true,
-  speakerEnabled: true,
+  camEnabled: false, // 초기값 설정
+  micEnabled: false,
+  speakerEnabled: false,
 
   // 카메라 상태 토글 함수
   toggleCam: () => set((state) => ({ camEnabled: !state.camEnabled })),

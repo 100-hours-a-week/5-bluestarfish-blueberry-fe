@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import { useNavigate, useLocation, useParams } from "react-router-dom";
 
 export const usePreventRefresh = () => {
   const preventClose = (e: any) => {
