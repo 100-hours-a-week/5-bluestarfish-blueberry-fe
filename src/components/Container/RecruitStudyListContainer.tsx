@@ -55,8 +55,8 @@ const StudyRecruitListContainer: React.FC = () => {
         selectedType === "스터디 멤버 찾기"
           ? "FINDING_MEMBERS"
           : selectedType === "스터디 룸 찾기"
-          ? "FINDING_ROOMS"
-          : "";
+            ? "FINDING_ROOMS"
+            : "";
 
       const response = await axiosInstance.get<ApiResponse>(
         `${process.env.REACT_APP_API_URL}/api/v1/posts`,
@@ -104,8 +104,8 @@ const StudyRecruitListContainer: React.FC = () => {
     setFilteredPosts(filtered);
   };
 
-  const handleCategoryClick = (category: string) => { 
-    setSelectedCategory(category);                                                                                                                                                    
+  const handleCategoryClick = (category: string) => {
+    setSelectedCategory(category);
   };
 
   const handleTypeClick = (type: string) => {
@@ -151,12 +151,13 @@ const StudyRecruitListContainer: React.FC = () => {
         <img
           src={`${process.env.PUBLIC_URL}/assets/images/create-post-button.png`}
           alt="create post"
-          className="absolute top-12 right-64 w-[130px] h-[30px] cursor-pointer"
+          className="absolute top-3 sm:top-5 md:top-7 lg:top-12 right-4 sm:right-12 md:right-24 lg:right-32 xl:right-64 w-[100px] h-[25px] sm:w-[130px] sm:h-[30px] cursor-pointer"
           onClick={handleCreatePostClick}
         />
       </div>
 
-      <div className="w-[1030px] mt-8 overflow-auto scrollbar-hide">
+
+      <div className="container mx-auto px-4 sm:px-12 md:px-20 lg:px-32 w-full mt-8 overflow-auto scrollbar-hide">
         <CategorySelector
           selectedCategory={selectedCategory}
           selectedType={selectedType}
@@ -176,6 +177,7 @@ const StudyRecruitListContainer: React.FC = () => {
           />
         )}
       </div>
+
     </div>
   );
 };
