@@ -91,16 +91,38 @@ const FriendSearchContainer: React.FC = () => {
         }
     };
 
-    // 닉네임을 통한 친구 검색
+    // 친구의 스터디 시간을 불러오는 함수
+    const fetchStudyTimeForFriends = async (friendId: number) => {
+        try {
+            const response = await axiosInstance.get(
+                `${process.env.REACT_APP_API_URL}/api/v1/users/${friendId}/time`
+            );
+            return response.data.data.time || "시간 정보 없음";
+        } catch (error) {
+            console.error(`스터디 시간을 가져오는 데 실패했습니다: ${friendId}`, error);
+            return "시간 정보 없음";
+        }
+    };
+
+    // 닉네임을 통한 친구 검색 및 스터디 시간 가져오기
     const fetchFriends = async (keyword: string) => {
         try {
             const response = await axiosInstance.get(`${process.env.REACT_APP_API_URL}/api/v1/users`, {
                 params: { keyword },
             });
-            const filteredFriends = response.data.data.filter(
+            const allFriends = response.data.data.filter(
                 (friend: Friend) => friend.nickname !== currentUserNickname
             );
-            setFilteredFriends(filteredFriends); // 필터링된 데이터를 설정
+
+            // 각 친구의 스터디 시간을 병렬적으로 가져옴
+            const friendsWithTime = await Promise.all(
+                allFriends.map(async (friend: Friend) => {
+                    const time = await fetchStudyTimeForFriends(friend.id);
+                    return { ...friend, time };
+                })
+            );
+
+            setFilteredFriends(friendsWithTime); // 필터링된 데이터를 설정
         } catch (error) {
             console.error("친구 검색에 실패했습니다:", error);
             setFilteredFriends([]); // 실패 시 빈 배열로 설정
@@ -160,11 +182,11 @@ const FriendSearchContainer: React.FC = () => {
                             {/* 프로필 사진과 이름 */}
                             <div className="p-4 flex flex-col items-center group-hover:hidden">
                                 <img
-                                    src={friend.profileImage || `${process.env.PUBLIC_URL}/assets/images/profile1.png`}
+                                    src={friend.profileImage || `${process.env.PUBLIC_URL}/assets/images/profile-default-image.png`}
                                     alt={friend.nickname}
                                     className="w-20 h-20 rounded-full mt-12 mb-20 object-contain"
                                     onError={(e) => { /* 이미지가 안 뜬 경우 기본 이미지 표시 */
-                                        e.currentTarget.src = `${process.env.PUBLIC_URL}/assets/images/profile1.png`;
+                                        e.currentTarget.src = `${process.env.PUBLIC_URL}/assets/images/profile-default-image.png`;
                                     }}
                                 />
                                 <h2 className="text-lg font-bold text-gray-700">
