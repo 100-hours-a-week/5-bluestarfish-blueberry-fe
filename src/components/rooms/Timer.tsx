@@ -1,6 +1,3 @@
-import { useState, useEffect, useRef } from "react";
-import axiosInstance from "../../utils/axiosInstance";
-import { useLoginedUserStore } from "../../store/store";
 import { useTimeStore } from "../../store/timeStore";
 
 type TimerProps = {};
@@ -19,28 +16,31 @@ const Timer: React.FC<TimerProps> = () => {
   };
 
   return (
-    <div className="text-black">
+    <div className="w-[390px] text-black">
       <div className="flex gap-2 mx-4">
         <img
           src={`${process.env.PUBLIC_URL}/assets/images/timer-black.png`}
           alt="Timer"
           className="w-[25px]"
         />
-        <p className="text-[20px] font-bold">타이머</p>
+        <p className="text-[18px] font-bold">타이머</p>
       </div>
-      <div className="flex mt-4 mx-4 items-center">
-        <p className="text-[12px] font-bold w-[140px]">현재 공부 시간</p>
-        <p className="flex flex-row text-[14px] font-light w-[60px]">{time}</p>
-        <button className="w-[125px]" onClick={resetTime}>
+      <div className="flex my-2 items-center  rounded-[10px] p-3 bg-[#EBEEFF] shadow-lg">
+        <p className="text-[13px] font-bold w-[150px]">현재 공부 시간</p>
+        <p className="flex flex-row text-[13px] font-bold w-[160px]">{time}</p>
+        <button
+          className="flex rounded-full bg-[#4659aa] w-[30px] h-[30px] items-center justify-center shadow-lg cursor-pointer"
+          onClick={resetTime}
+        >
           <img
-            src={`${process.env.PUBLIC_URL}/assets/images/reset.png`}
+            src={`${process.env.PUBLIC_URL}/assets/images/reset-white.png`}
             alt="reset"
-            className="w-[18px]"
+            className="w-[12px]"
           />
         </button>
         <div
           onClick={handleTimerToggle} // 버튼 클릭 시 타이머 토글
-          className="flex rounded-full bg-[#4659aa] w-[30px] h-[30px] items-center justify-center shadow-lg cursor-pointer"
+          className="flex rounded-full ml-2 bg-[#4659aa] w-[30px] h-[30px] items-center justify-center shadow-lg cursor-pointer"
         >
           <img
             src={`${process.env.PUBLIC_URL}/assets/images/${
@@ -51,13 +51,13 @@ const Timer: React.FC<TimerProps> = () => {
           />
         </div>
       </div>
-      <div className="flex mt-1 mx-4 items-center">
+      {/* <div className="flex mt-1 mx-4 items-center">
         <p className="text-[12px] font-bold w-[140px]">목표 시간</p>
         <p className="text-[14px] font-light w-[185px]">{goaltime}</p>
         <div className="flex rounded-full bg-[#4659aa] w-[30px] h-[30px] items-center justify-center shadow-lg">
           <div className="text-[10px] font-bold text-white">적용</div>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };

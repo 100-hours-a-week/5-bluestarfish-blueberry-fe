@@ -25,10 +25,6 @@ const StudyRoomLink: React.FC<StudyRoomLinkProps> = ({
   const [clickedRoomId, setClickedRoomId] = useState<number | null>(null);
   const [showToast, setShowToast] = useState(false);
 
-  useEffect(() => {
-    console.log(studyRoom);
-  });
-
   const closePasswordModal = () => {
     setPasswordModalOpen(false);
   };
