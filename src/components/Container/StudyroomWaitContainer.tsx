@@ -3,6 +3,7 @@ import { useNavigate, useParams, useLocation } from "react-router-dom";
 import axiosInstance from "../../utils/axiosInstance";
 import { useDeviceStore, useLoginedUserStore } from "../../store/store";
 import { checkMediaPermissions } from "../../utils/checkMediaPermission";
+import { useRoomStore } from "../../store/roomStore";
 
 const StudyroomWaitContainer: React.FC = () => {
   const navigate = useNavigate();
@@ -13,7 +14,6 @@ const StudyroomWaitContainer: React.FC = () => {
   const [cameraEnabled, setCameraEnabled] = useState<boolean>(false);
   const [microphoneEnabled, setMicrophoneEnabled] = useState<boolean>(false);
   const [permissionsChecked, setPermissionsChecked] = useState<boolean>(false);
-  const [isCamOffRoom, setIsCamOffRoom] = useState<boolean>(false);
   const {
     camEnabled,
     micEnabled,
@@ -25,12 +25,21 @@ const StudyroomWaitContainer: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const stream = useRef<MediaStream | null>(null);
   const location = useLocation();
+  const { roomCamEnabled } = useRoomStore();
 
   useEffect(() => {
     if (location.state && location.state.needPassword) {
       setPassword(location.state.password);
     }
   }, [location]);
+
+  useEffect(() => {
+    if (!roomCamEnabled) {
+      if (camEnabled) {
+        toggleCam();
+      }
+    }
+  }, [roomCamEnabled]);
 
   useEffect(() => {
     const setupStream = async () => {
@@ -161,7 +170,7 @@ const StudyroomWaitContainer: React.FC = () => {
           <p className="text-[14px]">현재 영상은 다른 사람이 볼 수 없습니다.</p>
         </div>
         <div className="mt-10 flex flex-row gap-5">
-          <button onClick={toggleCam}>
+          <button onClick={toggleCam} disabled={!roomCamEnabled}>
             <img
               src={
                 camEnabled
