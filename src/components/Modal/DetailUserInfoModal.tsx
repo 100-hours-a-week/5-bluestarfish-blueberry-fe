@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axiosInstance from "../../utils/axiosInstance";
 import { useLoginedUserStore } from "../../store/store";
+import ToastNotification from "../common/ToastNotification";
 
 interface DetailUserInfoModalProps {
   closeModal: () => void;
@@ -17,27 +18,54 @@ const DetailUserInfoModal: React.FC<DetailUserInfoModalProps> = ({
 }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { userId } = useLoginedUserStore();
+  const [showAddFriendToast, setShowAddFriendToast] = useState(false);
 
+  const handleCloseAddFriendToast = () => {
+    setShowAddFriendToast(false);
+  };
+
+  // 모달에서 추가 버튼을 눌렀을 때 호출되는 함수
   const addFriend = async () => {
     if (isLoading) return;
-
     try {
       setIsLoading(true);
-      const response = await axiosInstance.post(
-        `${process.env.REACT_APP_API_URL}/api/v1/friends`,
-        {
-          sender_id: userId,
-          receiver_id: receiverId,
-          status: "PENDING",
+      if (receiverId !== null && userId != null) {
+        const response = await axiosInstance.get(
+          `${process.env.REACT_APP_API_URL}/api/v1/users/${receiverId}/notifications`
+        );
+
+        const notifications = response.data.data;
+        const existingFriendRequest = notifications.some(
+          (notification: any) =>
+            notification.sender.id === userId &&
+            notification.notiType === "FRIEND" &&
+            notification.notiStatus === "PENDING"
+        );
+
+        if (existingFriendRequest) {
+          alert("이미 친구 요청을 보냈습니다.");
+          return;
         }
-      );
-      if (response.status === 201) {
-        alert("요청이 성공하였습니다!");
+
+        const requestBody = {
+          receiverId: receiverId,
+          notiType: "FRIEND",
+          notiStatus: "PENDING",
+          commentId: null,
+          roomId: null,
+        };
+
+        await axiosInstance.post(
+          `${process.env.REACT_APP_API_URL}/api/v1/users/${userId}/notifications`,
+          requestBody
+        );
+
+        setShowAddFriendToast(true); // 토스트 메시지 표시
       }
     } catch (error) {
-      // 에러 처리
+      console.error("친구 요청 전송 실패:", error);
     } finally {
-      setIsLoading(false); // 로딩 종료
+      setIsLoading(false);
     }
   };
 
@@ -66,7 +94,14 @@ const DetailUserInfoModal: React.FC<DetailUserInfoModalProps> = ({
         >
           친구추가
         </button>
-      </div>
+      </div>{" "}
+      {showAddFriendToast && (
+        <ToastNotification
+          message="친구 요청 성공!"
+          isSuccess={true}
+          onClose={handleCloseAddFriendToast}
+        />
+      )}
     </div>
   );
 };
