@@ -171,8 +171,7 @@ const AlarmModal: React.FC<AlarmModalProps> = ({ closeModal }) => {
         // 친구 요청 거절을 PATCH 요청으로 전송
         await axiosInstance.patch(`${process.env.REACT_APP_API_URL}/api/v1/users/${userId}/notifications/${notiId}`, requestBody);
 
-        // 알림 리스트에서 해당 알림을 제거하여 화면에서 갱신
-        fetchNotifications();
+        
 
         // alert('친구 요청 거절!');
         setDeclineFriendMessage(notification.sender.nickname + '님의 친구 요청을 거절했어요!');
@@ -183,58 +182,69 @@ const AlarmModal: React.FC<AlarmModalProps> = ({ closeModal }) => {
     }
   };
 
-  const handleAcceptInviteRequest = async (notiId: number, roomId: number) => {
+  const handleDeleteNotification = async (notiId: number) => {
     try {
-      if (notiId !== null && roomId !== null) {
-        // 1. 현재 사용자의 알림 리스트를 조회
-        const response = await axiosInstance.get(
-          `${process.env.REACT_APP_API_URL}/api/v1/users/${userId}/notifications`
-        );
-
-        const notifications = response.data.data;
-
-        // 2. notiId에 해당하는 알림 찾기
-        const notification = notifications.find(
-          (noti: any) => noti.id === notiId && noti.notiType === "ROOM" && noti.notiStatus === "PENDING"
-        );
-
-        if (!notification) {
-          console.error("해당 초대 알림을 찾을 수 없습니다.");
-          return;
-        }
-
-        // 3. 초대 수락 처리 (ACCEPTED로 상태 변경)
-        const requestBody = {
-          receiverId: notification.sender.id,  // 초대를 보낸 사용자
-          notiType: "ROOM",
-          notiStatus: "ACCEPTED",
-          commentId: null,
-          roomId: roomId,  // 초대받은 스터디룸 ID
-        };
-
-        // 초대 수락을 PATCH 요청으로 전송
-        await axiosInstance.patch(`${process.env.REACT_APP_API_URL}/api/v1/users/${userId}/notifications/${notiId}`, requestBody);
-
-        fetchNotifications();
-
-        // 4. 해당 스터디룸 대기 페이지로 이동
-        navigate(`/wait/${roomId}`, {
-          state: { authorized: true }
-        });
-
-      }
+      // 알림 삭제 API 요청
+      await axiosInstance.delete(
+        `${process.env.REACT_APP_API_URL}/api/v1/users/notifications/${notiId}`
+      );
+  
+      // 알림 리스트 갱신
+      fetchNotifications();
     } catch (error) {
-      console.error("스터디룸 초대 수락 실패:", error);
+      console.error("알림 삭제 중 오류 발생:", error);
     }
   };
+  // 일단 스터디룸 초대 수락 기능 생략
+  // const handleAcceptInviteRequest = async (notiId: number, roomId: number) => {
+  //   try {
+  //     if (notiId !== null && roomId !== null) {
+  //       // 1. 현재 사용자의 알림 리스트를 조회
+  //       const response = await axiosInstance.get(
+  //         `${process.env.REACT_APP_API_URL}/api/v1/users/${userId}/notifications`
+  //       );
+
+  //       const notifications = response.data.data;
+
+  //       // 2. notiId에 해당하는 알림 찾기
+  //       const notification = notifications.find(
+  //         (noti: any) => noti.id === notiId && noti.notiType === "ROOM" && noti.notiStatus === "PENDING"
+  //       );
+
+  //       if (!notification) {
+  //         console.error("해당 초대 알림을 찾을 수 없습니다.");
+  //         return;
+  //       }
+
+  //       // 3. 초대 수락 처리 (ACCEPTED로 상태 변경)
+  //       const requestBody = {
+  //         receiverId: notification.sender.id,  // 초대를 보낸 사용자
+  //         notiType: "ROOM",
+  //         notiStatus: "ACCEPTED",
+  //         commentId: null,
+  //         roomId: roomId,  // 초대받은 스터디룸 ID
+  //       };
+
+  //       // 초대 수락을 PATCH 요청으로 전송
+  //       await axiosInstance.patch(`${process.env.REACT_APP_API_URL}/api/v1/users/${userId}/notifications/${notiId}`, requestBody);
+
+  //       fetchNotifications();
+
+  //       // 4. 해당 스터디룸 대기 페이지로 이동
+  //       navigate(`/wait/${roomId}`, {
+  //         state: { authorized: true }
+  //       });
+
+  //     }
+  //   } catch (error) {
+  //     console.error("스터디룸 초대 수락 실패:", error);
+  //   }
+  // };
 
 
 
   return (
-    <div
-      className="fixed inset-0 z-50"
-      onClick={closeModal}
-    >
+    <div className="fixed inset-0 z-50" onClick={closeModal}>
       <div
         className="absolute right-32 mt-[75px] w-[500px] h-[270px] bg-white text-black text-[8px] rounded-[20px] shadow-lg p-2 space-y-1 overflow-y-auto"
         onClick={handleModalClick}
@@ -258,12 +268,13 @@ const AlarmModal: React.FC<AlarmModalProps> = ({ closeModal }) => {
             <div
               key={notification.id}
               className="flex w-full h-[50px] items-center justify-between bg-[#ebeeff] rounded-[10px] p-2 cursor-pointer"
-              onClick={() => handleNotificationClick(notification)} // 알림 클릭 시 게시글 이동
             >
-              <div className="flex items-center space-x-1 w-full justify-between">
+              <div
+                className="flex items-center space-x-1 w-full justify-between"
+                onClick={() => handleNotificationClick(notification)} // 알림 클릭 시 게시글 이동
+              >
                 {notification.notiType === 'MENTION' && (
                   <div className="flex items-center justify-start w-full">
-                    {/* 왼쪽: 프로필 이미지 및 텍스트 */}
                     <img
                       src={`${process.env.PUBLIC_URL}/assets/images/noti-mention.png`}
                       alt="프로필 이미지"
@@ -271,7 +282,9 @@ const AlarmModal: React.FC<AlarmModalProps> = ({ closeModal }) => {
                       className="h-[23px] rounded-full cursor-pointer mr-2"
                     />
                     <div className="flex flex-col">
-                      <div className="font-semibold text-[13px]">{notification.sender.nickname}님의 멘션</div>
+                      <div className="font-semibold text-[13px]">
+                        {notification.sender.nickname}님의 멘션
+                      </div>
                       <div className="text-[12px]">{notification.comment.content}</div>
                     </div>
                   </div>
@@ -279,7 +292,6 @@ const AlarmModal: React.FC<AlarmModalProps> = ({ closeModal }) => {
 
                 {notification.notiType === 'FRIEND' && (
                   <>
-                    {/* 왼쪽: 프로필 이미지 및 텍스트 */}
                     <div className="flex items-center">
                       <img
                         src={`${process.env.PUBLIC_URL}/assets/images/noti-friend.png`}
@@ -292,8 +304,6 @@ const AlarmModal: React.FC<AlarmModalProps> = ({ closeModal }) => {
                         <div className="text-[12px]">{notification.sender.nickname}님이 친구 요청을 보냈어요!</div>
                       </div>
                     </div>
-
-                    {/* 오른쪽: 수락 및 거절 버튼 */}
                     <div className="ml-auto flex space-x-2">
                       <button
                         onClick={() => handleAcceptFriendRequest(notification.id)}
@@ -312,24 +322,27 @@ const AlarmModal: React.FC<AlarmModalProps> = ({ closeModal }) => {
                 )}
 
                 {notification.notiType === 'ROOM' && (
-                  <>
-                    {/* 스터디룸 초대 알림 */}
-                    <div className="flex items-center">
-                      <img
-                        src={`${process.env.PUBLIC_URL}/assets/images/noti-invite.png`}
-                        alt="프로필 이미지"
-                        aria-label="프로필 이미지"
-                        className="h-[23px] rounded-full cursor-pointer mr-2"
-                      />
-                      <div className="flex flex-col">
-                        <div className="font-semibold text-[13px]">스터디룸 초대</div>
-                        <div className="text-[12px]">{notification.sender.nickname}님이 {notification.room.title}에서 기다리고 있어요!</div>
-                      </div>
+                  <div className="flex items-center">
+                    <img
+                      src={`${process.env.PUBLIC_URL}/assets/images/noti-invite.png`}
+                      alt="프로필 이미지"
+                      aria-label="프로필 이미지"
+                      className="h-[23px] rounded-full cursor-pointer mr-2"
+                    />
+                    <div className="flex flex-col">
+                      <div className="font-semibold text-[13px]">스터디룸 초대</div>
+                      <div className="text-[12px]">{notification.sender.nickname}님이 {notification.room.title}에서 기다리고 있어요!</div>
                     </div>
-                  </>
+                  </div>
                 )}
-
               </div>
+              {/* 삭제 아이콘 */}
+              <img
+                src={`${process.env.PUBLIC_URL}/assets/images/trash-icon.png`}
+                alt="삭제"
+                className="h-5 w-5 cursor-pointer ml-4"
+                onClick={() => handleDeleteNotification(notification.id)}
+              />
             </div>
           ))
         )}
@@ -340,11 +353,9 @@ const AlarmModal: React.FC<AlarmModalProps> = ({ closeModal }) => {
       {showDeclineFriendNotiToast && (
         <AlarmToastNotification sender="발신자" message={declineFriendMessage} notiType="FRIEND" onClose={handleCloseDeclineFriendNotiToast} />
       )}
-      {/* {showAcceptInviteNotiToast && (
-        <AlarmToastNotification sender="발신자" message={acceptInviteMessage} notiType="ROOM" onClose={handleCloseAcceptInviteNotiToast} />
-      )} */}
     </div>
   );
+
 };
 
 export default AlarmModal;
