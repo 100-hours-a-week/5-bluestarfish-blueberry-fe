@@ -200,7 +200,7 @@ const StudyroomWaitContainer: React.FC = () => {
                   : `${process.env.PUBLIC_URL}/assets/images/wait-speaker-off.png`
               }
               alt="speaker"
-              className="h-[26px]"
+              className="h-[26px] hidden"
             />
           </button>
         </div>
