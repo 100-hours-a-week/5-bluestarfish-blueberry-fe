@@ -16,23 +16,21 @@ const Sidebar: React.FC<SidebarProps> = ({ toggleSidebar }) => {
 
   return (
     <div className="bg-white w-[400px] text-white fixed right-0 top-0 h-full shadow-lg">
-      <div className="flex justify-between border-b border-black p-5">
+      <div className="flex justify-between border-b border-black py-3 px-3">
         <button className="" onClick={toggleSidebar}>
           <img
             src={`${process.env.PUBLIC_URL}/assets/images/close.png`}
             alt="Exit"
-            className="w-[20px] cursor-pointer"
+            className="w-[14px] cursor-pointer"
           />
         </button>
         <div className="flex items-end gap-1">
           <img
             src={`${process.env.PUBLIC_URL}/assets/images/people.png`}
             alt="People"
-            className="w-[31px]"
+            className="w-[28px]"
           />
-          <p className="text-[20px] text-black font-bold text-shadow-lg">
-            {curUsers}
-          </p>
+          <p className="text-[20px] text-black font-bold">{curUsers}</p>
         </div>
       </div>
       <div className="mt-12 flex justify-center gap-11">

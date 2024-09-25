@@ -79,10 +79,9 @@ const PasswordModal: React.FC<PasswordModalProps> = ({
           />
         </button>
         <form className="text-left" onSubmit={submitContent}>
-          <h2 className="text-lg font-bold text-gray-800 mb-2">
+          <h2 className="text-lg font-bold text-gray-800 mb-4">
             스터디룸 비밀번호를 입력해주세요!
           </h2>
-          <p className="text-sm text-gray-600 mb-4">password Helpertext</p>
           <input
             value={content}
             maxLength={10}

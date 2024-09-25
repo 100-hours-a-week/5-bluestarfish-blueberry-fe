@@ -17,7 +17,6 @@ import SetAuthNicknamePage from "./pages/SetAuthNicknamePage";
 import MyInfoPage from "./pages/MyInfoPage";
 import FriendListPage from "./pages/FriendListPage";
 import FriendSearchPage from "./pages/FriendSearchPage";
-import Home from "./components/common/test/Test";
 import NotificationComponent from "./components/notification/NotificationComponent";
 
 function App() {
@@ -33,7 +32,6 @@ function App() {
         <Route path="/recruit/create" element={<RecruitStudyCreatePage />} />
         <Route path="/recruit/:id" element={<RecruitStudyDetailPage />} />
         <Route path="/studyroom/create" element={<CreateStudyRoomPage />} />
-        <Route path="/test/:roomId" element={<Home />} />
         <Route path="/mypage" element={<MyInfoPage />} />
         <Route
           path="/recruit/update/:id"
