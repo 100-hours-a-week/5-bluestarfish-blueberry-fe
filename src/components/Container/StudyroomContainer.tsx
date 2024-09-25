@@ -82,6 +82,7 @@ const StudyroomContainer: React.FC<StudyroomContainerProps> = ({
 
   useEffect(() => {
     if (wsRef.current) setVideo();
+    console.log(usersRef.current);
   }, [usersRef.current]);
 
   useEffect(() => {
@@ -495,6 +496,7 @@ const StudyroomContainer: React.FC<StudyroomContainerProps> = ({
       micEnabled: micEnabled,
       speakerEnabled: speakerEnabled,
     };
+    console.log(message);
     sendMessage(message);
   };
 

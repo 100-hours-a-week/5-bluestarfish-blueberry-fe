@@ -1,5 +1,7 @@
+import React, { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLoginedUserStore } from "../../store/store";
+import axiosInstance from "../../utils/axiosInstance";
 
 type StudyroomMTNProps = {
   id: number;
@@ -27,17 +29,49 @@ const StudyroomMTN: React.FC<StudyroomMTNProps> = ({
   setClickedRoomId,
 }) => {
   const navigate = useNavigate(); // 페이지 이동을 위한 useNavigate 훅
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const { userId } = useLoginedUserStore();
-  const enterStudyRoom = () => {
+  const enterEnabledRef = useRef<boolean>(false);
+  const enterStudyRoom = async () => {
+    await fetchStudyRooms();
     if (userId == 0) {
       alert("로그인이 필요한 서비스입니다!");
-    } else if (needPassword) {
+      return;
+    }
+    if (!enterEnabledRef.current) {
+      alert(
+        "스터디룸 정원이 모두 가득 찼습니다. 다른 스터디룸을 이용해주세요."
+      );
+      return;
+    }
+    if (needPassword) {
       setClickedRoomId(id);
       openModal();
     } else
       navigate(`/wait/${id}`, {
         state: { authorized: true, needPassword: false },
       });
+  };
+
+  const fetchStudyRooms = async (reset: boolean = false): Promise<void> => {
+    if (isLoading) return;
+    try {
+      setIsLoading(true);
+
+      const response = await axiosInstance.get(
+        `${process.env.REACT_APP_API_URL}/api/v1/rooms/${id}`
+      );
+      const roomData = response.data.data;
+      if (roomData.maxUsers > roomData.userRooms.length) {
+        enterEnabledRef.current = true;
+      } else {
+        enterEnabledRef.current = false;
+      }
+    } catch (error) {
+      console.error("스터디룸 목록을 불러오지 못했습니다:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
