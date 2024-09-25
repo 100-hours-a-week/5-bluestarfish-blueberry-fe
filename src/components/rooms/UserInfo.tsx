@@ -33,7 +33,7 @@ const UserInfo: React.FC<UserInfoProps> = ({
         onClick={openDetailModal}
         className="flex flex-row items-center w-[390px] h-[50px] rounded-[10px] p-3 bg-[#EBEEFF] justify-between text-black font-bold text-[13px] shadow-lg"
       >
-        <div className="flex gap-2">
+        <div className="flex gap-2 items-center">
           <img
             src={
               profileImage ||
@@ -42,7 +42,7 @@ const UserInfo: React.FC<UserInfoProps> = ({
             alt="user-profile"
             className="h-[23px] w-[23px]"
           />
-          <p>{nickname}</p>
+          <p className="text-[13px] font-bold ">{nickname}</p>
         </div>
         <div className="flex gap-4">
           <div className="">

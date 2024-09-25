@@ -6,6 +6,7 @@ import ChatStartMessage from "../rooms/ChatStartMessage";
 import ChatEndMessage from "../rooms/ChatEndMessage";
 import axiosInstance from "../../utils/axiosInstance";
 import { useLoginedUserStore } from "../../store/store";
+import { parseDate } from "../../utils/parseData";
 
 type ChatContainerProps = {};
 
@@ -115,7 +116,7 @@ const ChatContainer: React.FC<ChatContainerProps> = () => {
                 <ChatEndMessage
                   key={index} // 배열의 각 항목에 고유한 key 값 설정
                   senderNickname={msg.senderNickname}
-                  createdAt={msg.createdAt}
+                  createdAt={parseDate(msg.createdAt)}
                   message={msg.message}
                   senderProfileImage={msg.senderProfileImage}
                   // senderProfileImage=""
@@ -124,7 +125,7 @@ const ChatContainer: React.FC<ChatContainerProps> = () => {
                 <ChatStartMessage
                   key={index} // 배열의 각 항목에 고유한 key 값 설정
                   senderNickname={msg.senderNickname}
-                  createdAt={msg.createdAt}
+                  createdAt={parseDate(msg.createdAt)}
                   message={msg.message}
                   senderProfileImage={msg.senderProfileImage}
                   // senderProfileImage=""

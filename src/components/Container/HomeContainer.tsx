@@ -18,13 +18,15 @@ const HomeContainer: React.FC<HomeContainerProps> = () => {
 
   return (
     <div className="m-2 flex flex-col h-full">
-      <Timer />
+      <div className="flex flex-col items-center">
+        <Timer />
+      </div>
       <div className="flex justify-end mt-4">
         <button
           className="mt-2 mr-2 bg-[#4659AA] text-white font-bold py-1 px-3 rounded-[15px] text-[12px]"
           onClick={openInviteModal}
         >
-          초대
+          친구 초대
         </button>
       </div>
       <UserInfoContainer />
