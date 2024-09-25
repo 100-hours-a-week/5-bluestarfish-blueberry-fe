@@ -82,7 +82,6 @@ const StudyroomContainer: React.FC<StudyroomContainerProps> = ({
 
   useEffect(() => {
     if (wsRef.current) setVideo();
-    console.log(usersRef.current);
   }, [usersRef.current]);
 
   useEffect(() => {
@@ -452,7 +451,6 @@ const StudyroomContainer: React.FC<StudyroomContainerProps> = ({
     const userToUpdate = usersRef.current.find(
       (user) => user.nickname === parsedMessage.sender
     );
-    console.log(usersRef.current);
     if (userToUpdate) {
       updateUser(userToUpdate.id, { camEnabled: parsedMessage.isCamOn });
     } else {
@@ -496,7 +494,6 @@ const StudyroomContainer: React.FC<StudyroomContainerProps> = ({
       micEnabled: micEnabled,
       speakerEnabled: speakerEnabled,
     };
-    console.log(message);
     sendMessage(message);
   };
 

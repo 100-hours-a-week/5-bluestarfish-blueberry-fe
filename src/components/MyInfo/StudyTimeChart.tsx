@@ -86,7 +86,7 @@ const StudyTimeChart = () => {
         "
         >
           {/* 설명 텍스트 - 차트 중앙 */}
-          <div className="absolute inset-0 flex flex-col items-center justify-center z-10">
+          <div className="absolute inset-0 flex flex-col items-center justify-center z-10 pointer-events-none">
             <span className="text-lg font-bold text-gray-700 bg-white bg-opacity-75 p-2 rounded-md">
               기록된 데이터가 없습니다.
             </span>
@@ -94,7 +94,6 @@ const StudyTimeChart = () => {
               테스트 데이터로 표시된 차트입니다.
             </span>
           </div>
-
           <ResponsiveContainer width="100%" height={300}>
             <BarChart
               data={isWeekly ? weeklyData : monthlyData} // 주간 또는 월간 데이터
@@ -125,7 +124,6 @@ const StudyTimeChart = () => {
               />
             </BarChart>
           </ResponsiveContainer>
-
           {/* 하단 설명 텍스트 */}
           <div className="text-left -mt-5">
             {isWeekly ? (
