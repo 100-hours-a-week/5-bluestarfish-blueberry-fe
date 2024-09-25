@@ -749,7 +749,9 @@ const StudyroomContainer: React.FC<StudyroomContainerProps> = ({
                 : `${process.env.PUBLIC_URL}/assets/images/room-speaker-off.png`
             }
             alt="speaker"
-            className="w-[27px] h-[26px] mb-[2px]"
+            className="w-[27px] h-[26px] mb-[2px] 
+            hidden
+            "
           />
         </button>
         <button onClick={handleExitButton}>
