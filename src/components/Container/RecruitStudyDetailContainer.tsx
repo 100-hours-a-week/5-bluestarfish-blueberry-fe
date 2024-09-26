@@ -20,8 +20,8 @@ const RecruitStudyDetailContainer: React.FC = () => {
   const [studyRoom, setStudyRoom] = useState<any | null>(null);
   const [currentUser, setCurrentUser] = useState<any | null>(null);
   const [mentionId, setMentionId] = useState<number | null>(null);
-  const [page, setPage] = useState(0); // 페이지 상태 추가
-  const [totalPages, setTotalPages] = useState(1); // 총 페이지 수 상태 추가
+  const [page, setPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
   const observer = useRef<IntersectionObserver | null>(null);
 
   const studyId = id ? parseInt(id, 10) : null;
@@ -103,8 +103,8 @@ const RecruitStudyDetailContainer: React.FC = () => {
           });
         }
 
-        await fetchComments(0); // 첫 페이지 댓글 로드
-        setPage(1); // 페이지를 1로 설정 (다음에 불러올 페이지는 1)
+        await fetchComments(0); 
+        setPage(1); 
       } catch (error: unknown) {
         console.error("게시글을 불러오지 못했습니다:", getErrorMessage(error));
         alert("해당 게시글을 찾을 수 없습니다.");
@@ -121,7 +121,7 @@ const RecruitStudyDetailContainer: React.FC = () => {
     const handleObserver = (entries: IntersectionObserverEntry[]) => {
       if (entries[0].isIntersecting && page < totalPages) {
         fetchComments(page);
-        setPage((prevPage) => prevPage + 1); // 페이지 증가
+        setPage((prevPage) => prevPage + 1); 
       }
     };
 
@@ -174,14 +174,14 @@ const RecruitStudyDetailContainer: React.FC = () => {
       );
 
       if (response.status === 201 && response.data) {
-        const createdCommentId = response.data.data.id; // 생성된 댓글 ID 가져옴
-        setComments([]); // 기존 댓글 초기화
-        setPage(0); // 페이지 초기화
-        await fetchComments(0); // 첫 페이지 댓글 다시 로드
-        setPage(1); // 페이지를 1로 설정
+        const createdCommentId = response.data.data.id;
+        setComments([]); 
+        setPage(0); 
+        await fetchComments(0); 
+        setPage(1); 
         setMentionId(null);
 
-        return createdCommentId; // 생성된 댓글 ID 반환
+        return createdCommentId;
       } else {
         alert("댓글 작성에 실패했습니다.");
         return null;
@@ -255,7 +255,7 @@ const RecruitStudyDetailContainer: React.FC = () => {
   const isAuthor = study.userResponse.id === currentUser?.id;
 
   return (
-    <div className="container mx-auto p-4 mt-[100px] w-[1000px] h-full">
+    <div className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-10 xl:px-20 mt-[100px] max-w-[1200px] h-full">
       <StudyHeader
         study={study}
         isRecruited={isRecruited}
