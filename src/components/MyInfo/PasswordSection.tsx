@@ -34,13 +34,15 @@ const PasswordSection: React.FC<PasswordSectionProps> = ({
                     type="password"
                     value={password}
                     onChange={handlePasswordChange}
-                    className="w-full h-12 p-3 pr-24 text-gray-700 border-b border-gray-300 rounded-lg focus:outline-none focus:border-[#4558A9] hover:border-[#4558A9]"
+                    className="w-full h-12 p-3 text-gray-700 border-b border-gray-300 rounded-lg focus:outline-none focus:border-[#4558A9] hover:border-[#4558A9] placeholder:text-xs sm:placeholder:text-xs md:placeholder:text-base"
                     placeholder="8~16자, 영문, 숫자, 특수문자 포함"
                 />
                 <p className={`absolute text-xs italic mt-2 ${passwordError ? "text-red-500" : "text-blue-500"}`}>
                     {passwordError}
                 </p>
             </div>
+
+
 
             <div className="mb-8 w-full">
                 <div className="w-full text-left mb-2">
@@ -52,7 +54,7 @@ const PasswordSection: React.FC<PasswordSectionProps> = ({
                     type="password"
                     value={confirmPassword}
                     onChange={handleConfirmPasswordChange}
-                    className="w-full h-12 p-3 pr-24 text-gray-700 border-b border-gray-300 rounded-lg focus:outline-none focus:border-[#4558A9] hover:border-[#4558A9]"
+                    className="w-full h-12 p-3 text-gray-700 border-b border-gray-300 rounded-lg focus:outline-none focus:border-[#4558A9] hover:border-[#4558A9] placeholder:text-xs sm:placeholder:text-xs md:placeholder:text-base"
                     placeholder="비밀번호를 한 번 더 입력하세요"
                 />
                 <p className={`absolute text-xs italic mt-2 ${confirmPasswordError ? "text-red-500" : "text-blue-500"}`}>

@@ -34,7 +34,7 @@ const TabBar: React.FC<TabBarProps> = ({ activeIndex, setActiveIndex, tabs, page
       // 작은 화면 (모바일 등)
       switch (pageType) {
         case 'myInfo':
-          return `calc(${activeIndex * 50}% + 20px)`; // 모바일 마이 페이지에서 밑줄 위치
+          return `calc(${activeIndex * 50}% + 25px)`; // 모바일 마이 페이지에서 밑줄 위치
         case 'createPost':
           return `calc(${activeIndex * 50}% + ${activeIndex === 0 ? '55px' : '60px'})`; // 모바일 게시글 페이지에서 밑줄 위치
         case 'updatePost':
@@ -46,7 +46,7 @@ const TabBar: React.FC<TabBarProps> = ({ activeIndex, setActiveIndex, tabs, page
       // 중간 화면 (태블릿 등)
       switch (pageType) {
         case 'myInfo':
-          return `calc(${activeIndex * 50}% + 50px)`; // 태블릿 마이 페이지에서 밑줄 위치
+          return `calc(${activeIndex * 50}% + 60px)`; // 태블릿 마이 페이지에서 밑줄 위치
         case 'createPost':
           return `calc(${activeIndex * 50}% + ${activeIndex === 0 ? '85px' : '85px'})`; // 태블릿 게시글 페이지에서 밑줄 위치
         case 'updatePost':
@@ -58,7 +58,7 @@ const TabBar: React.FC<TabBarProps> = ({ activeIndex, setActiveIndex, tabs, page
       // 중간 화면 (태블릿 등)
       switch (pageType) {
         case 'myInfo':
-          return `calc(${activeIndex * 50}% + 50px)`; // 태블릿 마이 페이지에서 밑줄 위치
+          return `calc(${activeIndex * 50}% + ${activeIndex === 0 ? '90px' : '95px'})`;
         case 'createPost':
           return `calc(${activeIndex * 50}% + ${activeIndex === 0 ? '105px' : '110px'})`; // 태블릿 게시글 페이지에서 밑줄 위치
         case 'updatePost':
@@ -70,7 +70,7 @@ const TabBar: React.FC<TabBarProps> = ({ activeIndex, setActiveIndex, tabs, page
       // 큰 화면 (데스크탑 등)
       switch (pageType) {
         case 'myInfo':
-          return `calc(${activeIndex * 50}% + 87px)`; // 데스크탑 마이 페이지에서 밑줄 위치
+          return `calc(${activeIndex * 50}% + ${activeIndex === 0 ? '100px' : '105px'})`;
         case 'createPost':
         case 'updatePost':
           return `calc(${activeIndex * 50}% + ${activeIndex === 0 ? '110px' : '115px'})`;
