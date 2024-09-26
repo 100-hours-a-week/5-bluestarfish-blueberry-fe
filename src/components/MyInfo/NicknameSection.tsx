@@ -34,7 +34,7 @@ const NicknameSection: React.FC<NicknameSectionProps> = ({
             type="text"
             value={nickname}
             onChange={handleNicknameChange}
-            className="w-full h-12 p-3 pr-24 text-gray-700 border-b border-gray-300 rounded-lg focus:outline-none focus:border-[#4558A9] hover:border-[#4558A9]"
+            className="w-full h-12 p-3 pr-24 text-gray-700 border-b border-gray-300 rounded-lg focus:outline-none focus:border-[#4558A9] hover:border-[#4558A9] placeholder:text-xs sm:placeholder:text-xs md:placeholder:text-base"
             placeholder="새 닉네임을 입력하세요"
           />
           <p
