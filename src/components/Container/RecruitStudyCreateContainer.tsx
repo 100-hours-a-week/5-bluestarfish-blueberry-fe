@@ -202,7 +202,7 @@ const RecruitStudyCreateContainer: React.FC = () => {
       
         <div className="w-full max-w-3xl">
         <div className="mx-[10px]">
-          <TabBar activeIndex={activeTab} setActiveIndex={setActiveTab} tabs={tabData} pageType="post" />
+          <TabBar activeIndex={activeTab} setActiveIndex={setActiveTab} tabs={tabData} pageType="createPost" />
 
           {activeTab === 0 ? (
             <>

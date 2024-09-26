@@ -177,7 +177,7 @@ const RecruitStudyUpdateContainer: React.FC = () => {
   ];
 
   return (
-    <div className="container mx-auto flex flex-col items-center mt-10">
+    <div className="container mx-auto flex flex-col items-center mt-10 px-5">
       <h1 className="text-2xl font-bold mb-8 text-black">✍🏻 게시글 수정 ✍🏻</h1>
       <div className="w-full max-w-3xl">
         {/* 탭 바 컴포넌트 */}
@@ -185,7 +185,7 @@ const RecruitStudyUpdateContainer: React.FC = () => {
           activeIndex={activeTab}
           setActiveIndex={setActiveTab}
           tabs={tabData}
-          pageType="post"
+          pageType="updatePost"
         />
 
         {/* 활성화된 탭에 따라 다른 폼을 렌더링 */}
