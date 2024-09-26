@@ -107,7 +107,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({
 
         setComment(""); // 댓글 입력란 초기화
         setMention(null); // 멘션 초기화
-        // window.location.reload(); // 페이지 리로드
+        window.location.reload(); // 페이지 리로드
       } else {
         console.error("댓글 ID를 가져오는 데 실패했습니다.");
       }
