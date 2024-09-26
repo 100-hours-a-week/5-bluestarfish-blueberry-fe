@@ -34,19 +34,35 @@ const TabBar: React.FC<TabBarProps> = ({ activeIndex, setActiveIndex, tabs, page
       // 작은 화면 (모바일 등)
       switch (pageType) {
         case 'myInfo':
-          return `calc(${activeIndex * 50}% + 20px)`; // 모바일 마이 페이지에서 밑줄 위치
-        case 'post':
-          return `calc(${activeIndex * 50}% + ${activeIndex === 0 ? '60px' : '60px'})`; // 모바일 게시글 페이지에서 밑줄 위치
+          return `calc(${activeIndex * 50}% + 25px)`; // 모바일 마이 페이지에서 밑줄 위치
+        case 'createPost':
+          return `calc(${activeIndex * 50}% + ${activeIndex === 0 ? '55px' : '60px'})`; // 모바일 게시글 페이지에서 밑줄 위치
+        case 'updatePost':
+          return `calc(${activeIndex * 50}% + ${activeIndex === 0 ? '55px' : '55px'})`;
         default:
           return `calc(${activeIndex * 50}% + ${activeIndex === 0 ? '30px' : '30px'})`; // 모바일 기본 위치
+      }
+    } else if (screenWidth < 768) {
+      // 중간 화면 (태블릿 등)
+      switch (pageType) {
+        case 'myInfo':
+          return `calc(${activeIndex * 50}% + 60px)`; // 태블릿 마이 페이지에서 밑줄 위치
+        case 'createPost':
+          return `calc(${activeIndex * 50}% + ${activeIndex === 0 ? '85px' : '85px'})`; // 태블릿 게시글 페이지에서 밑줄 위치
+        case 'updatePost':
+          return `calc(${activeIndex * 50}% + ${activeIndex === 0 ? '85px' : '85px'})`;
+        default:
+          return `calc(${activeIndex * 50}% + ${activeIndex === 0 ? '65px' : '65px'})`; // 태블릿 기본 위치
       }
     } else if (screenWidth < 1024) {
       // 중간 화면 (태블릿 등)
       switch (pageType) {
         case 'myInfo':
-          return `calc(${activeIndex * 50}% + 50px)`; // 태블릿 마이 페이지에서 밑줄 위치
-        case 'post':
-          return `calc(${activeIndex * 50}% + ${activeIndex === 0 ? '85px' : '85px'})`; // 태블릿 게시글 페이지에서 밑줄 위치
+          return `calc(${activeIndex * 50}% + ${activeIndex === 0 ? '90px' : '95px'})`;
+        case 'createPost':
+          return `calc(${activeIndex * 50}% + ${activeIndex === 0 ? '105px' : '110px'})`; // 태블릿 게시글 페이지에서 밑줄 위치
+        case 'updatePost':
+          return `calc(${activeIndex * 50}% + ${activeIndex === 0 ? '100px' : '110px'})`;
         default:
           return `calc(${activeIndex * 50}% + ${activeIndex === 0 ? '65px' : '65px'})`; // 태블릿 기본 위치
       }
@@ -54,9 +70,10 @@ const TabBar: React.FC<TabBarProps> = ({ activeIndex, setActiveIndex, tabs, page
       // 큰 화면 (데스크탑 등)
       switch (pageType) {
         case 'myInfo':
-          return `calc(${activeIndex * 50}% + 87px)`; // 데스크탑 마이 페이지에서 밑줄 위치
-        case 'post':
-          return `calc(${activeIndex * 50}% + ${activeIndex === 0 ? '110px' : '110px'})`; // 데스크탑 게시글 페이지에서 밑줄 위치
+          return `calc(${activeIndex * 50}% + ${activeIndex === 0 ? '100px' : '105px'})`;
+        case 'createPost':
+        case 'updatePost':
+          return `calc(${activeIndex * 50}% + ${activeIndex === 0 ? '110px' : '115px'})`;
         default:
           return `calc(${activeIndex * 50}% + ${activeIndex === 0 ? '95px' : '95px'})`; // 데스크탑 기본 위치
       }
@@ -94,9 +111,8 @@ const TabBar: React.FC<TabBarProps> = ({ activeIndex, setActiveIndex, tabs, page
         {tabs.map((tab, index) => (
           <div
             key={index}  // 각 탭에 고유한 키를 부여
-            className={`flex flex-grow justify-center items-center cursor-pointer transition-all duration-500 ease-in-out ${
-              activeIndex === index ? 'text-[#4659AA] scale-110' : 'text-gray-500 scale-100'
-            }`}  // 활성화된 탭은 색상과 크기가 다르게 표시
+            className={`flex flex-grow justify-center items-center cursor-pointer transition-all duration-500 ease-in-out ${activeIndex === index ? 'text-[#4659AA] scale-110' : 'text-gray-500 scale-100'
+              }`}  // 활성화된 탭은 색상과 크기가 다르게 표시
             onClick={() => handleTabClick(index)}  // 탭 클릭 시 해당 탭의 인덱스를 활성화된 인덱스로 설정
           >
             <div className="flex items-center transition-all duration-500 ease-in-out">
@@ -110,9 +126,8 @@ const TabBar: React.FC<TabBarProps> = ({ activeIndex, setActiveIndex, tabs, page
                 }}
               />
               <span
-                className={`ml-2 font-bold relative transition-opacity duration-800 ease-in-out ${textSize} ${
-                  activeIndex === index ? 'text-[#4659AA]' : ''
-                }`}  // 활성화된 탭의 텍스트는 색상이 변경되고 크기 설정
+                className={`ml-2 font-bold relative transition-opacity duration-800 ease-in-out ${textSize} ${activeIndex === index ? 'text-[#4659AA]' : ''
+                  }`}  // 활성화된 탭의 텍스트는 색상이 변경되고 크기 설정
               >
                 <span>{tab.name}</span>
               </span>

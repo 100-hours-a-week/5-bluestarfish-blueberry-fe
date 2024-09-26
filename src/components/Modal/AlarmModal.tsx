@@ -246,7 +246,7 @@ const AlarmModal: React.FC<AlarmModalProps> = ({ closeModal }) => {
   return (
     <div className="fixed inset-0 z-50" onClick={closeModal}>
       <div
-        className="absolute right-32 mt-[75px] w-[500px] h-[270px] bg-white text-black text-[8px] rounded-[20px] shadow-lg p-2 space-y-1 overflow-y-auto"
+        className="absolute sm:right-0 md:right-16 lg:right-40 xl:right-72 mt-[85px] w-[500px] h-[270px] bg-white text-black text-[8px] rounded-[20px] shadow-lg p-2 space-y-1 overflow-y-auto"
         onClick={handleModalClick}
       >
         <div className="flex items-center m-1 space-x-2 mt-2 mb-5">

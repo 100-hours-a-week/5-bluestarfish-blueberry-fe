@@ -457,14 +457,14 @@ const MyInfoContainer: React.FC = () => {
                 <>
                   <button
                     onClick={handleCancelClick}
-                    className="bg-red-500 text-white font-semibold px-6 py-2 rounded-full shadow-lg hover:bg-red-600 mt-8"
+                    className="bg-red-500 text-white font-semibold px-4 py-2 rounded-full shadow-lg hover:bg-red-600 mt-8 text-sm"
                   >
                     취소
                   </button>
                   <button
                     onClick={patchUser}
                     disabled={!isFormValid && !isLoading} // 폼이 유효하지 않으면 버튼 비활성화
-                    className={`px-6 py-2 mt-8 rounded-full shadow-lg font-semibold ${
+                    className={`px-6 py-2 mt-8 rounded-full shadow-lg font-semibold text-sm ${
                       isFormValid || isLoading
                         ? "bg-[#4659AA] text-white hover:bg-[#3b4a99]"
                         : "bg-gray-400 text-gray-300 cursor-not-allowed"
@@ -477,13 +477,13 @@ const MyInfoContainer: React.FC = () => {
                 <>
                   <button
                     onClick={() => setShowWithdrawModal(true)}
-                    className="bg-red-500 text-white font-semibold px-6 py-2 rounded-full shadow-lg hover:bg-red-600"
+                    className="bg-red-500 text-white font-semibold px-6 py-2 rounded-full shadow-lg hover:bg-red-600 text-sm"
                   >
                     회원 탈퇴
                   </button>
                   <button
                     onClick={handleEditClick}
-                    className="bg-[#4659AA] text-white font-semibold px-6 py-2 rounded-full shadow-lg hover:bg-[#3b4a99]"
+                    className="bg-[#4659AA] text-white font-semibold px-6 py-2 rounded-full shadow-lg hover:bg-[#3b4a99] text-sm"
                   >
                     정보 수정
                   </button>

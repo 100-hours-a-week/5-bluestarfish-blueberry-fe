@@ -149,7 +149,7 @@ const StudyroomWaitContainer: React.FC = () => {
         onClick={exitWaitPage}
       />
       <div className="w-full flex flex-col items-center justify-center">
-        <p className="text-[25px] font-bold text-shadow-sm text-black mb-3">
+        <p className="text-[25px] font-bold text-black mb-3">
           스터디 룸 대기실
         </p>
         <div
