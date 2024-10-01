@@ -3,15 +3,15 @@
 ## 📷 프로젝트 소개
 실시간 화상채팅 스터디 캠 서비스
 - **프로젝트의 목적 & 대상**:
-  - 나와 비슷한 목표를 가진 사람들과 함께 동기부여하며 공부하고 싶은 사람들을 위함
-  - 장소 제약 없이 스터디에 참여하고 싶은 사람들을 위한 솔루션
+  - `비슷한 목표를 가진 사람들`과 함께 `동기부여`하며 공부하고 싶은 사람들을 위함
+  - `장소 제약 없이` 스터디에 참여하고 싶은 사람들을 위한 솔루션
 
 - **주요 기능**:
-  - **목적에 맞는 스터디룸** 생성 & 참여 가능 (캠켜공 or 캠끄공)
-  - **커뮤니티**를 통한 스터디룸 or 스터디원 모집
-  - **친구 추가 & 초대** 기능을 통해 지인과 함께 공부
-  - 최대 **5명**까지 스터디룸 참여 가능, **화상 채팅** 및 **일반 채팅** 지원
-  - **랭킹** 및 **나의 스터디 시간 차트 제공**
+  - `목적에 맞는 스터디룸` 생성 & 참여 가능 (캠켜공 or 캠끄공)
+  - `커뮤니티`를 통한 스터디룸 or 스터디원 모집
+  - `친구 추가 & 초대` 기능을 통해 지인과 함께 공부
+  - 최대 `5명`까지 스터디룸 참여 가능, `화상 채팅` 및 `일반 채팅` 지원
+  - `랭킹` 및 `나의 스터디 시간 차트` 제공
 
 ## 🏷️ 구조도
 ![blueberry 구조도](https://github.com/user-attachments/assets/162d72ab-4c2e-45ee-99e4-6fd03719d2cc)
@@ -81,7 +81,7 @@ npm run test
 
 `커뮤니티`
 |게시글 목록|게시글 작성(멤버 찾기)|게시글 작성(룸 찾기)
-|-----|-----|
+|-----|-----|-----|
 |<img width="1512" alt="image" src="https://github.com/user-attachments/assets/ca462383-3c2e-4935-806d-58caf5c2cac5">|![image](https://github.com/user-attachments/assets/05fda778-b9d7-4b26-860d-f324ff1e2334)|![image](https://github.com/user-attachments/assets/4ce171cc-dba1-4ac3-9ea7-5bcc866ae26f)|
 
 
@@ -98,3 +98,9 @@ npm run test
 |친구 목록|친구 검색|
 |-----|-----|
 |<img width="1512" alt="image" src="https://github.com/user-attachments/assets/e327c4b5-49a6-41a9-b94b-968f99cb1072">|<img width="1512" alt="image" src="https://github.com/user-attachments/assets/62a94bee-a62e-4b29-b5ff-7b72b224617b">|
+
+## 🪐 트러블 슈팅
+| 정예지 ([@yeji0214](https://github.com/yeji0214))|
+|-------|
+[헬퍼텍스트 색상 변경 안 되는 문제 - (Tailwind CSS)](https://devyeji.tistory.com/entry/KTB-%ED%8C%8C%EC%9D%B4%EB%84%90-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-%ED%8A%B8%EB%9F%AC%EB%B8%94-%EC%8A%88%ED%8C%85-%ED%97%AC%ED%8D%BC%ED%85%8D%EC%8A%A4%ED%8A%B8-%EC%83%89%EC%83%81-%EB%B3%80%EA%B2%BD-%EC%95%88-%EB%90%98%EB%8A%94-%EB%AC%B8%EC%A0%9C-Tailwind-CSS)|
+|[input 포커스 시 밑줄 색상 변경 문제 (Tailwind CSS - peer)](https://devyeji.tistory.com/entry/KTB-%ED%8C%8C%EC%9D%B4%EB%84%90-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-%ED%8A%B8%EB%9F%AC%EB%B8%94-%EC%8A%88%ED%8C%85-input-%ED%8F%AC%EC%BB%A4%EC%8A%A4-%EC%8B%9C-%EB%B0%91%EC%A4%84-%EC%83%89%EC%83%81-%EB%B3%80%EA%B2%BD-%EB%AC%B8%EC%A0%9C-Tailwind-CSS-peer)|
