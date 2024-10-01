@@ -63,36 +63,38 @@ npm run test
 `인증`
 |로그인|회원가입|
 |-----|-----|
-|||
+|<img width="1512" alt="image" src="https://github.com/user-attachments/assets/6da0ce25-1089-41ba-9169-6eee3cff8c92">|<img width="1512" alt="image" src="https://github.com/user-attachments/assets/24d13d55-0da3-4ff4-9ba0-f7bd7f83b01d">|
 
 `스터디룸`
 |스터디룸 목록|스터디룸 생성|
 |-----|-----|
-|||
+|<img width="1512" alt="image" src="https://github.com/user-attachments/assets/1f1874d0-d900-4782-af8d-18348d60c00a">|![image](https://github.com/user-attachments/assets/64750d65-eb75-49c4-92d5-fa44d6e0cd5a)|
 
 |스터디룸 입장 대기|스터디룸 입장|
 |-----|-----|
-|||
+|![image](https://github.com/user-attachments/assets/bd85f2e0-0ebc-48ec-98d4-39437f1dfe3b)|![image](https://github.com/user-attachments/assets/72a1f158-23be-4038-8a44-983a8d3b7d7c)|
 
+`스터디룸 내 사이드 바`
 |타이머|친구 초대|채팅|
 |-----|-----|-----|
-||||
+|<img width="399" alt="image" src="https://github.com/user-attachments/assets/354d8e4c-d9e5-4d83-9122-f4ac1c019b4a">|<img width="529" alt="image" src="https://github.com/user-attachments/assets/97eeb850-a629-4f01-be5c-a79dae3f8ca1">|<img width="399" alt="image" src="https://github.com/user-attachments/assets/2b22fed2-6efd-4be7-9eb3-ca7751830460">|
 
 `커뮤니티`
-|게시글 목록|게시글 작성|
+|게시글 목록|게시글 작성(멤버 찾기)|게시글 작성(룸 찾기)
 |-----|-----|
-|||
+|<img width="1512" alt="image" src="https://github.com/user-attachments/assets/ca462383-3c2e-4935-806d-58caf5c2cac5">|![image](https://github.com/user-attachments/assets/05fda778-b9d7-4b26-860d-f324ff1e2334)|![image](https://github.com/user-attachments/assets/4ce171cc-dba1-4ac3-9ea7-5bcc866ae26f)|
+
 
 |게시글 상세|게시글 수정|
 |-----|-----|
-|||
+|![image](https://github.com/user-attachments/assets/76773b4d-053e-416d-816e-89ebbd6e5c1a)|![image](https://github.com/user-attachments/assets/aeeb4368-f9f3-42d1-ace4-6dc25151920c)|
 
 `마이 페이지`
 |나의 정보|나의 정보 수정|나의 스터디|
 |-----|-----|-----|
-||||
+|![image](https://github.com/user-attachments/assets/8eb4e5bd-0b1a-4785-b7de-74e3814f2350)|![image](https://github.com/user-attachments/assets/166b402b-bef7-4078-8673-1f75fb794784)|![image](https://github.com/user-attachments/assets/5297bb05-4697-43c9-8d72-af063f315a00)|
 
 `친구 관리`
 |친구 목록|친구 검색|
 |-----|-----|
-|||
+|<img width="1512" alt="image" src="https://github.com/user-attachments/assets/e327c4b5-49a6-41a9-b94b-968f99cb1072">|<img width="1512" alt="image" src="https://github.com/user-attachments/assets/62a94bee-a62e-4b29-b5ff-7b72b224617b">|
