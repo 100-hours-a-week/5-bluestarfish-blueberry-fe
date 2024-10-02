@@ -52,7 +52,7 @@ npm run test
 ## 🧑🏻‍💻 프론트엔드 개발자
 | 정예지 ([@yeji0214](https://github.com/yeji0214)) | 김성현 ([@boozeal](https://github.com/boozeal))|
 |-------|-------|
-`UI` `API 연결` `SSE 알림`||
+`API 연결` `UI` `SSE 알림`|| `API 연결` `WebSocket(FE)` `WebRTC(FE)`
 
 ## 🖥️ 서비스 화면
 `메인`
