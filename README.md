@@ -102,5 +102,6 @@ npm run test
 ## 🪐 트러블 슈팅
 | 정예지 ([@yeji0214](https://github.com/yeji0214))|
 |-------|
-[헬퍼텍스트 색상 변경 안 되는 문제 - (Tailwind CSS)](https://devyeji.tistory.com/entry/KTB-%ED%8C%8C%EC%9D%B4%EB%84%90-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-%ED%8A%B8%EB%9F%AC%EB%B8%94-%EC%8A%88%ED%8C%85-%ED%97%AC%ED%8D%BC%ED%85%8D%EC%8A%A4%ED%8A%B8-%EC%83%89%EC%83%81-%EB%B3%80%EA%B2%BD-%EC%95%88-%EB%90%98%EB%8A%94-%EB%AC%B8%EC%A0%9C-Tailwind-CSS)|
+[헬퍼텍스트 색상 변경 안 되는 문제 (Tailwind CSS)](https://devyeji.tistory.com/entry/KTB-%ED%8C%8C%EC%9D%B4%EB%84%90-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-%ED%8A%B8%EB%9F%AC%EB%B8%94-%EC%8A%88%ED%8C%85-%ED%97%AC%ED%8D%BC%ED%85%8D%EC%8A%A4%ED%8A%B8-%EC%83%89%EC%83%81-%EB%B3%80%EA%B2%BD-%EC%95%88-%EB%90%98%EB%8A%94-%EB%AC%B8%EC%A0%9C-Tailwind-CSS)|
 |[input 포커스 시 밑줄 색상 변경 문제 (Tailwind CSS - peer)](https://devyeji.tistory.com/entry/KTB-%ED%8C%8C%EC%9D%B4%EB%84%90-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-%ED%8A%B8%EB%9F%AC%EB%B8%94-%EC%8A%88%ED%8C%85-input-%ED%8F%AC%EC%BB%A4%EC%8A%A4-%EC%8B%9C-%EB%B0%91%EC%A4%84-%EC%83%89%EC%83%81-%EB%B3%80%EA%B2%BD-%EB%AC%B8%EC%A0%9C-Tailwind-CSS-peer)|
+|[form 내 버튼 클릭 시 submit 이벤트 발생 문제 (HTML)](https://devyeji.tistory.com/entry/KTB-%ED%8C%8C%EC%9D%B4%EB%84%90-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-%ED%8A%B8%EB%9F%AC%EB%B8%94-%EC%8A%88%ED%8C%85-form-%EB%82%B4-%EB%B2%84%ED%8A%BC-%ED%81%B4%EB%A6%AD-%EC%8B%9C-submit-%EC%9D%B4%EB%B2%A4%ED%8A%B8-%EB%B0%9C%EC%83%9D-%EB%AC%B8%EC%A0%9C-HTML)|
